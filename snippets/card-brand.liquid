@@ -1,0 +1,12 @@
+<div class="pd-common-carousel__slider-item pd-common-carousel__brand-item" {{ block.shopify_attributes }}>
+  <a
+    href="{{ block.settings.url | default: '#' }}"
+  >
+    <div class="image-wrapper-hover-effect image-wrapper-hover-effect--circle">
+      {%- render 'pd-image', image: block.settings.image -%}
+    </div>
+    <h4 class="pd-heading-{{ block.settings.text_size }}" style="color: {{ block.settings.heading_text_color }}">
+      {{- block.settings.title -}}
+    </h4>
+  </a>
+</div>

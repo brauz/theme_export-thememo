@@ -1,0 +1,85 @@
+<style>
+  .content-cards[section-id="{{ section.id }}"] {
+    background-color: {{ section.settings.bg_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  .content-cards[section-id="{{ section.id }}"] .content-cards__grid .card-content {
+    padding: {% if section.settings.card_spacing == 0 %}{{ section.settings.card_spacing }}{% else %}0 {{ section.settings.card_spacing }}px{% endif %};
+  }
+
+  @media screen and (max-width: 767px) {
+    .content-cards[section-id="{{ section.id }}"] {
+      padding-top: {{ section.settings.padding_top | times: 0.7 }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.7 }}px;
+    }
+  }
+
+</style>
+
+{% liquid
+  assign has_data = false
+  for block in section.blocks
+    if block.settings.image
+      assign has_data = true
+    endif
+  endfor
+%}
+
+{% if has_data %}
+  <div
+    class="content-cards {% if section.settings.free_height %}free-height{% endif %} {% if section.settings.horizontal_scrolling %}horizontal-scrolling{% endif %}"
+    section-id="{{ section.id }}"
+  >
+    <div class="page-width {% if section.settings.container_fluid_desktop %}page-width--fluid-desktop{% endif %}">
+      {% if section.settings.horizontal_scrolling %}
+        <div class="pd-container-with-scrollbar pd-container-with-scrollbar-mobile">
+      {% endif %}
+      <div class="content-cards__grid">
+        {% for block in section.blocks %}
+          {% assign item = block.settings %}
+          {% render 'card-content',
+            card_style: item.card_style,
+            card_width: item.card_width,
+            bg_color: item.bg_color,
+            text_color: item.text_color,
+            overlay_bg_color: item.overlay_bg_color,
+            overlay_bg_opacity: item.overlay_bg_opacity,
+
+            image: item.image,
+            image_mobile: item.image_mobile,
+
+            use_mobile_padding: item.use_mobile_padding,
+
+            image_padding_top: item.image_padding_top,
+            image_padding_right: item.image_padding_right,
+            image_padding_bottom: item.image_padding_bottom,
+            image_padding_left: item.image_padding_left,
+            image_padding_unit: item.image_padding_unit,
+
+            image_padding_top_mobile: item.image_padding_top_mobile,
+            image_padding_right_mobile: item.image_padding_right_mobile,
+            image_padding_bottom_mobile: item.image_padding_bottom_mobile,
+            image_padding_left_mobile: item.image_padding_left_mobile,
+            image_padding_unit_mobile: item.image_padding_unit_mobile,
+
+            title: item.title,
+            description: item.description,
+            button_label: item.button_label,
+            button_url: item.button_url,
+            button_style: item.button_style,
+            use_custom_button_styles: item.use_custom_button_styles,
+            button_bg_color: item.button_bg_color,
+            button_border_color: item.button_border_color,
+            button_text_color: item.button_text_color,
+            info_first_mobile: item.info_first_mobile
+          %}
+        {% endfor %}
+      </div>
+      {% if section.settings.horizontal_scrolling %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}

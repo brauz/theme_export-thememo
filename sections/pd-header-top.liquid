@@ -1,0 +1,122 @@
+<div class="header-top" style="background-color: {{ section.settings.bg_color }};">
+  <div class="page-width header-top__container">
+    <div class="header-top__announcement-bar">
+      {% render 'pd-announcement-bar', blocks: blocks %}
+    </div>
+
+    <ul class="header-top__nav hide-tablet-and-down">
+      {% for link in section.settings.desktop_menu_top.links %}
+        <li class="header-top__nav__item">
+          <a class="header-top__nav__item__link" href="{{ link.url }}">
+            {% case link.title %}
+              {% when 'Help' %}
+                {% render 'icon-signature.svg', type: "question-mark-circle-variant-1" %}
+              {% when 'Services' %}
+                {% render 'icon-signature.svg', type: "utilities-variant-1" %}
+              {% when 'Store' %}
+                {% render 'icon-signature.svg', type: "map-pin-variant-1" %}
+            {% endcase %}
+            <span>{{ link.title }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Header Top",
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "desktop_menu_top",
+      "label": "Desktop menu top"
+    },
+    {
+      "type": "header",
+      "content": "Announcement bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Carousel autoplay"
+    },
+    {
+      "type": "text",
+      "id": "interval",
+      "label": "Carousel autoplay interval (in seconds)",
+      "info": "Use with autoplay option",
+      "default": "2"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#F2F4F7"
+    },
+    {
+      "type": "color",
+      "id": "arrow_color",
+      "label": "Arrow color",
+      "default": "#0F172A"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Announcement item",
+      "type": "announcement-item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Announcement text",
+          "default": "Welcome to our store"
+        },
+        {
+          "type": "url",
+          "id": "text_link",
+          "label": "Announcement link"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#0A2657"
+        }
+      ]
+    },
+    {
+      "name": "Announcement user item",
+      "type": "announcement-user-item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Announcement text",
+          "default": "Welcome to our store"
+        },
+        {
+          "type": "url",
+          "id": "text_link",
+          "label": "Announcement link"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#0A2657"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header top"
+    }
+  ]
+}
+{% endschema %}

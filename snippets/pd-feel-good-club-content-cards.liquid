@@ -1,0 +1,38 @@
+{%- liquid 
+  assign blocks = section.blocks | where: "type", "content-card"
+  -%}
+<div class="feel-good-club-content-card">
+  <h4 class="pd-heading-4 content-card__main-heading">Get the most from The Memo</h4>
+
+  <ul class="content-card__list pd-container-with-scrollbar pd-container-with-scrollbar-mobile">
+    {%- for block in blocks -%}
+      <li class="content-card__item"
+        style="
+          --bg-color: {{ block.settings.bg_color }};
+          --color: {{ block.settings.text_color }};
+          --button-bg-color: {{ block.settings.button_bg_color }};
+          --button-color: {{ block.settings.button_text_color }};
+          --button-border-color: {{ block.settings.button_border_color }};
+        "
+      
+      >
+        <div class="content-card__image">
+          {%- render 'pd-image', image: block.settings.image -%}
+        </div>
+        <div class="content-card__text">
+          <h5 class="content-card__heading">{{ block.settings.heading }}</h5>
+
+          <div class="body-text">
+            {{ block.settings.description }}
+          </div>
+
+          <a class="pd-button">
+            {{ block.settings.button_label }}
+          </a>
+
+        </div>
+      </li>
+      
+    {%- endfor -%}
+  </ul>
+</ul>

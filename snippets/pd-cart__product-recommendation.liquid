@@ -1,0 +1,18 @@
+{% if section.settings.show_complementary_section %}
+  <div class="pdp-accordion">
+    <details
+      class="pdp-accordion__item"
+      {% if section.settings.default_state_complementary_section == 'true' %}
+        open
+      {% endif %}
+    >
+      <summary class="product__info__heading" for="Cart-note">
+        {{ section.settings.complementary_section_title }}
+        <span class="pdp-accordion__item__icon icon-toggle"></span>
+      </summary>
+      <div class="pdp-accordion__item__content">
+        {% render 'pd-cart-carousel' %}
+      </div>
+    </details>
+  </div>
+{% endif %}

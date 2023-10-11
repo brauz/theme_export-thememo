@@ -1,0 +1,98 @@
+<div class="page-width">
+  <div class="gift-registry-page gift-registry-page--2-columns">
+    <div class="gift-registry-page__sidebar">
+      {% render 'pd-gift-registry-sidebar' %}
+    </div>
+    <div class="gift-registry-page__content" data-tinybind-binder>
+      <nav class="breadcrumbs" role="navigation" aria-label="breadcrumbs">
+        <ol class="breadcrumbs__list">
+          <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link" href="/account" aria-current="page">My Account</a>
+          </li>
+          <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link" href="/account?view=gift-registry-dashboard" aria-current="page">Gift Registry</a>
+          </li>
+        </ol>
+      </nav>
+
+      <h1 class="pd-heading-3 gift-registry-page__heading-title">Registry Settings</h1>
+
+      {% render 'pd-gift-registry-form', form_id: 'giftRegistryEdit' %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Gift Registry Edit",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Sidebar"
+    },
+    {
+      "type": "text",
+      "id": "main_menu",
+      "label": "Main menu",
+      "default": "n-gift-registry-sidebar"
+    },
+    {
+      "type": "text",
+      "id": "help_menu",
+      "label": "Help menu",
+      "default": "n-gift-registry-help"
+    },
+    {
+      "type": "header",
+      "content": "Form"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color"
+    },
+    {
+      "type": "color",
+      "id": "form_panel_bg_color",
+      "label": "Form panel background color",
+      "default": "#F2F4F7"
+    },
+    {
+      "type": "color",
+      "id": "anchors_text_color",
+      "label": "Anchors text color",
+      "default": "#0554FF"
+    },
+    {
+      "type": "text",
+      "id": "submit_button_label",
+      "label": "Submit button label",
+      "default": "SAVE CHANGES"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "default": "pd-button--happy-lemonlime",
+      "options": [
+        {
+          "label": "Bold Coral",
+          "value": "pd-button--bold-coral"
+        },
+        {
+          "label": "Happy Lemonlime",
+          "value": "pd-button--happy-lemonlime"
+        },
+        {
+          "label": "Strong Dark Blue",
+          "value": "pd-button--strong-dark-blue"
+        },
+        {
+          "label": "Lively Blue",
+          "value": "pd-button--lively-blue"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

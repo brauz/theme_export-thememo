@@ -1,0 +1,116 @@
+{%- liquid
+  assign styles = ''
+  if card_width != blank
+    assign styles = 'width: ' | append: card_width | append: ';'
+  endif
+  if text_color != blank
+    assign styles = styles | append: 'color: ' | append: text_color | append: ';'
+  endif
+
+  assign padding_top = image_padding_top | append: image_padding_unit
+  assign padding_right = image_padding_right | append: image_padding_unit
+  assign padding_bottom = image_padding_bottom | append: image_padding_unit
+  assign padding_left = image_padding_left | append: image_padding_unit
+
+  assign padding_top_mobile = padding_top
+  assign padding_right_mobile = padding_right
+  assign padding_bottom_mobile = padding_bottom
+  assign padding_left_mobile = padding_left
+
+  if use_mobile_padding
+    assign padding_top_mobile = image_padding_top_mobile | append: image_padding_unit_mobile
+    assign padding_right_mobile = image_padding_right_mobile | append: image_padding_unit_mobile
+    assign padding_bottom_mobile = image_padding_bottom_mobile | append: image_padding_unit_mobile
+    assign padding_left_mobile = image_padding_left_mobile | append: image_padding_unit_mobile
+  endif
+-%}
+
+<div class="card-content {{ card_style }}" style="{{ styles }}">
+  <div
+    class="card-content-inner {% if info_first_mobile %}card-content-inner--info-first-mobile{% endif %}"
+    style="
+      background-color: {{ bg_color }};
+      --padding-top: {{ padding_top }};
+      --padding-right: {{ padding_right }};
+      --padding-bottom: {{ padding_bottom }};
+      --padding-left: {{ padding_left }};
+      --padding-top-mobile: {{ padding_top_mobile }};
+      --padding-right-mobile: {{ padding_right_mobile }};
+      --padding-bottom-mobile: {{ padding_bottom_mobile }};
+      --padding-left-mobile: {{ padding_left_mobile }};
+    "
+  >
+    <div class="card-content__image">
+      {%- if image_mobile != blank -%}
+        {% render 'pd-image', image: image, class: 'hide-mobile' %}
+        {% render 'pd-image', image: image_mobile, class: 'hide-desktop' %}
+      {%- else -%}
+        {% render 'pd-image', image: image %}
+      {%- endif -%}
+    </div>
+    {% if card_style == 'text-overlay' %}
+      <div
+        class="card-content__overlay-bg"
+        style="
+          background-color: {{ overlay_bg_color }};
+          opacity: {{ overlay_bg_opacity }};
+        "
+      ></div>
+    {% endif %}
+
+    {%- unless title == blank and description == blank and button_label == blank -%}
+      <div class="card-content__info">
+        {% if title != blank %}
+          <h4 class="pd-heading-2 pd-heading-underline card-content__title" style="--color: {{ title_text_color }}">
+            {%- if title_icon != blank -%}
+              {% render 'pd-image', image: title_icon %}
+            {%- endif -%}
+            {{ title }}
+          </h4>
+        {% endif %}
+        {% if description != blank %}
+          <div class="card-content__description">{{ description }}</div>
+        {% endif %}
+        {% if button_label != blank %}
+          <a
+            class="pd-{% if display_as_link %}link{% else %}button{% endif %} {{ button_style }}"
+            href="{{ button_url }}"
+            {% if use_custom_button_styles %}
+              style="
+                {% if button_bg_color != blank %}
+                  background-color: {{ button_bg_color }};
+                {% endif %}
+
+                {% if button_border_color != blank %}
+                  border-color: {{ button_border_color }};
+                {% endif %}
+
+                {% if button_text_color != blank %}
+                  --color: {{ button_text_color }};
+                {% endif %}
+              "
+            {% else %}
+              style="                --color: {{ button_text_color }};"
+            {% endif %}
+          >
+            {{- button_label -}}
+          </a>
+        {% endif %}
+      </div>
+    {%- endunless -%}
+
+    {%- if badge_title != blank -%}
+      <div
+        class="card-content__badge"
+        style="
+          --bg-color: {{ badge_bg_color }};
+          --color: {{ badge_color }};
+          --top: 10px;
+          --left: 0px;
+        "
+      >
+        {{ badge_title }}
+      </div>
+    {%- endif -%}
+  </div>
+</div>

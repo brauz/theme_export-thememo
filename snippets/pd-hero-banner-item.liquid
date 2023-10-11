@@ -1,0 +1,122 @@
+{% liquid
+  assign image = block.settings.image
+  if block.settings.image_mobile
+    assign image_mobile = block.settings.image_mobile
+  else
+    assign image_mobile = image
+  endif
+
+  assign video = block.settings.video
+  if block.settings.video_mobile
+    assign video_mobile = block.settings.video_mobile
+  else
+    assign video_mobile = video
+  endif
+
+  assign cover_video = block.settings.cover_video
+  if block.settings.cover_video_mobile
+    assign cover_video_mobile = block.settings.cover_video_mobile
+  else
+    assign cover_video_mobile = cover_video
+  endif
+
+  assign block_classes = ""
+  if block.settings.heading == blank and block.settings.description == blank
+    assign block_classes = "hero-banner__item--no-text"
+  endif
+%}
+
+{% capture video_block %}
+  <div class="hero-banner__video-wrapper hero-banner__video-wrapper--desktop">
+    {% render 'pd-video',
+      video: video,
+      enable_video_looping: true,
+      auto_play: true,
+      poster: cover_video
+    %}
+  </div>
+  <div class="hero-banner__video-wrapper hero-banner__video-wrapper--mobile">
+    {% render 'pd-video',
+      video: video_mobile,
+      enable_video_looping: true,
+      auto_play: true,
+      poster: cover_video_mobile
+    %}
+  </div>
+{% endcapture %}
+
+{% capture image_block %}
+  <div class="hero-banner__image-wrapper hero-banner__image-wrapper--desktop">
+    {% render 'pd-image', image: image %}
+  </div>
+  <div class="hero-banner__image-wrapper hero-banner__image-wrapper--mobile">
+    {% render 'pd-image', image: image_mobile %}
+  </div>
+{% endcapture %}
+
+<div class="hero-banner__item block-{{ block.id }} {{ block_classes }}">
+  {% if block.settings.banner_link != blank %}
+    <a href="{{ block.settings.banner_link }}">
+  {% endif %}
+  {% if block.settings.split_banner %}
+    <div class="split-banner">
+      <div class="split-banner__image">{{ image_block }}</div>
+      <div class="split-banner__video">{{ video_block }}</div>
+    </div>
+  {% else %}
+    {% if video %}
+      {{ video_block }}
+    {% else %}
+      {{ image_block }}
+    {% endif %}
+  {% endif %}
+  {% if block.settings.banner_link != blank %}
+    </a>
+  {% endif %}
+
+  {% if block.settings.heading != blank or block.settings.description != blank %}
+    <div class="hero-banner__item__text">
+      {% if block.settings.heading %}
+        <h2 class="pd-heading-1 hero-banner__item__heading {{ block.settings.heading_size }}">
+          {{ block.settings.heading }}
+          <style>
+            {% if block.settings.decoration_image != blank %}
+              @media screen and (max-width: 749px) {
+                .block-{{ block.id }} .hero-banner__item__heading p::after {
+                  content: '';
+                  background-image: url({{ block.settings.decoration_image | img_url: '150x' }});
+                  background-size: contain;
+                  display: inline-block;
+                  width: 4.5rem;
+                  height: 4.5rem;
+                }
+              }
+            {% endif %}
+          </style>
+          {% if block.settings.decoration_image != blank %}
+            <div class="hero-banner__item__decoration">
+              {% render 'pd-image', image: block.settings.decoration_image %}
+            </div>
+          {% endif %}
+        </h2>
+      {% endif %}
+      {% if block.settings.description %}
+        <div class="hero-banner__item__description {{ block.settings.description_size }}">{{ block.settings.description }}</div>
+      {% endif %}
+      {% if block.settings.button_label != blank or block.settings.button_label_2 != blank  %}
+        <div class="hero-banner__item__buttons">
+          {% if block.settings.button_label != blank %}
+            <a class="pd-button hero-banner__item__button" href="{{ block.settings.button_link }}">
+              {{ block.settings.button_label }}
+            </a>
+          {% endif %}
+          {% if block.settings.button_label_2 != blank %}
+            <a class="pd-button hero-banner__item__button hero-banner__item__button--2" href="{{ block.settings.button_link_2 }}">
+              {{ block.settings.button_label_2 }}
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>

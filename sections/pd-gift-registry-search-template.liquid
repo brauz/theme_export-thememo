@@ -1,0 +1,29 @@
+<div class="gift-registry-page gift-registry-page--search" id="registry-search">
+  <div class="page-width">
+    <nav class="breadcrumbs" role="navigation" aria-label="breadcrumbs">
+      <ol class="breadcrumbs__list">
+        <li class="breadcrumbs__item">
+          <a class="breadcrumbs__link" href="/account" aria-current="page">My Account</a>
+        </li>
+        <li class="breadcrumbs__item">
+          <a class="breadcrumbs__link" href="/account?view=gift-registry-dashboard" aria-current="page">Gift Registry</a>
+        </li>
+      </ol>
+    </nav>
+  </div>
+  {% render 'pd-gift-registry-search' %}
+  {% render 'pd-gift-registry-search-results' %}
+</div>
+
+{% schema %}
+{
+  "name": "Gift Registry Search",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "Banner image"
+    }
+  ]
+}
+{% endschema %}

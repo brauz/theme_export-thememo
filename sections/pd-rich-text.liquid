@@ -1,0 +1,551 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  .section-{{ section.id }}-color {
+    background-color: {{ section.settings.bg_color }};
+  }
+
+  @media screen and (min-width: 768px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+    .section-{{ section.id }}-padding .pd-rich-text__blocks {
+      width: {{ section.settings.width_desktop }}%;
+    }
+
+    .section-{{ section.id }}-padding .pd-rich-text__decoration-image {
+      width: {{ section.settings.width_desktop }}%;
+      margin-inline: auto;
+    }
+
+  }
+
+  {% if section.settings.decoration_image != blank and section.settings.display_as == "inline-block" %}
+    .section-{{ section.id }}-padding .pd-rich-text__blocks::before {
+      content: '';
+      background-image: url({{ section.settings.decoration_image | img_url: '150x' }});
+      background-size: contain;
+      background-repeat: no-repeat;
+      position: absolute;
+      display: inline-block;
+      width: 4.5rem;
+      height: 4.5rem;
+      right: {{ section.settings.right_mobile }}%;
+      bottom: {{ section.settings.bottom_mobile }}%;
+    }
+
+    @media screen and (min-width: 768px) {
+      .section-{{ section.id }}-padding .pd-rich-text__blocks::before {
+        width: {{ section.settings.width }}px;
+        height: {{ section.settings.height }}px;
+        right: {{ section.settings.right }}%;
+        bottom: {{ section.settings.bottom }}%;
+      }
+    }
+
+  {% endif %}
+{%- endstyle -%}
+
+{%- render "pd-rich-text" -%}
+
+{% schema %}
+{
+  "name": "t:sections.rich-text.name",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_id",
+      "label": "Section id",
+      "info": "Used to link directly to this section from the navigation"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom class"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color"
+    },
+    {
+      "type": "range",
+      "id": "width_desktop",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Width on desktop",
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center",
+      "label": "Content alignment on desktop"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment_mobile",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center",
+      "label": "Content alignment on mobile"
+    },
+    {
+      "type": "header",
+      "content": "Decoration image"
+    },
+    {
+      "type": "image_picker",
+      "id": "decoration_image",
+      "label": "Decoration image"
+    },
+    {
+      "type": "select",
+      "id": "display_as",
+      "options": [
+        {
+          "value": "inline-block",
+          "label": "Inline"
+        },
+        {
+          "value": "block",
+          "label": "Block"
+        }
+      ],
+      "default": "inline-block",
+      "label": "Display as"
+    },
+    {
+      "type": "checkbox",
+      "id": "always_bottom",
+      "label": "Decoration image position at bottom",
+      "info": "Only apply if the decoration image display option is set to \"Block\""
+    },
+    {
+      "type": "header",
+      "content": "Decoration image configurations",
+      "info": "These below configurations will only be applied if the decoration image display option is set to \"Inline\""
+    },
+    {
+      "type": "range",
+      "id": "width",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Width",
+      "default": 75
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Height",
+      "default": 75
+    },
+    {
+      "type": "range",
+      "id": "right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Right position",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Bottom position",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "right_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Right position on mobile",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Bottom position on mobile",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 52
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "select",
+          "id": "html_tag",
+          "label": "HTML tag",
+          "options": [
+            {
+              "value": "h1",
+              "label": "h1"
+            },
+            {
+              "value": "h2",
+              "label": "h2"
+            },
+            {
+              "value": "h3",
+              "label": "h3"
+            },
+            {
+              "value": "h4",
+              "label": "h4"
+            },
+            {
+              "value": "h5",
+              "label": "h5"
+            },
+            {
+              "value": "div",
+              "label": "div"
+            }
+          ],
+          "default": "h2",
+          "info": "Only one h1 tag is allowed per page"
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "center",
+          "label": "Text alignment on desktop"
+        },
+        {
+          "type": "select",
+          "id": "text_alignment_mobile",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "center",
+          "label": "Text alignment on mobile"
+        },
+        {
+          "type": "richtext",
+          "id": "heading",
+          "default": "<p>Talk about your brand</p>",
+          "label": "Text"
+        },
+        {
+          "type": "color",
+          "id": "heading_text_color",
+          "label": "Text color"
+        },
+        {
+          "type": "select",
+          "id": "text_style",
+          "label": "Text style",
+          "options": [
+            {
+              "value": "",
+              "label": "Normal"
+            },
+            {
+              "value": "lowercase",
+              "label": "Lowercase"
+            },
+            {
+              "value": "uppercase",
+              "label": "Uppercase"
+            },
+            {
+              "value": "capitalize",
+              "label": "Capitalize"
+            }
+          ],
+          "default": ""
+        },
+        {
+          "type": "select",
+          "id": "text_font_family",
+          "label": "Text font",
+          "options": [
+            {
+              "value": "",
+              "label": "Default"
+            },
+            {
+              "value": "1",
+              "label": "Regular"
+            },
+            {
+              "value": "2",
+              "label": "Condensed Medium"
+            },
+            {
+              "value": "3",
+              "label": "Wide Medium"
+            },
+            {
+              "value": "5",
+              "label": "Medium"
+            },
+            {
+              "value": "4",
+              "label": "Light"
+            }
+          ],
+          "default": ""
+        },
+        {
+          "type": "range",
+          "id": "text_font_size",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size on desktop",
+          "default": 36
+        },
+        {
+          "type": "range",
+          "id": "text_font_size_mobile",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size on mobile",
+          "default": 22
+        },
+        {
+          "type": "range",
+          "id": "text_line_height",
+          "min": 0.9,
+          "max": 2,
+          "step": 0.1,
+          "unit": "tms",
+          "label": "Text line height (in times)",
+          "default": 1.1
+        },
+        {
+          "type": "checkbox",
+          "id": "use_underline_shape",
+          "label": "Use bold text as custom underline shape",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "text_underline_color",
+          "label": "Underline color",
+          "options": [
+            {
+              "value": "",
+              "label": "Default"
+            },
+            {
+              "value": "honest-lilac",
+              "label": "Honest Lilac"
+            }
+          ]
+        },
+        {
+          "type": "range",
+          "id": "position",
+          "min": 0,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "label": "Underline position",
+          "default": 10
+        }
+      ]
+    },
+    {
+      "type": "liquid",
+      "name": "Liquid",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "Custom Liquid"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "t:sections.rich-text.blocks.buttons.name",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "select",
+          "id": "button_alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "center",
+          "label": "Button alignment on desktop"
+        },
+        {
+          "type": "select",
+          "id": "button_alignment_mobile",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "center",
+          "label": "Button alignment on mobile"
+        },
+        {
+          "type": "color",
+          "id": "button_text_color",
+          "label": "Text color"
+        },
+        {
+          "type": "color",
+          "id": "button_bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "color",
+          "id": "button_border_color",
+          "label": "Border color"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "default": "Button label",
+          "label": "Button label",
+          "info": "Leave the label blank to hide the button."
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.rich-text.presets.name"
+    }
+  ]
+}
+{% endschema %}

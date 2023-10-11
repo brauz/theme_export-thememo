@@ -1,0 +1,27 @@
+{%- if section.settings.show_cart_note -%}
+  <cart-note class="cart__note field">
+    <div class="pdp-accordion">
+      <details
+        class="pdp-accordion__item"
+        {% if section.settings.cart_note_default_state == 'true' %}
+          open
+        {% endif %}
+      >
+        <summary class="product__info__heading" for="Cart-note">
+          {{ section.settings.cart_note_title }}
+          <span class="pdp-accordion__item__icon icon-toggle"></span>
+        </summary>
+        <div class="pdp-accordion__item__content">
+          <textarea
+            maxlength="280"
+            class="text-area field__input"
+            name="note"
+            form="cart"
+            id="Cart-note"
+            placeholder="{{section.settings.cart_note_placeholder}}"
+          >{{ cart.note }}</textarea>
+        </div>
+      </details>
+    </div>
+  </cart-note>
+{%- endif -%}

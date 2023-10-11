@@ -1,0 +1,36 @@
+<link rel="preload" href="{{ 'pd-gift-registry-msg-drawer.js' | asset_url }}" as="script">
+<script src="{{ 'pd-gift-registry-msg-drawer.js' | asset_url }}" defer="defer" type="text/javascript"></script>
+
+<gift-registry-msg-drawer class="gift-registry-msg-drawer">
+  <div class="gift-registry-msg-drawer__dialog">
+    <div class="gift-registry-msg-drawer__header">
+      <span>Give this gift</span>
+      <button data-close-button class="pd-button-close">{% render 'icon-close-small' %}</button>
+    </div>
+    <div class="gift-registry-msg-drawer__form">
+      <h3 class="pd-heading-3 pd-form-heading">Write a message</h3>
+      <div class="pd-form-group">
+        <label class="pd-form-label">First name</label>
+        <input class="pd-form-input" id="giftGiverName" name="giftGiverName"  value="{{cart.attributes["_giver_name_first"]}}" required>
+      </div>
+      <div class="pd-form-group">
+        <label class="pd-form-label">Last name</label>
+        <input class="pd-form-input" id="giftGiverLastName" name="giftGiverLastName"  value="{{cart.attributes["_giver_name_last"]}}" required>
+      </div>
+      <div class="pd-form-group">
+        <label class="pd-form-label">Add message</label>
+        <textarea class="pd-form-textarea" rows="6" id="custom-message" name="customMessge"  maxlength= "160">{{ cart.attributes["_giver_message"] }}</textarea>
+        <span class="pd-form-note">Maximum 160 characters</span>
+      </div>
+      <div class="pd-form-group pd-form-group--inline">
+        <div class="pd-quantity-controller gift-registry-item-quantity">
+            <a href="#" data-quantity-pop="down" class="pd-quantity-controller__button">−</a>
+            <input data-variant-qty aria-label="Quantity" class="pd-quantity-controller__input" name="quantity" value="1">
+            <a href="#" data-quantity-pop="up" class="pd-quantity-controller__button">+</a>
+        </div>
+        <a data-popup-add-to-cart data-with-message="true" class="pd-button pd-button--happy-lemonlime pd-button--big" href="#"> {{ 'Add with message' | upcase }}</a>
+      </div>
+      <div data-registry-item-error-message class="gift-registry-msg-drawer__error-message"></div>
+    </div>
+  </div>
+</gift-registry-msg-drawer>

@@ -1,0 +1,146 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ data.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ data.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  .section-{{ section.id }}-padding .article-hero-banner {
+    background-color: {{ data.banner_background_color }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ data.padding_top }}px;
+      padding-bottom: {{ data.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- liquid 
+  assign below_banner_heading_text = article.metafields.below_banner_heading.text
+  assign image_with_text_highlighted = article.metafields.image_for_img_text.image
+  assign quote_text = article.metafields.quote_sectio_heading.quote_text
+  assign img_text_repeatable_images = article.metafields.img_text_repeatable.image
+  assign text_center = article.metafields.text_center.textarea
+  assign images_select = article.metafields.accentuate.images_selected
+  assign related_product = article.metafields.related_section.related_product
+-%}
+
+<article class="article-template section-{{ section.id }} section-{{ section.id }}-padding" itemscope itemtype="http://schema.org/BlogPosting">
+  {%- render 'article-hero-banner', article: article, data: data, blocks: blocks -%}
+  <div class="article-template__body">
+    <div class="article-template__intro-text">
+      <div class="article-template__intro-text__inner">
+        {% if below_banner_heading_text != blank %}
+          {% for text in below_banner_heading_text %}
+            {% if below_banner_heading_text[forloop.index0] != blank %}
+              {{ below_banner_heading_text[forloop.index0].html }}
+            {% endif %}
+          {% endfor%}
+        {% else %}
+          <h1>{{article.excerpt}}</h1>
+        {% endif %}
+      </div>
+    </div>
+
+    {%- for img_text_highlighted in image_with_text_highlighted -%}
+      {%- if image_with_text_highlighted[forloop.index0] != nil -%}
+        {%- liquid
+          assign heading = article.metafields.heading_img_text.heading
+          assign textarea = article.metafields.textarea_img_text.textarea
+        -%}
+        <div class="article-template__image-text-highlighted page-width">
+          <div class="article-template__image-text-highlighted__wrapper">
+            <div class="article-template__image-highlighted">{%- render 'pd-image', image: image_with_text_highlighted[forloop.index0] -%}</div>
+            <div class="article-template__text-highlighted">
+              <div class="article-template__text-highlighted__inner">
+                <h3 class="article-template__text-highlighted__heading">{{ heading[forloop.index0] }}</h3>
+                  <div class="article-template__text-highlighted__textarea">
+                      {{ textarea[forloop.index0].html }}
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if quote_text != blank -%}
+      {%- assign quote_author = article.metafields.quote_section_hyphen.hypen_text -%}
+      <div class="article-template__quote">
+        <div class="article-template__quote__inner">
+          <h1 class="article-template__quote__text">{{ quote_text }}</h1>
+          <h3 class="article-template__quote__author">{{ quote_author }}</h3>
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- for img_text_rep_img in img_text_repeatable_images -%}
+      {%- liquid
+        assign heading = article.metafields.heading_img_text_rep.heading
+        assign textarea = article.metafields.text_img_text_rep.textarea
+        assign order_number = forloop.index
+        assign image_left_position = article.metafields.accentuate.image_left_position
+        assign cta_label = article.metafields.accentuate.cta_label
+        assign cta_link = article.metafields.accentuate.cta_link
+      -%}
+
+      {%- if img_text_repeatable_images[forloop.index0] != nil -%}
+        <div class="article-template__img-text-repeatable">
+          <div class="article-template__img-text-repeatable__inner {% if image_left_position[forloop.index0] == 'true' %}image-left{% endif %}">
+            <div class="article-template__img-text-repeatable__content">
+              <div class="article-template__img-text-repeatable__content__inner">
+                <h2 class="article-template__img-text-repeatable__heading">
+                  <span>{{ order_number }}.</span> {{ heading[forloop.index0] }}
+                </h2>
+                <div class="article-template__img-text-repeatable__textarea body-text">
+                  {{ textarea[forloop.index0].html }}
+                </div>
+              </div>
+            </div>
+            <div class="article-template__img-text-repeatable__image">
+              <div>{%- render 'pd-image', image: img_text_repeatable_images[forloop.index0] -%}</div>
+              {%- if cta_label[forloop.index0] != blank or cta_link[forloop.index0] != blank -%}
+                <a class="image-cta" href="{{ cta_link[forloop.index0] }}">
+                  {{ cta_label[forloop.index0] }}
+                  <span>{%- render 'icon.svg', type: 'arrow-up-right-small' -%}</span>
+                </a>
+              {%- endif -%}
+            </div>
+          </div>
+          <div class="divider-line"></div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if text_center != blank -%}
+      <div class="article-template__text-center">
+        <div class="article-template__text-center__inner">
+          {%- for text in text_center -%}
+            {{ text_center[forloop.index0].html }}
+          {%- endfor -%}
+        </div>
+        <div class="divider-line"></div>
+      </div>
+    {%- endif -%}
+
+    {%- if images_select.size > 0 -%}
+      {%- render 'article-images-carousel', images_select: images_select -%}
+    {%- endif -%}
+
+    {%- if related_product.size > 0 -%}
+      {%- assign heading_text = article.metafields.related_section_head.text -%}
+      {%- render 'article-related-product', heading_text: heading_text, related_product: related_product -%}
+    {%- endif -%}
+
+    <div class="article-template__tags page-width">
+      <ul>
+        {% for tag in article.tags %}
+          {% unless tag contains 'read most' or tag contains "author:" %}
+            <li>{{ tag | link_to_tag: tag | remove:"author:" }}</li>
+          {% endunless %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</article>

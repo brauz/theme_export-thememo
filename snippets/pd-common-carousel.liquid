@@ -1,0 +1,106 @@
+{%- capture carousel_options -%}
+  {
+    "arrows": {{ show_arrow }},
+    "dots": true,
+    "slidesToShow": {{ number_products_showing }},
+    "slidesToScroll": 1,
+    "mobileFirst": false,
+    "infinite": false,
+    "responsive": [
+      {
+        "breakpoint": 767,
+        "settings": "unslick"
+      }
+    ]
+  }
+{%- endcapture -%}
+
+<div
+  id="{{section.settings.metafield_id}}"
+  class="
+    section-{{ section.id }}
+    section-{{ section.id }}-padding pd-common-carousel pd-carousel-has-scrollbar
+    {% if total_blocks <= number_products_showing %} no-carousel{% endif %}
+  "
+  {% if total_blocks > number_products_showing %}
+    data-carousel-slider-wrapper
+  {% endif %}
+>
+  <div
+    class="page-width pd-common-carousel__wrapper pd-common-carousel__layout-{{section.settings.card_layout}}"
+    style="--direction: {{section.settings.card_layout}};"
+  >
+    {% if decoration_image %}
+      {% render 'decoration-image',
+        class_name: 'pd-common-carousel__decoration',
+        section_id: section.id,
+        image: decoration_image,
+        desktop_position: decoration_image_desktop_position,
+        mobile_position: decoration_image_mobile_position,
+        desktop_width: decoration_image_desktop_width,
+        mobile_width: decoration_image_mobile_width
+      %}
+    {% endif %}
+
+    <div class="pd-common-carousel__header">
+      {% unless heading == blank and description == blank %}
+        <div
+          class="
+            pd-common-carousel__header__text
+            {{ text_alignment }}
+            {% if button_bottom_desktop %}pd-common-carousel__header__text--fullwidth{% endif %}
+          "
+        >
+          {% if heading %}
+            <h2 class="pd-heading-{{ text_size }} pd-heading-underline pd-common-carousel__heading">
+              {{- heading -}}
+            </h2>
+          {% endif %}
+          {% if description %}
+            <div class="description pd-common-carousel__description">
+              {{ description }}
+            </div>
+          {% endif %}
+        </div>
+      {%- endunless -%}
+
+      {% if button_label and button_bottom_desktop == false %}
+        <div class="pd-common-carousel__button">
+          <a class="pd-button" href="{{ button_link }}">{{ button_label }}</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="pd-common-carousel__slider-wrapper">
+      <div
+        class="pd-common-carousel__slider pd-container-with-scrollbar pd-container-with-scrollbar-overflow pd-container-with-scrollbar-mobile"
+        {% if total_blocks > number_products_showing %}
+          data-carousel-slider="{{ carousel_options | escape }}"
+          data-slider="pd-common-carousel"
+        {% endif %}
+      >
+        {{- render_blocks -}}
+      </div>
+
+      {% if total_blocks > number_products_showing %}
+        <div data-carousel-scrollbar class="pd-carousel-scrollbar">
+          <span data-carousel-scrollbar-track class="pd-carousel-scrollbar-piece"></span>
+        </div>
+      {% endif %}
+    </div>
+
+    {%- if button_label != blank -%}
+      <div
+        class="
+          pd-common-carousel__button
+          pd-common-carousel__button--bottom
+          {% if button_bottom_desktop == false %}hide-desktop{% endif %}
+        "
+      >
+        <a class="pd-button" href="{{ button_link }}">
+          {{- button_label -}}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>

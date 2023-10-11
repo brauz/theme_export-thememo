@@ -1,0 +1,38 @@
+{% assign product_color = null %}
+{% assign product_type = product.type | handle %}
+
+{%- for tag in product.tags -%}
+  {%- if tag contains "stitch:" -%}
+    {% assign product_color = tag %}
+  {%- endif -%}
+{%- endfor -%}
+
+{% assign color_name = product.title | split: '-' %}
+
+<span class="form__label">{{ title }}: {{ color_name[1] }}</span>
+
+{%- if product_color -%}
+  <div class="product-colors">
+    <div class="product-colors__items">
+      {% paginate collections[product_type].products by 1000 %}
+        {% for product_in_collection in collections[product_type].products %}
+          {% assign product_in_collection_color = "" %}
+          {%- for tag in product_in_collection.tags -%}
+            {%- if tag == product_color -%}
+              {% assign product_in_collection_color = tag | remove: "stitch:" %}
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- if product_in_collection_color != blank -%}
+            <a
+              href="{{ product_in_collection.url }}"
+              class="product-colors__item {% if product.handle == product_in_collection.handle %}selected{% endif %}"
+            >
+              <img src="{{ product_in_collection.featured_image | img_url: '120x' }}" alt="{{ product_in_collection.title }}">
+            </a>
+          {%- endif -%}
+        {% endfor %}
+      {% endpaginate %}
+    </div>
+  </div>
+{% endif %}

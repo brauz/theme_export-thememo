@@ -1,0 +1,40 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ data.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ data.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  .section-{{ section.id }}-padding.main-sitemap {
+    background: {{ data.background_color }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ data.padding_top }}px;
+      padding-bottom: {{ data.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="main-sitemap section-{{ section.id }}-padding">
+  <div class="main-sitemap__wrapper">
+    <div class="main-sitemap__breadcrumbs page-width">{%- render 'breadcrumbs' -%}</div>
+    <div class="main-sitemap__content">
+      <h2 class="main-sitemap__heading pd-heading-2">{{ page.title }}</h2>
+      <h3 class="main-sitemap__subheading pd-heading-3">Collections</h3>
+      <div class="main-sitemap__list">
+        {%- for collection in collections -%}
+          {%- if collection.products_count > 0 -%}
+            <a 
+              class="main-sitemap__item" 
+              href="{{ collection.url }}"
+              style="font-family: var(--font-heading-family);"
+            >
+              {{ collection.title }}
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</div>

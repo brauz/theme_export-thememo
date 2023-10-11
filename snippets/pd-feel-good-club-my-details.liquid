@@ -1,0 +1,9 @@
+<div class="feel-good-club-my-details">
+  <div class="customer my-details__address">
+    {{ customer.default_address | format_address }}
+
+    <a class="body-text my-details__link-to-addresses" href="{{ routes.account_addresses_url }}?view=feel-good-club-my-details-addresses">
+      View {{ customer.addresses_count | pluralize: 'address', 'addresses' }} ({{ customer.addresses_count }})
+    </a>
+  </div>
+</div>

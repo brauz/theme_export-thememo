@@ -1,0 +1,134 @@
+{% render 'pd-stages' %}
+
+{% schema %}
+  {
+    "name": "Stages",
+    "disabled_on": {
+      "groups": ["header", "footer"]
+    },
+    "settings": [
+      {
+        "type": "richtext",
+        "id": "heading",
+        "label": "Heading",
+        "default": "<p>With you at every stage</p>"
+      },
+      {
+        "type": "color",
+        "id": "bg_color",
+        "label": "Background",
+        "default": "#CCC2FF"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 200,
+        "step": 4,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_top",
+        "default": 36
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 200,
+        "step": 4,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_bottom",
+        "default": 36
+      }
+    ],
+    "blocks": [
+      {
+        "type": "navigation",
+        "name": "Navigation",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Pregnancy"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Mobile image"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_desktop",
+            "label": "Desktop image"
+          },
+          {
+            "type": "textarea",
+            "id": "description",
+            "label": "Description",
+            "default": "Stories and videos to help you navigate this whole ‘having a baby’ thing. We share expert insights, trending topics and breakdown all the things you didn't think you needed to know… until you do."
+          },
+          {
+            "type": "url",
+            "id": "link",
+            "label": "Link"
+          },
+          {
+            "type": "color",
+            "id": "bg_color",
+            "label": "Background color",
+            "default": "#E3F25E"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_asterisk",
+            "label": "Decoration image"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "name": "Text",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Pregnancy"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Mobile image"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_desktop",
+            "label": "Desktop image"
+          },
+          {
+            "type": "richtext",
+            "id": "description",
+            "label": "Description",
+            "default": "<p>Stories and videos to help you navigate this whole ‘having a baby’ thing. We share expert insights, trending topics and breakdown all the things you didn't think you needed to know… until you do.</p>"
+          },
+          {
+            "type": "color",
+            "id": "bg_color",
+            "label": "Background color",
+            "default": "#E3F25E"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_asterisk",
+            "label": "Asterisk image"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Stages"
+      }
+    ]
+  }
+{% endschema %}

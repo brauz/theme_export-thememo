@@ -1,0 +1,56 @@
+<style>
+  [section-id="{{ section.id }}"] {
+    margin-top: {{ section.settings.margin_top }}px;
+    margin-bottom: {{ section.settings.margin_bottom }}px;
+  }
+</style>
+
+<div section-id="{{ section.id }}" class="banner-with-icons">
+  <div class="banner-with-icons__image">
+    {% render 'pd-image', image: section.settings.image, class: "main-image hide-mobile" %}
+    {% render 'pd-image', image: section.settings.image_mobile, class: "main-image hide-desktop" %}
+
+    {% for block in section.blocks %}
+      {% liquid
+        assign classnames = 'banner-with-icons__icon icon-' | append: forloop.index
+        assign position_desktop = block.settings.position_desktop | split: ','
+        assign position_desktop_top = position_desktop | first | strip
+        assign position_desktop_left = position_desktop | last | strip
+
+        assign position_mobile = block.settings.position_mobile | split: ','
+        assign position_mobile_top = position_mobile | first | strip
+        assign position_mobile_left = position_mobile | last | strip
+      %}
+      <style>
+        [section-id="{{ section.id }}"] .banner-with-icons__icon.icon-{{ forloop.index }} {
+          width: {{ block.settings.width_desktop }}px;
+          top: {{ position_desktop_top }}%;
+          Left: {{ position_desktop_left }}%;
+        }
+
+        @media screen and (max-width: 767px) {
+          [section-id="{{ section.id }}"] .banner-with-icons__icon.icon-{{ forloop.index }} {
+            width: {{ block.settings.width_mobile }}px;
+            top: {{ position_mobile_top }}%;
+            Left: {{ position_mobile_left }}%;
+          }
+        }
+      </style>
+
+      {% render 'pd-image', image: block.settings.image, class: classnames %}
+    {% endfor %}
+  </div>
+  <div class="page-width">
+    <div class="banner-with-icons__text">
+      {% if section.settings.use_h1_tag %}
+        <h1 class="pd-heading-1 banner-with-icons__title">{{ section.settings.title }}</h1>
+      {% else %}
+        <h2 class="pd-heading-1 banner-with-icons__title">{{ section.settings.title }}</h2>
+      {% endif %}
+
+      {% if section.settings.description != blank %}
+        <div class="banner-with-icons__description">{{ section.settings.description }}</div>
+      {% endif %}
+    </div>
+  </div>
+</div>

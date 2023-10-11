@@ -1,0 +1,23 @@
+<button class="gift-registry-sidebar-hamburger" onclick="toggleRegistrySidebar(event)">
+  <span>My registry{% if page_title != blank %} -<br>{{ page_title }}{% endif %}</span>
+  {% render 'icon-hamburger' %}
+  {% render 'icon-close' %}
+</button>
+<aside class="gift-registry-sidebar">
+  {% render 'pd-gift-registry-sidebar-menu', header: 'MY REGISTRY', menu_handle: section.settings.main_menu %}
+  {% render 'pd-gift-registry-sidebar-menu', header: 'REGISTRY HELP', menu_handle: section.settings.help_menu %}
+  <div data-registry-share-link-container class="gift-registry-sidebar__info" style="display: none">
+    <p>YOUR REGISTRY URL:</p>
+    <a href="" data-registry-share-link data-base-url="{{ shop.url | append: section.settings.share_link }}"></a>
+    <h5>PASSWORD</h5>
+    <p data-registry-share-link-pass></p>
+    <a class="pd-button pd-button--lively-blue" href="/account?view=gift-registry-share">SHARE REGISTRY</a>
+  </div>
+</aside>
+
+<script>
+  function toggleRegistrySidebar(e) {
+    e.currentTarget.classList.toggle('active');
+    document.querySelector('.gift-registry-sidebar').classList.toggle('expanded');
+  }
+</script>

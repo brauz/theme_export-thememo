@@ -1,0 +1,22 @@
+{%- for option in product.options_with_values -%}
+  {%- if option.name == 'Colour' or option.name == 'Color' -%}
+    {%- if option.values.size > 1-%}
+      {%- liquid 
+        assign remaining_count = 0
+        if option.values.size > 3
+          assign remaining_count = option.values.size | minus: 3
+        endif  
+      -%}
+      <div class="card-product-colors-wrapper">
+        <div class="card-product-colors">
+          {%- for value in option.values limit: 3 -%}
+            <span class="card-product-color" data-color-mapping-item="{{ value | handleize }}" style="background-color: {{ value }};"></span>
+          {%- endfor -%}
+        </div>
+        {% if remaining_count > 0 %}
+          <span class="card-product-colors__text">+ {{ remaining_count }} more colour{% if remaining_count > 1 %}s{% endif %}</span>
+        {% endif %}
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}

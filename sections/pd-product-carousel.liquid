@@ -1,0 +1,342 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    background-color: {{ section.settings.bg_color }};
+  }
+
+  .section-{{ section.id }}-padding .slick-arrow {
+    background-color: {{ section.settings.arrow_color }};
+  }
+
+  .section-{{ section.id }}-padding .pd-product-carousel__heading {
+    color: {{ section.settings.heading_color }};
+  }
+
+  .section-{{ section.id }}-padding .pd-product-carousel__description {
+    color: {{ section.settings.description_color }};
+  }
+
+  .section-{{ section.id }}-padding .pd-carousel-scrollbar {
+    background-color: {{ section.settings.scrollbar_color }};
+  }
+
+  .section-{{ section.id }}-padding .pd-carousel-scrollbar-piece {
+    background-color: {{ section.settings.scrollbar_piece_color }};
+  }
+
+  .section-{{ section.id }}-padding .pd-product-carousel__slider.pd-container-with-scrollbar::-webkit-scrollbar-thumb {
+    background-color: {{ section.settings.scrollbar_piece_color }};
+  }
+
+  .section-{{ section.id }}-padding .pd-product-carousel__slider.pd-container-with-scrollbar-overflow::-webkit-scrollbar-track {
+    background-color: {{ section.settings.bg_color }};
+  }
+
+  .section-{{ section.id }}-padding .pd-product-carousel__slider.pd-container-with-scrollbar::-webkit-scrollbar-track-piece {
+    background-color: {{ section.settings.scrollbar_color }};
+  }
+
+  .section-{{ section.id }}-padding .pd-product-carousel__button .pd-button {
+    background-color: {{ section.settings.button_bg_color }};
+    color: {{ section.settings.button_text_color }};
+    border-color: {{ section.settings.button_bg_color }};
+  }
+
+  .section-{{ section.id }}-padding.no-carousel .pd-product-carousel__slider {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.number_products_showing }}, 1fr);
+  }
+
+  @media screen and (min-width: 990px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+
+    .section-{{ section.id }}-padding .pd-product-carousel__main-content {
+      width: {{ section.settings.width_desktop }}%;
+    }
+  }
+{%- endstyle -%}
+
+{% if section.settings.get_related_product %}
+  {% render 'pd-related-products' %}
+{% else %}
+  {% render 'pd-product-carousel' %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Product carousel",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "get_related_product",
+      "label": "Get related product",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#FCFCFD"
+    },
+    {
+      "type": "header",
+      "content": "Carousel"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Show arrows",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "arrow_color",
+      "label": "Arrow color",
+      "default": "#FC4734"
+    },
+    {
+      "type": "range",
+      "id": "width_desktop",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Width on desktop",
+      "default": 100
+    },
+    {
+     "type": "checkbox",
+     "id": "display_as_flexbox",
+     "label": "Carousel as a flexbox" ,
+     "info": "Use it if you want to control carousel alignment"
+    },
+    {
+      "type": "select",
+      "id": "carousel_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center",
+      "label": "Carousel alignment on desktop"
+    },
+    {
+      "type": "header",
+      "content": "Header text"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        },
+        {
+          "value": "inline",
+          "label": "Inline"
+        }
+      ]
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Bold words to apply underline"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#101828"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#101828"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button background color",
+      "default": "#E3F25E"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#101828"
+    },
+    {
+      "type": "collection",
+      "id": "selected_collection",
+      "label": "Select collection",
+      "info": "Get 8 max products"
+    },
+    {
+      "type": "select",
+      "id": "product_width_mobile",
+      "label": "Product's width mobile",
+      "options": [
+        {
+          "label": "1/2",
+          "value": "one-half"
+        },
+        {
+          "label": "3/4",
+          "value": "three-quaters"
+        }
+      ],
+      "default": "one-half"
+    },
+    {
+      "type": "range",
+      "id": "number_products_showing",
+      "label": "Number products showing(Desktop)",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "Scrollbar"
+    },
+    {
+      "type": "color",
+      "id": "scrollbar_color",
+      "label": "Scrollbar color",
+      "default": "#0A2657"
+    },
+    {
+      "type": "color",
+      "id": "scrollbar_piece_color",
+      "label": "Scrollbar piece color",
+      "default": "#0554FF"
+    },
+    {
+      "type": "header",
+      "content": "Product card"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_secondary_image",
+      "label": "Hide seccondary image",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_vendor",
+      "label": "Hide vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_rating",
+      "label": "Hide rating",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_swatch",
+      "label": "Hide swatch",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show description",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "carousel-item",
+      "name": "Carousel item",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "product",
+          "id": "selected_product",
+          "label": "Select product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product carousel"
+    }
+  ]
+}
+{% endschema %}

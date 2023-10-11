@@ -1,0 +1,181 @@
+<script src="{{ 'steps-slider.js' | asset_url }}" defer="defer" type="text/javascript"></script>
+
+{% render 'pd-steps-slider' %}
+
+{% schema %}
+{
+  "name": "Steps slider",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "presets": [
+    {
+      "name": "Steps slider"
+    }
+  ],
+  "settings": [
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "number",
+      "id": "time_to_switch_slide",
+      "label": "Time to switch slide (seconds)",
+      "default": 5
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#0A2657"
+    },
+    {
+      "type": "color",
+      "id": "step_numbers_bg_color",
+      "label": "Step numbers' background color",
+      "default": "#CCC2FF"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "default": 40
+    },
+     {
+      "type": "header",
+      "content": "Decoration image"
+    },
+    {
+      "type": "image_picker",
+      "id": "decoration_image",
+      "label": "Decoration image"
+    },
+    {
+      "type": "text",
+      "id": "decoration_image_desktop_position",
+      "label": "Decoration image desktop position(%)",
+      "info": "Top, Left. EX: 20, 40",
+      "default": "20, 40"
+    },
+    {
+      "type": "number",
+      "id": "decoration_image_desktop_width",
+      "label": "Decoration image desktop width(px)",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "Button url"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button style",
+          "options": [
+            {
+              "label": "Default",
+              "value": ""
+            },
+            {
+              "label": "Bold Coral",
+              "value": "pd-button--bold-coral"
+            },
+            {
+              "label": "Happy Lemonlime",
+              "value": "pd-button--happy-lemonlime"
+            },
+            {
+              "label": "Strong Dark Blue",
+              "value": "pd-button--strong-dark-blue"
+            },
+            {
+              "label": "Lively Blue",
+              "value": "pd-button--lively-blue"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "is_button_outline",
+          "label": "Button outline?",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color (Incase no image)"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

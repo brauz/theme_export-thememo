@@ -1,0 +1,151 @@
+{% liquid
+  if form_id == 'giftRegistryEdit'
+    assign is_edit_form = true
+  endif
+%}
+
+<form id="{{ form_id }}" action="{{shop.metafields.gift_registry.host}}/customers/{{customerId}}/registries" method="post">
+  {% if is_edit_form %}
+    <input type="hidden" id="registryId" name="registryId" rv-value="data.registry.id" required>
+  {% endif %}
+  <div id="deliveryAddress" class="pd-form-panel">
+    <h3 class="pd-heading-3 pd-form-header">Where would you like your gifts sent?</h3>
+    <div class="pd-form-group">
+      <label class="pd-form-label">Address</label>
+      <input 
+        class="pd-form-input" 
+        type="text" id="address1" 
+        name="address1"
+        {% if is_edit_form %}
+        rv-value="data.registry.attributes.bundle_delivery_address.address1"
+        {% endif %}
+        required
+      />
+    </div>
+    <div class="pd-form-group">
+      <label class="pd-form-label">City</label>
+      <input 
+        class="pd-form-input" 
+        type="text" 
+        id="city" 
+        name="city"
+        {% if is_edit_form %}
+        rv-value="data.registry.attributes.bundle_delivery_address.city"
+        {% endif %}
+        required
+      />
+    </div>
+    <div class="pd-form-group">
+      <label class="pd-form-label">Postcode</label>
+      <input 
+        class="pd-form-input" 
+        type="text"
+        id="postcode" 
+        name="postcode"
+        {% if is_edit_form %}
+        rv-value="data.registry.attributes.bundle_delivery_address.zip"
+        {% endif %}
+        required
+      />
+    </div>
+    <div class="pd-form-group">
+      <label class="pd-form-label">State</label>
+      <div class="pd-form-select">
+        <select 
+          name="state" 
+          id="state" 
+          required
+          {% if is_edit_form %}
+          rv-value="data.registry.attributes.bundle_delivery_address.province_code"
+          {% endif %}
+        >
+          <option selected>Please choose an option</option>
+          <option value="NSW">New South Wales</option>
+          <option value="QLD">Queensland</option>
+          <option value="SA">South Australia</option>
+          <option value="TAS">Tasmania</option>
+          <option value="VIC">Victoria</option>
+          <option value="WA">Western Australia</option>
+          <option value="ACT">Australian Capital Territory</option>
+          <option value="NT">Northern Territory</option>
+        </select>
+        {% render 'icon.svg', type: 'chevron-down' %}
+      </div>
+    </div>
+  </div>
+
+  <div id="deliveryDate" class="pd-form-panel">
+    <h3 class="pd-heading-3 pd-form-header">Feel good delivery!</h3>
+    <div class="pd-form-description">Each gift will be delivered direct to your door. What is the latest date you would like your gifts to arrive by?</div>
+    <div class="pd-form-group">
+      <label class="pd-form-label">Select date</label>
+      <input 
+        class="pd-form-input" 
+        type="date" 
+        id="deliveryDate" 
+        name="delivery_date"
+        {% if is_edit_form %}
+        rv-value="data.registry.attributes.bundle_delivery_date"
+        {% endif %}
+        required
+      />
+    </div>
+  </div>
+
+  <div id="registryDetails" class="pd-form-panel">
+    <h3 class="pd-heading-3 pd-form-header">Make it personal!</h3>
+    <div class="pd-form-group">
+      <label class="pd-form-label">Registry Name</label>
+      <input 
+        class="pd-form-input" 
+        type="text" 
+        id="registryName" 
+        name="registry_name"
+        {% if is_edit_form %}
+        rv-value="data.registry.attributes.name"
+        {% endif %}
+        required
+      />
+      <span class="pd-form-note">Eg. The Memo's Baby BBQ</span>
+    </div>
+    <div class="pd-form-group">
+      <label class="pd-form-label">Description</label>
+      <input 
+        class="pd-form-input" 
+        type="text" 
+        id="registryMessage" 
+        name="registry_message"
+        {% if is_edit_form %}
+        rv-value="data.registry.attributes.registrant_message"
+        {% endif %}
+        required
+      />
+      <span class="pd-form-note">Eg. We are incredibly excited for this new chapter of our lives. We have put together a list at The Memo of some things to help us on our way. Thanks for your support.</span>
+    </div>
+    <div class="pd-form-description">Please create a password to provide to your friends and family so they can view and shop from your registry securely.</div>
+    <div class="pd-form-group">
+      <label class="pd-form-label">Password</label>
+      <input class="pd-form-input" type="password" id="registryPassword" name="registry_password" required />
+    </div>
+  </div>
+
+  <div id="contactFrequency" class="pd-form-panel">
+    <h3 class="pd-heading-3 pd-form-header">Contact frequency</h3>
+    <div class="pd-form-description">Would you like to be notified by email each time a gift is purchased from your Registry?</div>
+    <div class="pd-form-group">
+      <label class="pd-form-label">I would like to be notified about each gift purchased from my registry</label>
+      <div class="pd-form-select">
+        <select id="notify" name="notify" required>
+          <option value="" selected disabled>Please select an option</option>
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+        {% render 'icon.svg', type: 'chevron-down' %}
+      </div>
+    </div>
+  </div>
+
+  <div class="pd-form-panel" style="background: none; padding: 0">
+    <button type="submit" class="pd-button {{ section.settings.button_style }} registy-submit-btn">{{ section.settings.submit_button_label }}</button>
+  </div>
+</form>

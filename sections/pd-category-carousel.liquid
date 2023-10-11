@@ -1,0 +1,337 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    background-color: {{ section.settings.bg_color }};
+    --hover-text-color: {{ section.settings.hover_text_image_color }};
+    --hover-fg-color: {{ section.settings.hover_fg_color }};
+  }
+
+  .section-{{ section.id }}-padding .category-carousel__heading {
+    color: {{ section.settings.heading_color }};
+  }
+
+  .section-{{ section.id }}-padding .carousel-item__text h4,
+  .section-{{ section.id }}-padding .carousel-item__text .carousel-item__description,
+  .section-{{ section.id }}-padding .carousel-item__text button {
+    color: {{ section.settings.text_image_color }};
+  }
+
+  .section-{{ section.id }}-padding .carousel-item__text button::before,
+  .section-{{ section.id }}-padding .category-carousel .carousel-item__text button::after {
+    border-color: {{ section.settings.text_image_color }};
+  }
+
+  .section-{{ section.id }}-padding .pd-carousel-scrollbar {
+    background-color: {{ section.settings.scrollbar_color }};
+  }
+
+  .section-{{ section.id }}-padding .pd-carousel-scrollbar-piece {
+    background-color: {{ section.settings.scrollbar_piece_color }};
+  }
+
+  .section-{{ section.id }}-padding .carousel-list.pd-container-with-scrollbar::-webkit-scrollbar-thumb {
+    background-color: {{ section.settings.scrollbar_piece_color }};
+  }
+
+  .section-{{ section.id }}-padding .carousel-list.pd-container-with-scrollbar-overflow::-webkit-scrollbar-track {
+    background-color: {{ section.settings.bg_color }};
+  }
+
+  .section-{{ section.id }}-padding .carousel-list.pd-container-with-scrollbar::-webkit-scrollbar-track-piece {
+    background-color: {{ section.settings.scrollbar_color }};
+  }
+
+  .section-{{ section.id }}-padding .category-carousel__button {
+    background-color: {{ section.settings.button_bg_color }};
+    color: {{ section.settings.button_text_color }};
+    border-color: {{ section.settings.button_bg_color }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+{%- endstyle -%}
+
+{% liquid
+  assign number_products_showing = 4.25
+%}
+
+{%- capture carousel_options -%}
+  {
+    "arrows": false,
+    "dots": true,
+    "slidesToShow": {{ number_products_showing }},
+    "slidesToScroll": 1,
+    "mobileFirst": false,
+    "infinite": false,
+    "responsive": [
+      {
+        "breakpoint": 1399,
+        "settings": {
+          "slidesToShow": 5
+        }
+      },
+      {
+        "breakpoint": 1199,
+        "settings": {
+          "slidesToShow": 4
+        }
+      },
+      {
+        "breakpoint": 989,
+        "settings": {
+          "slidesToShow": 3
+        }
+      },
+      {
+        "breakpoint": 767,
+        "settings": "unslick"
+      }
+    ]
+  }
+{%- endcapture -%}
+
+<div class="section-{{ section.id }}-padding section-{{ section.id }}-color">
+  <div
+    class="
+      category-carousel
+      pd-carousel-has-scrollbar
+      {% if section.blocks.size <= number_products_showing %} no-carousel{% endif %}
+    "
+    data-carousel-slider-wrapper
+  >
+    <div class="page-width category-carousel__header">
+      {% if section.settings.heading %}
+        <h2 class="pd-heading-2">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.settings.button_label %}
+        <a
+          href="{{ section.settings.button_link }}"
+          class="pd-button pd-button--lively-blue category-carousel__button hide-mobile"
+        >
+          {{- section.settings.button_label -}}
+        </a>
+      {% endif %}
+    </div>
+    <div
+      class="carousel-list pd-container-with-scrollbar pd-container-with-scrollbar-overflow pd-container-with-scrollbar-mobile"
+      data-carousel-slider="{{ carousel_options | escape }}"
+      data-slider="category-carousel"
+    >
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign image = block.settings.image
+          assign heading = block.settings.heading
+          assign link = block.settings.link
+          assign description = block.settings.description
+
+          if block.type == 'image'
+            assign image = block.settings.selected_collection.featured_image
+            assign heading = block.settings.selected_collection.title
+            assign link = block.settings.selected_collection.url
+          endif
+        -%}
+
+        <a class="carousel-item" href="{{ link }}">
+          <div class="carousel-item__image">
+            {%- render 'pd-image', image: image -%}
+          </div>
+          <div class="carousel-item__text">
+            <h4 class="pd-heading-4">{{ heading }}</h4>
+            {%- if description != blank -%}
+              <div class="body-text carousel-item__description">
+                {{ description }}
+              </div>
+            {%- endif -%}
+            <button class="pd-link">Shop all {{ heading }}</button>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+
+    <div data-carousel-scrollbar class="page-width pd-carousel-scrollbar">
+      <span data-carousel-scrollbar-track class="pd-carousel-scrollbar-piece"></span>
+    </div>
+
+    {% if section.settings.button_label %}
+      <div class="category-carousel__button-wrapper hide-desktop">
+        <a
+          href="{{ section.settings.button_link }}"
+          class="pd-button pd-button--lively-blue category-carousel__button"
+        >
+          {{- section.settings.button_label -}}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Category Carousel",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color"
+    },
+    {
+      "type": "header",
+      "content": "Header text"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#101828"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button background color",
+      "default": "#E3F25E"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#101828"
+    },
+    {
+      "type": "header",
+      "content": "Block text color"
+    },
+    {
+      "type": "color",
+      "id": "text_image_color",
+      "label": "Text image color"
+    },
+    {
+      "type": "color",
+      "id": "hover_text_image_color",
+      "label": "Hover Text image color",
+      "info": "Color of text when hovering over the block"
+    },
+    {
+      "type": "color",
+      "id": "hover_fg_color",
+      "label": "Hover foreground color",
+      "info": "Foreground color when hovering over the block"
+    },
+    {
+      "type": "header",
+      "content": "Scrollbar"
+    },
+    {
+      "type": "color",
+      "id": "scrollbar_color",
+      "label": "Scrollbar color",
+      "default": "#0A2657"
+    },
+    {
+      "type": "color",
+      "id": "scrollbar_piece_color",
+      "label": "Scrollbar piece color",
+      "default": "#0554FF"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 56
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "selected_collection",
+          "label": "Collection"
+        }
+      ]
+    },
+    {
+      "type": "custom-data",
+      "name": "Custom data",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category Carousel"
+    }
+  ]
+}
+{% endschema %}

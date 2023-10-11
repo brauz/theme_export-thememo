@@ -1,0 +1,40 @@
+<a class="pd-header__logo" href="{{ routes.root_url }}">
+  {% if template == 'index' and section.settings.logo %}
+    <h1 class="heading heading--h1">
+  {% endif %}
+
+  {%- liquid
+    if section.settings.logo_alt != blank
+      assign img_size = section.settings.logo_width | default: 250 | times: 2
+      if img_size > 2048
+        assign img_size = 2048
+      endif
+
+      assign img_size_mobile = section.settings.logo_width_mobile | default: 250 | times: 2
+      if img_size_mobile > 2048
+        assign img_size_mobile = 2048
+      endif
+
+      assign logo_width = section.settings.logo_width
+      assign logo_height = logo_width | divided_by: section.settings.logo_alt.aspect_ratio
+      assign logo_width_mobile = section.settings.logo_width_mobile
+      assign logo_height_mobile = logo_width_mobile | divided_by: section.settings.logo_alt.aspect_ratio
+
+      render 'pd-image', class:"hide-tablet-and-down", image: section.settings.logo_alt, img_size: img_size, width: logo_width, height: logo_height, alt: shop.name
+      render 'pd-image', class: "hide-desktop-and-up", image: section.settings.logo_alt, img_size_mobile: img_size_mobile, width: logo_width_mobile, height: logo_height_mobile, alt: shop.name
+    
+    elsif settings.logo != blank
+      assign logo_height = settings.logo_width | divided_by: settings.logo.aspect_ratio
+      assign logo_height_mobile = settings.logo_width_mobile | divided_by: settings.logo.aspect_ratio
+
+      render 'pd-image', class: "hide-tablet-and-down", image: settings.logo, width: settings.logo_width, height: logo_height, alt: shop.name
+      render 'pd-image', class: "hide-desktop-and-up", image: settings.logo, width: settings.logo_width_mobile, height: logo_height_mobile, alt: shop.name
+    else
+      echo shop.name
+    endif
+  -%}
+
+  {% if template == 'index' and section.settings.logo %}
+    </h1>
+  {% endif %}
+</a>

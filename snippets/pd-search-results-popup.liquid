@@ -1,0 +1,91 @@
+{%- if section.settings.show_search_results_popup -%}
+  <script src="{{ 'pd-search-results-popup.js' | asset_url }}" defer="defer"></script>
+
+  <section class="pd-search-results-popup">
+    <main class="page-width">
+      <div class="pd-search-results-content hide-tablet-and-down">
+        <div class="hide-tablet-and-down">
+          {%- render 'pd-header-logo' -%}
+        </div>
+        {%- render 'pd-header-search-bar', class: 'search-bar' -%}
+        <a href="#" class="btn-cancel full-unstyled-link hide-tablet-and-down"> Cancel </a>
+      </div>
+
+      <!-- Suggested Searches -->
+      <div class="pd-search-results-suggested-searches open">
+        <h4 class="list-title">Suggested searches</h4>
+        <ul class="list-unstyled">
+          <li>
+            <a href="#" class="full-unstyled-link list-link">Products to help breastfeeding</a>
+          </li>
+          <li>
+            <a href="#" class="full-unstyled-link list-link">Postpartum support</a>
+          </li>
+          <li>
+            <a href="#" class="full-unstyled-link list-link">Baby bottles</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="pd-search-results-products">
+        <!-- Sidebar filters -->
+        <aside class="pd-search-results-products__filters hide-tablet-and-down">
+          <div>
+            <h4 class="list-title">Popular Categories</h4>
+            <ul class="list-unstyled">
+              <li>
+                <a href="#" class="full-unstyled-link list-link">Ecobaby</a>
+              </li>
+              <li>
+                <a href="#" class="full-unstyled-link list-link">Babyzen</a>
+              </li>
+              <li>
+                <a href="#" class="full-unstyled-link list-link">Baby rest</a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="list-title">Blogs & Pages</h4>
+            <ul class="list-unstyled">
+              <li>
+                <a href="#" class="full-unstyled-link list-link">Unique Baby boy and baby girl names</a>
+              </li>
+              <li>
+                <a href="#" class="full-unstyled-link list-link">Baby tracker</a>
+              </li>
+              <li>
+                <a href="#" class="full-unstyled-link list-link">Gifts for babies</a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="list-title">Popular Brands</h4>
+            <ul class="list-unstyled">
+              <li>
+                <a href="#" class="full-unstyled-link list-link">Ecobaby</a>
+              </li>
+              <li>
+                <a href="#" class="full-unstyled-link list-link">Babyzen</a>
+              </li>
+              <li>
+                <a href="#" class="full-unstyled-link list-link">Baby rest</a>
+              </li>
+            </ul>
+          </div>
+        </aside>
+
+        <!-- Product cards -->
+        <aside class="pd-search-results-products__items">
+          <div
+            class="pd-grid"
+            style="--no-of-desktop-products: {{section.settings.search_results_popup__products_show_desktop}}; --no-of-tablet-products: {{section.settings.search_results_popup__products_show_mobile}};"
+          ></div>
+
+          <a class="btn-view-all pd-button pd-button--lively-blue" href="#" style="--color: ">VIEW ALL RESULTS</a>
+        </aside>
+      </div>
+    </main>
+  </section>
+{%- endif -%}

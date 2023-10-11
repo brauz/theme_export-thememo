@@ -1,0 +1,191 @@
+<style>
+  [section-id="{{ section.id }}"] {
+    margin-top: {{ section.settings.margin_top }}px;
+    margin-bottom: {{ section.settings.margin_bottom }}px;
+  }
+
+  [section-id="{{ section.id }}"] .tab {
+    background-color: {{ section.settings.tab_bg_color }};
+  }
+
+  [section-id="{{ section.id }}"] .tab.active {
+    background-color: {{ section.settings.active_tab_bg_color }};
+  }
+
+  @media only screen and (max-width: 768px) {
+    [section-id="{{ section.id }}"] .tabs__label-row {
+      display: flex;
+      overflow: auto;
+      flex-wrap: nowrap;
+    }
+  }
+
+  {
+    --swiper-scrollbar-border-radius: 10px;
+    --swiper-scrollbar-top: auto;
+    --swiper-scrollbar-bottom: 4px;
+    --swiper-scrollbar-left: auto;
+    --swiper-scrollbar-right: 4px;
+    --swiper-scrollbar-sides-offset: 1%;
+    --swiper-scrollbar-bg-color: rgba(0, 0, 0, 0.1);
+    --swiper-scrollbar-drag-bg-color: rgba(0, 0, 0, 0.5);
+    --swiper-scrollbar-size: 4px;
+  }
+</style>
+
+{%- liquid
+  assign tabs = section.blocks | where: 'type', 'tab'
+  assign content_cards = section.blocks | where: 'type', 'content-card'
+-%}
+
+<div data-tabs section-id="{{ section.id }}" id="{{section.settings.metafield_id}}" class="carousel-tabs">
+  <div class="carousel-tabs__header" style="background-color: {{ section.settings.header_bg_color }}">
+    <div class="page-width tabs" style="text-align: center;">
+      {% if section.settings.title %}
+        <h2
+          style="
+            font-size: 22px;
+            color:{{ section.settings.title_color }};
+            margin-bottom: 30px;
+            text-align: {{ section.settings.title_alignment }};
+          "
+        >
+          {{- section.settings.title -}}
+        </h2>
+      {% endif %}
+      <div class="tabs__label">{{ section.settings.tabs_label }}</div>
+      <div class="tabs__label-row">
+        {% for tab in tabs %}
+          <span
+            data-tabs-header-item
+            data-content="{{ tab.settings.title | handleize }}"
+            class="tab {% if forloop.index == 1 %}active{% endif %}"
+          >
+            {{- tab.settings.title -}}
+          </span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="carousel-tabs__body" style="background-color: {{ section.settings.body_bg_color }}">
+    <div class="carousel-tabs__body-inner">
+      {% for tab in tabs %}
+        {% assign tab_handle = tab.settings.title | handleize %}
+        <div
+          id="{{ tab_handle }}"
+          data-tabs-content-item
+          class="tab-content {% if forloop.index == 1 %}active{% endif %}"
+        >
+          <swiper-carousel
+            data-slidesperview="{{section.settings.carousel_cards_per_view}}"
+            data-spacebetween="{{section.settings.carousel_cards_spacing}}"
+            data-showarrows="{{section.settings.carousel_enable_arrows}}"
+          >
+            {% if section.settings.carousel_enable_arrows %}
+              <button
+                class="slick-prev slick-arrow swiper-button-prev"
+                aria-label="Previous"
+                type="button"
+                aria-disabled="true"
+                style="                background-color:{{ section.settings.arrow_bg_color }} !important;"
+              ></button>
+              <button
+                class="slick-next slick-arrow swiper-button-next"
+                aria-label="Next"
+                type="button"
+                aria-disabled="false"
+                style="                background-color:{{ section.settings.arrow_bg_color }} !important;"
+              ></button>
+            {% endif %}
+            <div class="swiper pd-carousel-tabs-carousel">
+              <div class="swiper-wrapper">
+                {% for card in content_cards %}
+                  {% assign card_tab_handle = card.settings.tab | handleize %}
+                  {% if card_tab_handle == tab_handle %}
+                    <div class="swiper-slide">
+                      <div class="swiper-slide__wrapper">
+                        <div class="carousel-tabs-card">
+                          {%- if card.settings.image != blank -%}
+                            <div class="carousel-tabs-card__image">
+                              {% render 'pd-image', image: card.settings.image %}
+                            </div>
+                          {%- endif -%}
+                          <div class="carousel-tabs-card__info">
+                            {% if card.settings.title != blank %}
+                              <div class="carousel-tabs-card__title">
+                                {% render 'icon.svg', type: 'bookmark' %}
+                                <span>{{ card.settings.title }}</span>
+                              </div>
+                            {% endif %}
+
+                            {% if card.settings.description != blank %}
+                              <div class="carousel-tabs-card__description">{{ card.settings.description }}</div>
+                            {% endif %}
+
+                            {% if card.settings.button_label != blank %}
+                              <a
+                                class="pd-{% if card.settings.display_as_link %}link{% else %}button{% endif %} {{ card.settings.button_style }}"
+                                href="{{ card.settings.button_url }}"
+                                {% if card.settings.use_custom_button_styles %}
+                                  style="
+                                    {% if card.settings.button_bg_color != blank %}
+                                      background-color: {{ card.settings.button_bg_color }};
+                                    {% endif %}
+
+                                    {% if card.settings.button_border_color != blank %}
+                                      border-color: {{ card.settings.button_border_color }};
+                                    {% endif %}
+
+                                    {% if card.settings.button_text_color != blank %}
+                                      --color: {{ card.settings.button_text_color }};
+                                    {% endif %}
+                                  "
+                                {% else %}
+                                  style="--color: {{ card.settings.button_text_color }};"
+                                {% endif %}
+                              >
+                                {{- card.settings.button_label -}}
+                              </a>
+                            {% endif %}
+                          </div>
+                          {%- if card.settings.badge_title != blank -%}
+                            <div
+                              class="card-content__badge"
+                              style="
+                                --bg-color: {{ card.settings.badge_bg_color }};
+                                --color: {{ card.settings.badge_text_color }};
+                                {% if card.settings.badge_pos_top > 0 %}
+                                --top: {{ card.settings.badge_pos_top }}px;
+                                {% endif %}
+                                {% if card.settings.badge_pos_left > 0 %}
+                                --left: {{ card.settings.badge_pos_left }}px;
+                                {% endif %}
+                                {% if card.settings.badge_pos_bottom > 0 %}
+                                --bottom: {{ card.settings.badge_pos_bottom }}px;
+                                {% endif %}
+                                {% if card.settings.badge_pos_right > 0 %}
+                                --right: {{ card.settings.badge_pos_right }}px;
+                                {% endif %}
+                              "
+                            >
+                              {{ card.settings.badge_title }}
+                            </div>
+                          {%- endif -%}
+                        </div>
+                      </div>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              {% if section.settings.carousel_enable_scrollbar %}
+                <div class="page-width swiper-scrollbar-wrapper">
+                  <div class="swiper-scrollbar"></div>
+                </div>
+              {% endif %}
+            </div>
+          </swiper-carousel>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

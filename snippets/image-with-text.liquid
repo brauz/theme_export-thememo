@@ -1,0 +1,170 @@
+<div class="section-{{ section.id }} section-{{ section.id }}-padding {% if section.settings.is_modal %}image-with-text-modal d-none{% endif %}">
+  <div
+    class="
+      image-with-text
+      {% unless section.settings.image_fluid %}page-width{% endunless %}
+      {% if settings.text_boxes_border_thickness > 0 and settings.text_boxes_border_opacity > 0 and settings.media_border_thickness > 0 and settings.media_border_opacity > 0 %} collapse-borders{% endif %}
+      {% unless settings.media_border_thickness > 0 and settings.text_boxes_shadow_opacity == 0 and settings.text_boxes_border_thickness == 0 or settings.text_boxes_border_opacity == 0 %} collapse-corners{% endunless %}
+      section-{{ section.id }}-color
+    "
+  >
+    {%- if section.settings.show_breadcrumbs -%}
+      <div class="page-width image-with-text__breadcrumbs">
+        {% render 'breadcrumbs' %}
+      </div>
+    {%- endif -%}
+    <div class="image-with-text__grid grid grid--gapless grid--1-col grid--{% if section.settings.desktop_image_width == 'medium' %}2-col-tablet{% else %}3-col-tablet{% endif %}{% if section.settings.layout == 'text_first' %} image-with-text__grid--reverse{% endif %}">
+      <div class="image-with-text__media-item image-with-text__media-item--{{ section.settings.desktop_image_width }} image-with-text__media-item--{{ section.settings.desktop_content_position }} grid__item hide-tablet-and-down">
+        <div
+          class="image-with-text__media image-with-text__media--{{ section.settings.height }} global-media-settings {% if section.settings.image != blank %}media{% else %}image-with-text__media--placeholder placeholder{% endif %}{% if section.settings.image_behavior != 'none' %} animate--{{ section.settings.image_behavior }}{% endif %}"
+          {% if section.settings.height == 'adapt' and section.settings.image != blank %}
+            style="padding-bottom: {{ 1 | divided_by: section.settings.image.aspect_ratio | times: 100 }}%;"
+          {% endif %}
+        >
+          {%- if section.settings.image != blank -%}
+            {%- assign widths = '165, 360, 535, 750, 1070, 1500' -%}
+              {%- capture sizes -%}
+                (min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | divided_by: 2 }}px,
+                (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)
+              {%- endcapture -%}
+            {{
+              section.settings.image
+              | image_url: width: 1500
+              | image_tag: loading: 'lazy', sizes: sizes, widths: widths
+            }}
+          {%- else -%}
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+        </div>
+      </div>
+      {%- assign image = section.settings.image_mobile | default: section.settings.image -%}
+      <div class="image-with-text__media-item image-with-text__media-item--{{ section.settings.desktop_image_width }} image-with-text__media-item--{{ section.settings.desktop_content_position }} grid__item hide-desktop-and-up">
+        <div
+          class="image-with-text__media image-with-text__media--{{ section.settings.height_mobile }} global-media-settings {% if image != blank %}media{% else %}image-with-text__media--placeholder placeholder{% endif %}{% if section.settings.image_behavior != 'none' %} animate--{{ section.settings.image_behavior }}{% endif %}"
+          {% if section.settings.height_mobile == 'adapt' and image != blank %}
+            style="padding-bottom: {{ 1 | divided_by: image.aspect_ratio | times: 100 }}%;"
+          {% endif %}
+        >
+          {%- if image != blank -%}
+            {%- assign widths = '165, 360, 535, 750, 1070, 1500' -%}
+              {%- capture sizes -%}
+                (min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | divided_by: 2 }}px,
+                (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)
+              {%- endcapture -%}
+            {{
+              image
+              | image_url: width: 750
+              | image_tag: loading: 'lazy', sizes: sizes, widths: widths
+            }}
+          {%- else -%}
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+        </div>
+      </div>
+      <div class="image-with-text__text-item grid__item">
+        <div
+          id="ImageWithText--{{ section.id }}"
+          class="
+            image-with-text__content
+            image-with-text__content--{{ section.settings.desktop_content_position }}
+            image-with-text__content--desktop-{{ section.settings.desktop_content_alignment }}
+            image-with-text__content--mobile-{{ section.settings.mobile_content_alignment }}
+            image-with-text__content--{{ section.settings.height }}
+            content-container
+            {% if section.settings.image_fluid %}image-with-text__content--with-image-fluid{% endif %}
+          "
+          style="
+            --padding-x: {{ section.settings.text_horizontal_padding }}px;
+            --padding-y: {{ section.settings.text_vertical_padding }}px;
+            --padding-x-mobile: {{ section.settings.text_horizontal_padding_mobile }}px;
+            --padding-y-mobile: {{ section.settings.text_vertical_padding_mobile }}px;
+          "
+        >
+          {%- for block in section.blocks -%}
+            {% case block.type %}
+              {%- when 'general_form' -%}
+                <div class="{{ block.settings.form_id }}" {{ block.shopify_attributes }}></div>
+
+              {%- when 'fgc_form' -%}
+                <div class="image-with-text__form pd-feel-good-club" {{ block.shopify_attributes }}>
+                  {%- render 'pd-feel-good-club', replace_route: true -%}
+                </div>
+
+              {%- when 'fgc_form_reset_password' -%}
+                <div class="image-with-text__form pd-feel-good-club-reset-pw" {{ block.shopify_attributes }}>
+                  {%- render 'pd-feel-good-club-main-reset-password'  -%}
+                </div>
+
+              {%- when 'sign_me_up_form' -%}
+                <div class="image-with-text__form sign-me-up-form" {{ block.shopify_attributes }}>
+                  {%- render 'pd-sign-me-up-form'  -%}
+                </div>
+
+              {%- when 'heading' -%}
+                <h2
+                  class="image-with-text__heading inline-richtext pd-heading-underline"
+                  style="
+                    --color: {{ block.settings.heading_text_color }};
+                    --font-size: {{ block.settings.heading_font_size }}px;
+                    --font-size-mobile: {{ block.settings.heading_font_size_mobile }}px;
+                    {% if block.settings.heading_font_family != blank %}
+                      font-family: var(--font-heading-family-{{ block.settings.heading_font_family }});
+                    {% endif %}
+                  "
+                  {{ block.shopify_attributes }}
+                >
+                  {{ block.settings.heading }}
+                </h2>
+              {%- when 'text' -%}
+                <div
+                  {{ block.shopify_attributes }}
+                  class="image-with-text__text rte"
+                  style="
+                    --color: {{ block.settings.text_color }};
+                    --font-size: {{ block.settings.text_font_size }}px;
+                    --font-size-mobile: {{ block.settings.text_font_size_mobile }}px;
+                    {% if block.settings.text_font_family != blank %}
+                      font-family: var(--font-heading-family-{{ block.settings.text_font_family }});
+                    {% endif %}
+                  "
+                >
+                  {{ block.settings.text }}
+                </div>
+              {%- when 'button' -%}
+                {%- if block.settings.button_label != blank -%}
+                  <a
+                    {% if block.settings.button_link == blank %}
+                      role="link" aria-disabled="true"
+                    {% else %}
+                      href="{{ block.settings.button_link }}"
+                    {% endif %}
+                    class="button-{{ block.id }} pd-button {% if block.settings.is_button_big %}pd-button--big{% endif %}"
+                    {{ block.shopify_attributes }}
+                    style="background-color: {{ block.settings.button_bg_color }}; color: {{ block.settings.button_text_color }}"
+                  >
+                    {{ block.settings.button_label | escape }}
+                  </a>
+                {%- endif -%}
+              {%- when 'open_wrapper' -%}
+                {{ block.settings.custom_css }}
+                <div class="{{ block.settings.class_name }}">
+              {%- when 'close_wrapper' -%}
+                </div>
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+
+        {%- if section.settings.decoration_image != blank -%}
+          {% render 'decoration-image',
+            section_id: section.id,
+            image: section.settings.decoration_image,
+            desktop_position: section.settings.decoration_image_desktop_position,
+            mobile_position: section.settings.decoration_image_mobile_position,
+            desktop_width: section.settings.decoration_image_desktop_width,
+            mobile_width: section.settings.decoration_image_mobile_width
+          %}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>

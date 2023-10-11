@@ -1,0 +1,25 @@
+<product-recommendations
+  class="complementary quick-add-hidden no-js-hidden"
+  data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit=8&intent=complementary"
+>
+  {%- if recommendations.performed and recommendations.products_count > 0 -%}
+    <div class="complementary__container">
+      <div class="product__info__heading complementary__title">{{ block.settings.complementary_heading }}</div>
+      <div class="pd-container-with-scrollbar pd-container-with-scrollbar--style-2">
+        <div class="complementary__products">
+          {%- for product in recommendations.products offset: continue -%}
+            {% render 'card-product',
+              card_product: product,
+              hide_secondary_image: false,
+              hide_vendor: false,
+              hide_rating: true,
+              show_description: false
+            %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+  {{ 'component-card.css' | asset_url | stylesheet_tag }}
+  {{ 'component-complementary-products.css' | asset_url | stylesheet_tag }}
+</product-recommendations>

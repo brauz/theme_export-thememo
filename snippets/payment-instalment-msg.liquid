@@ -1,0 +1,13 @@
+<div class="payment-instalment-msg">
+  <div class="payment-instalment-msg__item">
+    4 interest-free payments of $
+    <span id="payment-instalment-msg-val">{{ price | divided_by: 100.0 | divided_by: 4  }}</span>
+    with
+    <img src="{{ 'payment-afterpay.png' | asset_img_url: '60x' }}" alt="afterpay">
+    <img src="{{ 'payment-klarma.png' | asset_img_url: '60x' }}" alt="klarma">
+  </div>
+  <div class="payment-instalment-msg__item">
+    12 months interest-free with
+    <img src="{{ 'payment-zip.png' | asset_img_url: '60x' }}" alt="zip">
+  </div>
+</div>

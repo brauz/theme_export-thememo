@@ -1,0 +1,108 @@
+{%- liquid
+  assign isUserNotLoggedIn = true
+  if customer.id != null
+    assign isUserNotLoggedIn = false
+  endif
+
+  assign isCustomerLittleTier = false
+  assign tagsForLittleTier = 'tier:little'
+  for item in cart.items
+    for checkTag in tagsForLittleTier
+      if customer.tags contains checkTag
+        assign isCustomerLittleTier = true
+        break
+      endif
+    endfor
+  endfor
+
+  assign isCustomerBigTier = false
+  assign tagsForBigTier = 'tier:big'
+  for item in cart.items
+    for checkTag in tagsForBigTier
+      if customer.tags contains checkTag
+        assign isCustomerBigTier = true
+        break
+      endif
+    endfor
+  endfor
+
+  assign isCustomerHugeTier = false
+  assign tagsForHugeTier = 'tier:huge'
+  for item in cart.items
+    for checkTag in tagsForHugeTier
+      if customer.tags contains checkTag
+        assign isCustomerHugeTier = true
+        break
+      endif
+    endfor
+  endfor
+
+  assign isCustomerFrequentTier = false
+  assign tagsForFrequentTier = section.settings['tags_feelfoodnotification_user-used-promos'] | split: ','
+  for item in cart.items
+    for checkTag in tagsForFrequentTier
+      if customer.tags contains checkTag
+        assign isCustomerFrequentTier = true
+        break
+      endif
+    endfor
+  endfor
+%}
+
+{% if section.settings.show_feel_good_notification %}
+  {% if isUserNotLoggedIn %}
+    <div class="pd-discount-notification pd-discount-notification__user-not-logged-in">
+      <h1 class="title title--primary">
+        {{ section.settings['feelfoodnotification_notification__user-not-loggedin__title'] }}
+      </h1>
+      <h6 class="title title--primary">
+        {{ section.settings['feelfoodnotification_notification__user-not-loggedin__description'] }}
+      </h6>
+    </div>
+  {% elsif isCustomerFrequentTier %}
+    <div class="pd-discount-notification pd-discount-notification__user-used-promos">
+      <h1 class="title title--primary">
+        {{ section.settings['tags_feelfoodnotification_user-used-promos__title'] }}
+      </h1>
+      <h6 class="title title--primary">
+        {{ section.settings['tags_feelfoodnotification_user-used-promos__description'] }}
+      </h6>
+    </div>
+  {% elsif isCustomerHugeTier %}
+    <div
+      class="pd-discount-notification pd-discount-notification__user-huge-tier-member"
+      style="--bg-color: {{settings.huge_tier_bg_color}}"
+    >
+      <h1 class="title title--primary">
+        {{ settings.huge_tier_heading }}
+      </h1>
+      <h6 class="title title--primary">
+        {{ settings.huge_tier_description }}
+      </h6>
+    </div>
+  {% elsif isCustomerBigTier %}
+    <div
+      class="pd-discount-notification pd-discount-notification__user-not-used-bigwelcome"
+      style="--bg-color: {{settings.big_tier_bg_color}}"
+    >
+      <h1 class="title title--primary">
+        {{ settings.big_tier_heading }}
+      </h1>
+      <h6 class="title title--primary">
+        {{ settings.big_tier_description }}
+      </h6>
+    </div>
+  {% elsif isCustomerLittleTier %}
+    <div
+      class="pd-discount-notification pd-discount-notification__user-not-used-littlewelcome"
+      style="--bg-color: {{settings.little_tier_bg_color}}"
+    >
+      <h1 class="title title--primary">
+        {{ settings.little_tier_heading }}
+      </h1>
+      <h6 class="title title--primary">
+        {{ settings.little_tier_description }}
+      </h6>
+    </div>
+  {%- endif -%}
+{% endif %}

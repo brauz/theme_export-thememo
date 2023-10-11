@@ -1,0 +1,164 @@
+{%- liquid
+  assign tier = 'little'
+  assign tier_little = ''
+  assign tier_big = ''
+  assign tier_huge = ''
+  assign tier_threshold = 500
+  assign total_coupons_with_tier = 0
+
+  for tag in customer.tags
+    assign tag_split = tag | split: ':'
+    assign tag_first = tag_split[0]
+    assign tag_last = tag_split[1]
+
+    if tag_first == 'tier'
+      if 'little,big,huge' contains tag_last
+        if 'little' contains tag_last
+          assign tier_little = tag_last
+        endif
+        if 'big' contains tag_last
+          assign tier_big = tag_last
+        endif
+        if 'huge' contains tag_last
+          assign tier_huge = tag_last
+        endif
+      endif
+
+      continue
+    endif
+  endfor
+
+  # <!-- validation of tiers depending customer tags -->
+
+  if tier_little != blank and tier_big == blank and tier_huge == blank
+    assign tier = tier_little
+  elsif tier_big != blank and tier_huge == blank
+    assign tier = tier_big
+    assign tier_threshold = 1000
+  elsif tier_huge != blank
+    assign tier = tier_huge
+  endif
+
+  assign tier_arr = settings.total_coupons_with_tier | split: ','
+  for item in tier_arr
+    assign label = item | split: ':' | first
+    assign value = item | split: ':' | last
+
+    if label == tier
+      assign total_coupons_with_tier =  value
+    endif
+  endfor
+-%}
+
+<div class="page-width">
+  <div class="feel-good-club-page feel-good-club-page--2-columns">
+    <div class="feel-good-club-page__sidebar hide-tablet-and-down">
+      {% render 'pd-feel-good-club-sidebar', total_coupons_with_tier: total_coupons_with_tier %}
+
+      <a
+        class="pd-button pd-button--lively-blue pd-button--full-width feel-good-club-logout-btn  hide-mobile"
+        href="{{ routes.account_logout_url }}"
+      >
+        {{ 'customer.log_out' | t }}
+      </a>
+    </div>
+    <div class="feel-good-club-page__sidebar hide-desktop-and-up">
+      <a
+        class="feel-good-club-back-btn"
+        href="/account?view=feel-good-club-dashboard"
+      >
+        {%- render 'icon.svg', type: "chevron-left" -%} 
+        <span class="body-text">Back</span>
+      </a>
+    </div>
+    <div class="feel-good-club-page__content">
+      <nav class="breadcrumbs hide-tablet-and-down" role="navigation" aria-label="breadcrumbs">
+        <ol class="breadcrumbs__list">
+          <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link" href="/account?view=feel-good-club-order-history" aria-current="page">My Account</a>
+          </li>
+          <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link" href="/account?view=feel-good-club-dashboard" aria-current="page"
+              >Feel Good Club</a
+            >
+          </li>
+        </ol>
+      </nav>
+
+      <h1 class="pd-heading-3 feel-good-club-page__heading-title">My Details</h1>
+
+      {%- render 'pd-feel-good-club-my-details' -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "FGC My Details",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Menu sidebar"
+    },
+    {
+      "type": "text",
+      "id": "main_menu",
+      "label": "Main menu",
+      "default": "n-feel-goodclub-benefits"
+    },
+    {
+      "type": "text",
+      "id": "extra_menu",
+      "label": "Extra menu",
+      "default": "n-the-memo-services"
+    },
+    {
+      "type": "text",
+      "id": "order_and_details_menu",
+      "label": "Order and details menu",
+      "default": "n-orders-details"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50
+    }
+  ],
+  "presets": [
+    {
+      "name": "FGC My Details"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,317 @@
+{{ 'component-cart.css' | asset_url | stylesheet_tag }}
+{{ 'component-cart-items.css' | asset_url | stylesheet_tag }}
+{{ 'component-totals.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'component-discounts.css' | asset_url | stylesheet_tag }}
+{{ 'component-loading-overlay.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'pd-cart.js' | asset_url }}" defer="defer"></script>
+
+<div class="pd-cart page-width{% if cart == empty %} is-empty{% endif %}" data-id="{{ section.id }}">
+  {%- render 'pd-cart__empty' -%}
+
+  <div class="pd-shopping-cart-title title-wrapper-with-link">
+    <h1 class="title title--primary">{{ section.settings.cart_title }}</h1>
+  </div>
+
+  {% if cart != empty %}
+    {%- render 'pd-cart__discount-notification' -%}
+  {% endif %}
+
+  {%- render 'pd-cart__shipping-notification', showDivider: false, class: 'hide-desktop-and-up' -%}
+  <br class="hide-desktop-and-up">
+
+  <div class="pd-cart-wrapper">
+    <aside>
+      {%- render 'pd-cart__items' -%}
+
+      {% liquid
+        assign isGWPEnabled = settings.gwp_with_purchase_enable
+        assign enableGWPForMemberOnly = settings.gwp_with_purchase_enable_member_only
+        assign isUserNotLoggedIn = true
+        if customer.id != null
+          assign isUserNotLoggedIn = false
+        endif
+
+        if enableGWPForMemberOnly and isGWPEnabled and isUserNotLoggedIn == true
+          assign isGWPEnabled = false
+        endif
+      %}
+      {% if isGWPEnabled %}
+        {%- render 'pd-cart__product-gwp',
+          cart: cart,
+          productList: settings.gwp_with_purchase_reward_collection.products
+        -%}
+      {% endif %}
+
+      {%- render 'pd-cart__product-recommendation' -%}
+    </aside>
+    <aside class="cart__footer py-20" id="main-cart-footer">
+      <div class="cart__blocks">
+        {%- render 'pd-cart__shipping-notification', showDivider: true, class: 'hide-tablet-and-down' -%}
+
+        {%- render 'pd-cart__cart-note' -%}
+
+        <div class="pd-sticky-bar__trigger-point" style="min-height: 150px;">
+          <section class="pd-sticky-bar">
+            <div class="js-contents px-20">
+              <div class="totals">
+                <h2 class="totals__subtotal">{{ 'sections.cart.subtotal' | t }}</h2>
+                <p class="totals__subtotal-value">{{ cart.total_price | money_with_currency }}</p>
+              </div>
+
+              <div>
+                {%- if cart.cart_level_discount_applications.size > 0 -%}
+                  <ul class="discounts list-unstyled" role="list" aria-label="{{ 'customer.order.discount' | t }}">
+                    {%- for discount in cart.cart_level_discount_applications -%}
+                      <li class="discounts__discount discounts__discount--position totals">
+                        <h2 class="totals__subtotal">{{ discount.title }}</h2>
+                        <p class="totals__subtotal-value">Save {{ discount.total_allocated_amount | money }}</p>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="cart__ctas px-20">
+              <noscript>
+                <button type="submit" class="cart__update-button button button--secondary" form="cart">
+                  {{ 'sections.cart.update' | t }}
+                </button>
+              </noscript>
+              <button
+                type="submit"
+                id="checkout"
+                class="cart__checkout-button pd-button pd-button--lively-blue"
+                name="checkout"
+                {% if cart == empty %}
+                  disabled
+                {% endif %}
+                form="cart"
+              >
+                {{ 'sections.cart.checkout' | t }}
+              </button>
+            </div>
+
+            <small class="tax-note caption-large rte">
+              {{ section.settings.cart_tax_note }}
+              {% comment %}
+                {%- if cart.taxes_included and shop.shipping_policy.body != blank -%}
+                  {{ 'sections.cart.taxes_included_and_shipping_policy_html' | t: link: shop.shipping_policy.url }}
+                {%- elsif cart.taxes_included -%}
+                  {{ 'sections.cart.taxes_included_but_shipping_at_checkout' | t }}
+                {%- elsif shop.shipping_policy.body != blank -%}
+                  {{ 'sections.cart.taxes_and_shipping_policy_at_checkout_html' | t: link: shop.shipping_policy.url }}
+                {%- else -%}
+                  {{ 'sections.cart.taxes_and_shipping_at_checkout' | t }}
+                {%- endif -%}
+              {% endcomment %}
+            </small>
+          </section>
+        </div>
+        <div style="display: flex; justify-content: center;">
+          <a href="{{ routes.all_products_collection_url }}" class="underlined-link pd-button-continue-shopping">
+            {{- 'general.continue_shopping' | t -}}
+          </a>
+        </div>
+        <br>
+        <br>
+        {%- render 'pd-cart__payment-method' -%}
+
+        {% comment %}
+          {% if additional_checkout_buttons %}
+            <div class="cart__dynamic-checkout-buttons additional-checkout-buttons">
+              {{ content_for_additional_checkout_buttons }}
+            </div>
+          {% endif %}
+        {% endcomment %}
+
+        <div id="cart-errors" class="px-20"></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.main-cart-items.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text and section toggling"
+    },
+    {
+      "type": "text",
+      "id": "cart_empty_message",
+      "label": "Message for empty cart",
+      "default": "Your cart is empty"
+    },
+    {
+      "type": "text",
+      "id": "cart_title",
+      "label": "Cart title",
+      "default": "Your shopping cart"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show product vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "cart_show_payment_method",
+      "label": "Show Payment Methods",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cart_note",
+      "label": "t:settings_schema.cart.settings.show_cart_note.label",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cart_note_title",
+      "label": "Cart Note - Title",
+      "default": "Write a feel good message"
+    },
+    {
+      "type": "text",
+      "id": "cart_note_placeholder",
+      "label": "Cart Note - Placeholder",
+      "default": "Add a gift message (up to 280 characters)"
+    },
+    {
+      "type": "select",
+      "id": "cart_note_default_state",
+      "label": "Cart Note - Default state",
+      "options": [
+        {
+          "value": "true",
+          "label": "Open"
+        },
+        {
+          "value": "false",
+          "label": "Closed"
+        }
+      ],
+      "default": "false"
+    },
+    {
+      "type": "text",
+      "id": "cart_tax_note",
+      "label": "Tax note",
+      "default": "Shipping & promotions calculated at checkout"
+    },
+
+    {
+      "type": "header",
+      "content": "Feel good notification"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_feel_good_notification",
+      "label": "Show Feed Good Notification",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "feelfoodnotification_notification__user-not-loggedin__title",
+      "label": "Text: Display when a user is not logged in",
+      "default": "Feel good club"
+    },
+    {
+      "type": "richtext",
+      "id": "feelfoodnotification_notification__user-not-loggedin__description",
+      "label": "Description: Display when a user is not logged in"
+    },
+    {
+      "type": "text",
+      "id": "tags_feelfoodnotification_user-used-promos",
+      "label": "Tags: If little or big tier member who has used promos",
+      "info": "Separated by comma",
+      "default": "tier:gold"
+    },
+    {
+      "type": "text",
+      "id": "tags_feelfoodnotification_user-used-promos__title",
+      "label": "Text: If little or big tier member who has used promos",
+      "default": "Feel good club"
+    },
+    {
+      "type": "richtext",
+      "id": "tags_feelfoodnotification_user-used-promos__description",
+      "label": "Description: If little or big tier member who has used promos"
+    },
+
+    {
+      "type": "header",
+      "content": "Discount Badge"
+    },
+    {
+      "type": "text",
+      "id": "tags_discountbadge_huge-discount",
+      "label": "Tags: Huge tier discount",
+      "info": "Separated by comma",
+      "default": "huge-discount"
+    },
+    {
+      "type": "text",
+      "id": "tags_discountbadge_spend-save",
+      "label": "Tags: Spend & save discount",
+      "info": "Separated by comma",
+      "default": "spend-save"
+    },
+
+    {
+      "type": "header",
+      "content": "Complementary section"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_complementary_section",
+      "label": "Show Complementary section",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "default_state_complementary_section",
+      "label": "Default state for Complementary section",
+      "options": [
+        {
+          "value": "true",
+          "label": "Open"
+        },
+        {
+          "value": "false",
+          "label": "Closed"
+        }
+      ],
+      "default": "true"
+    },
+    {
+      "type": "text",
+      "id": "complementary_section_title",
+      "label": "Complementary section title",
+      "default": "Popular Essentials"
+    },
+    {
+      "type": "collection",
+      "id": "recommendationCollection",
+      "label": "Select Collection to display into Popular Essentials section"
+    },
+    {
+      "type": "range",
+      "id": "recommendationCollectionLimit",
+      "label": "Number of products to show",
+      "default": 10,
+      "min": 1,
+      "max": 20,
+      "step": 1
+    }
+  ]
+}
+{% endschema %}

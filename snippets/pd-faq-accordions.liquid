@@ -1,0 +1,49 @@
+<style>
+  [section-id="{{ section.id }}"] {
+    margin-top: {{ section.settings.margin_top }}px;
+    margin-bottom: {{ section.settings.margin_bottom }}px;
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  @media screen and (max-width: 767px) {
+    [section-id="{{ section.id }}"] {
+      margin-top: {{ section.settings.margin_top | times: 0.6 }}px;
+      margin-bottom: {{ section.settings.margin_bottom | times: 0.6 }}px;
+      padding-top: {{ section.settings.padding_top | times: 0.6 }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.6 }}px;
+    }
+  }
+</style>
+
+<div section-id="{{ section.id }}" id="{{section.settings.metafield_id}}" class="faq-accordions">
+  <div class="faq-accordions-inner">
+    {% if section.settings.subheading != blank %}
+      <h3 class="pd-heading-3 faq-accordions__subheading">{{ section.settings.subheading }}</h3>
+    {% endif %}
+    {% if section.settings.heading != blank %}
+      <h2 class="pd-heading-2 faq-accordions__heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+    <div class="pdp-accordion">
+      {% for block in section.blocks %}
+        <details class="pdp-accordion__item">
+          <summary class="product__info__heading">
+            {{ block.settings.question }}
+            <span class="pdp-accordion__item__icon icon-toggle"></span>
+          </summary>
+          <div class="pdp-accordion__item__content">{{ block.settings.answer }}</div>
+        </details>
+      {% endfor %}
+    </div>
+    {% if section.settings.button_label != blank %}
+      <div class="faq-accordions__buttons">
+        <a
+          href="{{ section.settings.button_url }}"
+          class="pd-button {{ section.settings.button_style }} {% if section.settings.is_button_outline %}pd-button--outline{% endif %}"
+        >
+          {{ section.settings.button_label }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>

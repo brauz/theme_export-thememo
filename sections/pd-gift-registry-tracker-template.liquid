@@ -1,0 +1,65 @@
+{% assign page_title = 'Registry Tracker' %}
+
+<div class="page-width">
+  <div class="gift-registry-page gift-registry-page--2-columns">
+    <div class="gift-registry-page__sidebar">
+      {% render 'pd-gift-registry-sidebar', page_title: page_title %}
+    </div>
+    <div class="gift-registry-page__content">
+      <nav class="breadcrumbs" role="navigation" aria-label="breadcrumbs">
+        <ol class="breadcrumbs__list">
+          <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link" href="/account" aria-current="page">My Account</a>
+          </li>
+          <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link" href="/account?view=gift-registry-dashboard" aria-current="page">Gift Registry</a>
+          </li>
+        </ol>
+      </nav>
+
+      <h1 class="pd-heading-3 gift-registry-page__heading-title">{{ page_title }}</h1>
+
+      {% render 'pd-gift-registry-tracker' %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Gift Registry Track",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Sidebar"
+    },
+    {
+      "type": "text",
+      "id": "main_menu",
+      "label": "Main menu",
+      "default": "n-gift-registry-sidebar"
+    },
+    {
+      "type": "text",
+      "id": "help_menu",
+      "label": "Help menu",
+      "default": "n-gift-registry-help"
+    },
+    {
+      "type": "header",
+      "content": "Tracker empty"
+    },
+    {
+      "type": "text",
+      "id": "empty_title",
+      "label": "Tracker empty - title",
+      "default": "Nothing as yet"
+    },
+    {
+      "type": "richtext",
+      "id": "empty_message",
+      "label": "Tracker empty - message",
+      "default": "<p>Once your friends and family start buying gifts, they'll appear here.</p><p>Don't forget to <a href='\/account?view=gift-registry-share'>share</a> your registry</p>"
+    }
+  ]
+}
+{% endschema %}

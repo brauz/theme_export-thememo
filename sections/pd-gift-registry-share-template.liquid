@@ -1,0 +1,128 @@
+{% assign page_title = 'Share your registry' %}
+<div class="page-width">
+  <div class="gift-registry-page gift-registry-page--2-columns gift-registry-page--share">
+    <div class="gift-registry-page__sidebar">
+      {% render 'pd-gift-registry-sidebar', page_title: page_title %}
+    </div>
+    <div class="gift-registry-page__content" data-tinybind-binder>
+      <nav class="breadcrumbs" role="navigation" aria-label="breadcrumbs">
+        <ol class="breadcrumbs__list">
+          <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link" href="/account" aria-current="page">My Account</a>
+          </li>
+          <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link" href="/account?view=gift-registry-dashboard" aria-current="page">Gift Registry</a>
+          </li>
+        </ol>
+      </nav>
+
+      <h1 class="pd-heading-3 gift-registry-page__heading-title">{{ page_title }}</h1>
+
+      <div class="gift-registry-share-banner" style="background-color: {{ section.settings.banner_bg_color }}; color: {{ section.settings.banner_text_color }}">
+        <div class="gift-registry-share-banner__text">
+          <h2 class="gift-registry-share-banner__title">{{ section.settings.banner_title }}</h2>
+          <div class="gift-registry-share-banner__content">{{ section.settings.banner_content }}</div>
+        </div>
+        {% if section.settings.banner_image != blank %}
+          <div class="gift-registry-share-banner__image">
+            {% render 'pd-image', image: section.settings.banner_image %}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="hidden gift-registry-share-info" rv-class-hidden="data.isLoading">
+        <h2 class="pd-heading-3 gift-registry-page__heading-title">Use a direct link</h2>
+        <div data-registry-share-link-container class="gift-registry-share-info__details">
+          <h3>Your Registry URL:</h3>
+          <a href="" data-registry-share-link data-base-url="{{ shop.url | append: section.settings.share_link }}"></a>
+          <h3>Password</h3>
+          <p data-registry-share-link-pass></p>
+        </div>
+      </div>
+
+      <div class="hidden gift-registry-share-info" rv-class-hidden="data.isLoading">
+        <h2 class="pd-heading-3 gift-registry-page__heading-title">Share by email</h2>
+        <form id="shareByEmailForm" method="post">
+          <div class="pd-form-group">
+            <label class="pd-form-label">Enter email</label>
+            <input class="pd-form-input" id="emails" name="emails" type="email" multiple pattern="^([\w+-.%]+@[\w-.]+\.[A-Za-z]{2,4},*[\W]*)+$" required>
+            <span class="pd-form-note">Enter as many email addresses below as you would like, separated by commas <br>(eg. myfriend@thememo.com.au, anotherfriend@thememo.com.au )</span>
+          </div>
+          <div class="pd-form-group">
+            <label class="pd-form-label">Add message</label>
+            <textarea rv-text="data.registry.attributes.registrant_message" class="pd-form-textarea" id="emailText" name="emailText" type="text"></textarea>
+          </div>
+          <div class="pd-form-group pd-form-group--inline">
+            <button 
+              class="pd-button pd-button--happy-lemonlime pd-button--big registry-action-btn loader-wrapper" 
+              type="submit" 
+              value="Share via email"
+              data-share-email-submit-button="Share via email"
+            >Share via email</button>
+            <a href="" data-preview-email class="pd-button pd-button--happy-lemonlime pd-button--big registry-action-btn">Preview email</a>
+          </div>
+        </form>
+      </div>
+
+      <div class="preview-email">
+        <div class="preview-text">Preview of email</div>
+        {% render 'pd-gift-registry-email' %}     
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Gift Registry Share",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Sidebar"
+    },
+    {
+      "type": "text",
+      "id": "main_menu",
+      "label": "Main menu",
+      "default": "n-gift-registry-sidebar"
+    },
+    {
+      "type": "text",
+      "id": "help_menu",
+      "label": "Help menu",
+      "default": "n-gift-registry-help"
+    },
+    {
+      "type": "header",
+      "content": "Banner"
+    },
+    {
+      "type": "text",
+      "id": "banner_title",
+      "label": "Banner title"
+    },
+    {
+      "type": "richtext",
+      "id": "banner_content",
+      "label": "Banner content"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "Banner image"
+    },
+    {
+      "type": "color",
+      "id": "banner_bg_color",
+      "label": "Banner background color",
+      "default": "#FFCFC0"
+    },
+    {
+      "type": "color",
+      "id": "banner_text_color",
+      "label": "Banner text color",
+      "default": "#0A2657"
+    }
+  ]
+}
+{% endschema %}

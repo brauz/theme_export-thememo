@@ -1,0 +1,68 @@
+{%- capture carousel_options -%}
+  {
+    "arrows": true,
+    "dots": false,
+    "slidesToShow": 1,
+    "infinite": true,
+    "swipeToSlide": true,
+    "autoplay": {{ section.settings.autoplay }},
+    "autoplaySpeed": {{ section.settings.interval | times: 1000 }}
+  }
+{%- endcapture -%}
+
+{%- liquid
+  assign blocks = section.blocks | where: 'type', 'announcement-item'
+  if customer
+    assign blocks = section.blocks | where: 'type', 'announcement-user-item'
+  endif
+-%}
+
+<div
+  class="announcement-bar d-none"
+  data-carousel-slider-wrapper
+  data-carousel-slider-delay="250"
+>
+  <div
+    class="carousel"
+    data-carousel-slider="{{ carousel_options | escape }}"
+    data-slider="announcement-bar"
+  >
+    {%- for block in blocks -%}
+      {%- if block.settings.text != blank -%}
+        <div
+          class="carousel-item"
+          style="--color: {{ block.settings.text_color }}"
+          {{ block.shopify_attributes }}
+        >
+          <div class="page-width carousel-item__inner">
+            <a href="{{ block.settings.text_link | default: '#' }}">
+              {{- block.settings.text -}}
+            </a>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  {%- if blocks.size > 1 -%}
+    <button
+      class="carousel-trigger carousel-trigger--prev"
+      data-carousel-prev="announcement-bar"
+      aria-label="Prev"
+      style="--arrow-color: {{ section.settings.arrow_color }}"
+    >
+      {% render 'icon.svg', type: 'chevron-left' %}
+    </button>
+  {%- endif -%}
+
+  {%- if blocks.size > 1 -%}
+    <button
+      class="carousel-trigger carousel-trigger--next"
+      data-carousel-next="announcement-bar"
+      aria-label="Next"
+      style="--arrow-color: {{ section.settings.arrow_color }}"
+    >
+      {% render 'icon.svg', type: 'chevron-right' %}
+    </button>
+  {%- endif -%}
+</div>

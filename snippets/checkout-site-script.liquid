@@ -1,0 +1,362 @@
+<script>
+  function alwaysGoThroughInformationStep() {
+    const step = Shopify.Checkout.step;
+
+    if (step === 'contact_information') {
+      localStorage.setItem('wentThroughInformationStep', 'yes');
+      stopLoading();
+    }
+
+    if (step === 'processing' || step === 'thank_you') {
+      stopLoading();
+    }
+
+    if (step !== 'contact_information' && step !== 'processing' && step !== 'thank_you') {
+      const wentThroughInformationStep = localStorage.getItem('wentThroughInformationStep');
+      if (!wentThroughInformationStep) {
+        location.href = location.pathname + '?step=contact_information';
+      } else {
+        stopLoading();
+      }
+    }
+  }
+
+  function stopLoading() {
+    const ELM_loadingState = document.querySelector('[data-loading-state]');
+    ELM_loadingState.classList.add('hidden');
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    alwaysGoThroughInformationStep();
+  });
+</script>
+
+<script>
+  var turn_off_cc = {{ settings.turn_off_cc | json }};
+  var hasNoClickCollect = false;
+  var hasPickUpAvailable = false;
+  var hasNomalItem = false;
+  let hasNoDelivery = false;
+
+  (async function() {
+    const cartRes = await fetch('/cart');
+    const cartText = await cartRes.text();
+    const cartHtml = new DOMParser().parseFromString(cartText, 'text/html');
+    hasNoDelivery = cartHtml.querySelector('[data-no-delivery]')?.dataset.noDelivery === 'true';
+
+    {% for item in checkout.line_items %}
+      (function() {
+        {%- assign pick_up_availabilities = item.product.selected_or_first_available_variant.store_availabilities | where: 'pick_up_enabled', true -%}
+        {% for pick_up_availability in pick_up_availabilities %}
+          hasPickUpAvailable = {{ pick_up_availability.available | json }}
+        {% endfor %}
+
+        var isNormalItem = true;
+        var product = {{ item.variant.product | json }};
+
+        if (product.tags.findIndex(tag => tag === 'NOCLICKCOLLECT') > -1) {
+          hasNoClickCollect = true;
+          isNormalItem = false;
+        }
+
+        if (hasNoDelivery) {
+          isNormalItem = false;
+        }
+
+        if (isNormalItem) {
+          hasNomalItem = true;
+        }
+      })();
+    {% endfor %}
+    document.dispatchEvent(new CustomEvent('cart::fetched'))
+  })();
+
+  function throwWarningPopup(message) {
+    const HTML_backToCartModal = `<div class="checkout-warning-modal">
+      <div class="checkout-warning-modal__dialog">
+        <div>${ message }</div>
+        <a href="/cart" class="button">Go to cart page</a>
+      </div>
+    </div>`;
+
+    const ELM_body = document.querySelector('body')
+    ELM_body.innerHTML = ELM_body.innerHTML + HTML_backToCartModal;
+  }
+
+  /** hide click and collect if selected to **/
+  (function($) {
+    function showHideExpressCheckout() {
+      setTimeout(() => {
+        const shippingMethodName = $('tr.total-line--shipping .total-line__name').text()?.trim();
+        if (shippingMethodName.search('Pickup') > -1) {
+          $('[data-express-checkout]').css('display', 'none');
+          $('[data-express-checkout-message]').css('display', 'block');
+        } else {
+          $('[data-express-checkout]').css('display', 'block');
+          $('[data-express-checkout-message]').css('display', 'none');
+        }
+      })
+    }
+
+    $(document).on('page:load page:change', function() {
+      showHideExpressCheckout();
+      $('[name="checkout[pick_up_in_store][selected]"]').on('change', showHideExpressCheckout);
+
+      document.addEventListener('cart::fetched', function() {
+        var checkoutWarningMessage = {{ settings.checkout_warning_message | json }};
+        if (hasNoDelivery && hasNoClickCollect) {
+          throwWarningPopup(checkoutWarningMessage);
+        }
+
+        function renderWarningMessage(title, message) {
+          if (!$('#section-delivery-title')) return;
+
+          const html = `<div class="delivery-warning">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g clip-path="url(#clip0_383_577)">
+              <path d="M12 11H13V18H11V13C10.448 13 10 12.552 10 12C10 11.448 10.448 11 11 11H12ZM12 24C5.373 24 0 18.627 0 12C0 5.373 5.373 0 12 0C18.627 0 24 5.373 24 12C24 18.627 18.627 24 12 24ZM12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22ZM10.5 7.5C10.5 6.672 11.166 6 12 6C12.828 6 13.5 6.666 13.5 7.5C13.5 8.328 12.834 9 12 9C11.172 9 10.5 8.334 10.5 7.5Z" fill="#1879B9"/>
+              </g>
+              <defs>
+              <clipPath id="clip0_383_577">
+              <rect width="24" height="24" fill="white"/>
+              </clipPath>
+              </defs>
+            </svg>
+            <div class="delivery-warning__content">
+              <h6 class="delivery-warning__title">${ title }</h6>
+              <div class="delivery-warning__message">${ message }</div>
+            </div>
+          </div>`;
+
+          $('#section-delivery-title').html($('#section-delivery-title').html() + html);
+        }
+
+        let count = 0;
+        function handlePickupVisibility() {
+          if (count === 15) return;
+          const $pickUpLocations = $('[data-pickup-tab-content] .content-box__row');
+          const $pickUpNoLocation = $('[data-pickup-tab-no-location]');
+
+          if ((!$pickUpLocations.length) && (!$pickUpNoLocation.length)) {
+            count += 1;
+            return setTimeout(handlePickupVisibility, 500);
+          }
+
+          let noPickup = false;
+
+          if ($pickUpNoLocation && $pickUpNoLocation.length) {
+            noPickup = true;
+          }
+
+          if ($pickUpLocations.length === 1) {
+            const locationTitle = $pickUpLocations.find('.radio__label__primary div:first-child').text().toLowerCase();
+            if (locationTitle === 'bettapak' || ($pickUpLocations.find('.blank-slate') && $pickUpLocations.find('.blank-slate').length)) {
+              noPickup = true;
+            }
+          }
+
+          if (noPickup) {
+            if (hasNoDelivery) {
+              throwWarningPopup(checkoutWarningMessage);
+            }
+            const warningTitle = 'Pick Up not available';
+            const warningMessage = {{ settings.warning_pickup_not_available | json }};
+            renderWarningMessage(warningTitle, warningMessage);
+            $pickUpRadio.prop('disabled', true);
+            $pickUpRadio.parents(".content-box__row").addClass('disabled');
+            const $shippingRadio = $('#checkout_id_delivery-shipping');
+            $shippingRadio.prop('checked', true);
+            $shippingRadio.click();
+          }
+
+          if ($pickUpLocations.length > 1) {
+            $pickUpLocations.each(function() {
+              const locationTitle = $(this).find('.radio__label__primary div:first-child').text().toLowerCase();
+              if (locationTitle === 'bettapak') {
+                $(this).find('input[type="radio"]').prop('checked', false);
+                $(this).remove();
+              }
+            })
+          }
+
+          if (!hasNoDelivery) {
+            const $shippingRadio = $('#checkout_id_delivery-shipping');
+            $shippingRadio.prop('checked', true);
+            $shippingRadio.change();
+            $shippingRadio.click();
+          }
+        }
+
+        const $pickUpRadio = $("#checkout_id_delivery-pickup");
+        if ($pickUpRadio) {
+          if (turn_off_cc || hasNoClickCollect || hasPickUpAvailable) {
+            const warningTitle = 'Pick Up not available';
+            const warningMessage = {{ settings.warning_pickup_not_available | json }};
+            renderWarningMessage(warningTitle, warningMessage);
+            $pickUpRadio.prop('disabled', true);
+            return $pickUpRadio.parents(".content-box__row").addClass('disabled');
+          }
+          $pickUpRadio.prop('checked', true);
+          $pickUpRadio.change();
+          $pickUpRadio.click();
+          handlePickupVisibility();
+        }
+
+        const $deliveryRadio = $("#checkout_id_delivery-shipping");
+        if ($deliveryRadio && $pickUpRadio && hasNoDelivery) {
+          const warningTitle = 'Delivery not available';
+          const warningMessage = {{ settings.warning_delivery_not_available | json }};
+          renderWarningMessage(warningTitle, warningMessage);
+          $deliveryRadio.prop('disabled', true);
+          $deliveryRadio.parents(".content-box__row").addClass('disabled');
+          $pickUpRadio.prop('checked', true);
+          $pickUpRadio.change();
+          $pickUpRadio.click();
+        }
+      })
+    });
+  })(Checkout.$);
+</script>
+
+{% assign customerId = customer.id %}
+{% assign timestamp = "now" | date: "%s" %}
+{% assign data = customerId | append: ":" | append: timestamp %}
+{% assign host = shop.metafields.gift_registry.host | json %}
+
+{% assign display = true %}
+{% for line_item in checkout.line_items %}
+  {% unless line_item.properties["_registry"] %}
+    {% assign display = false %}
+    {% break %}
+  {% endunless %}
+{% endfor %}
+
+{% if display %}
+  <script src="{{ 'gift-registry-checkout.js' | asset_url }}"></script>
+  <script>
+    // Hide Paypal in payment step
+    (function() {
+      function hidePaypalPayment() {
+        const $paypalGateway = $('[data-gateway-name="paypal"]');
+        if (!$paypalGateway || !$paypalGateway.length) return;
+
+        $paypalGateway.remove();
+      }
+
+      $(document).ready(hidePaypalPayment)
+    })(Checkout.$)
+  </script>
+  <script>
+    var _registryUUID = {{ checkout.attributes["_registry_uuid"] | default: "" | json }};
+    var _registry_status = {{ checkout.attributes["_registry_status"] | default: "" | json }};
+    var _registry_password = {{ checkout.attributes["_registry_password"] | default: "" | json }};
+    var _giver_name = {{ checkout.attributes["_giver_name"] | default: "" | json }};
+    var host = {{ shop.metafields.gift_registry.host | json }};
+    var _checkout_attributes = [];
+    {% for attribute in checkout.attributes %}
+      _checkout_attributes.push({
+        first: {{attribute.first | json }},
+        last: {{attribute.last | json }},
+      });
+    {% endfor %}
+
+    var client = new GiftRegistryCheckout(host, _registryUUID, _registry_password);
+    client.checkCheckoutProductsAreInGR();
+
+    (function($) {
+      $(document).on('page:load page:change', function() {
+        if (Shopify.Checkout.step === "contact_information" && _registryUUID != "" && (_registry_status == "open" || _registry_status == "late_period")) {
+
+          /** OPEN ORDERS LOGIC **/
+          if (_registry_status == "open") {
+            let selectors = {
+              pickUpInput: "#checkout_id_delivery-pickup",
+              pickUpLabel: "[data-delivery-pickup-radio-label]",
+              pickUpInfoBox: "[data-delivery-pickup-info]",
+              shippingInput: "#checkout_id_delivery-shipping"
+            }
+
+            $(selectors.pickUpInput).attr("checked", true);
+            let pickupLabel = $(selectors.pickUpLabel).html();
+            pickupLabel = pickupLabel.replace("Pick up", "Free Shipping to Gift Registrant");
+            $(selectors.pickUpLabel).html(pickupLabel);
+            $(selectors.pickUpInfoBox).hide();
+            $(selectors.shippingInput).parents(".content-box__row").hide();
+          }
+
+          /** LATE ORDERS LOGIC **/
+          if (_registry_status == "late_period") {
+            //Add custom attributes
+            for (_checkout_attribute of _checkout_attributes) {
+              $("form.edit_checkout").append(`<input type='hidden' name='checkout[attributes][${_checkout_attribute.first}]' value='${_checkout_attribute.last}'>`);
+            }
+            $("form.edit_checkout").append("<input type='hidden' name='checkout[attributes][late_order]' value='true'>");
+            if (hasNoDelivery) {
+              const warningMessage = {{ settings.checkout_registry_warning_message | json }};
+              throwWarningPopup(warningMessage);
+            }
+            //Hide pickup, replace shipping by billing
+            $("#checkout_id_delivery-pickup").parents(".content-box__row").remove();
+            $("[data-delivery-shipping-info] .section__title").html("Billing Address");
+            $("[data-delivery-shipping-info] .section__header").append("<div class='content-box late_order-msg'><div class='content-box__row'>Please note your order will be sent directly to the Gift Registrant's Address</div></div>")
+          }
+        }
+        if (Shopify.Checkout.step === "thank_you" || typeof(Shopify.Checkout.step) == "undefined") {
+          $(".map").hide();
+          $('.os-step__special-description .os-step__description').html("Your gift will be sent directly to your friend home address.");
+          $headings = $('.heading-3');
+          for (heading of $headings) {
+            let $heading = $(heading);
+            if ($heading.html() == "Pickup location") {
+              $heading.html("Shipping address");
+              $heading.siblings(".address").html("Gift Registrant Home Address")
+            }
+            if (_registry_status == "late_period") {
+              if ($heading.html() == "Shipping address") {
+                $heading.hide();
+                $heading.siblings(".address").hide();
+              }
+            }
+          }
+        }
+
+        // logic to redirect customer if registry checkout but no pickup
+        var shipping_method = "{{checkout.shipping_method.title}}";
+        if ((Shopify.Checkout.step === "shipping_method" && _registryUUID != "" && (_registry_status == "open")) || (Shopify.Checkout.step === "payment_method" && _registryUUID != "" && (_registry_status == "open"))) {
+          let shippingMethodName = shipping_method.toLowerCase();
+          if (shippingMethodName != "bettapak" && shippingMethodName != 'the memo') {
+            window.location.href = location.protocol + '//' + location.host + location.pathname + "?step=contact_information";
+          }
+        }
+        if ((Shopify.Checkout.step === "shipping_method" && _registryUUID != "" && (_registry_status == "late_period")) || (Shopify.Checkout.step === "payment_method" && _registryUUID != "" && (_registry_status == "late_period"))) {
+          let shippingMethodName = shipping_method.toLowerCase();
+          if (shippingMethodName == "bettapak" || shippingMethodName == 'the memo') {
+            window.location.href = location.protocol + '//' + location.host + location.pathname + "?step=contact_information";
+          }
+        }
+        // logic to replace address
+        if ( (Shopify.Checkout.step === "shipping_method" && _registryUUID != "" && (_registry_status == "open" || _registry_status == "late_period")) || (Shopify.Checkout.step === "payment_method" && _registryUUID != "" && (_registry_status == "open" || _registry_status == "late_period")) ) {
+          let $reviewBlock = $('.review-block__content');
+          if (($("[data-registrant-address-contact]").length < 1) && _registry_status == "open" ) {
+            $($reviewBlock[0]).hide();
+            $($reviewBlock[0]).after(`<span data-registrant-addres-contact>${_giver_name}</span>`);
+          }
+          $($reviewBlock[1]).hide();
+          if ($("[data-registrant-address]").length < 1) {
+            if (_registry_status == "open" ) {
+            $($reviewBlock[1]).after("<span data-registrant-address>Free Shipping to Gift Registrant</span>");
+            }
+            if (_registry_status == "late_period" ) {
+              $($reviewBlock[1]).after("<span data-registrant-address>Shipping to Gift Registrant</span>");
+            }
+          }
+        }
+
+        if (Shopify.Checkout.step === "payment_method" && _registry_status == "late_period") {
+          $("[data-different-billing-address]").remove();
+          $("[data-billing-address]").hide();
+        }
+      });
+    })(Checkout.$);
+  </script>
+{% endif %}

@@ -1,0 +1,51 @@
+<script src="{{ 'pd-cart-modal.js' | asset_url }}" defer="defer"></script>
+
+<pd-cart-modal class="pd-cart-notification pd-cart">
+  <details>
+    <summary
+      class="modal__toggle"
+    ></summary>
+    <div
+      class="modal__content"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Cart Modal"
+    >
+      <div class="modal-overlay"></div>
+      <div
+        class="pd-cart-notification__content"
+        tabindex="-1"
+      >
+        <div class="cart-notification__header px-20">
+          <h2 class="cart-notification__heading caption-large text-body">It’s in your cart</h2>
+          <button
+            type="button"
+            class="modal__close-button button"
+            aria-label="{{ 'accessibility.close' | t }}"
+          >
+            {% render 'icon-close' %}
+          </button>
+        </div>
+
+        <div class="pd-cart__content"></div>
+
+        <div class="cart-notification__links px-20">
+          <a
+            href="{{ routes.cart_url }}"
+            id="cart-notification-button"
+            class="pd-button pd-button--lively-blue"
+          >
+            {{- 'general.cart.view_empty_cart' | t -}}
+          </a>
+          <button
+            type="button"
+            class="modal__close-button button link button-label pd-cart-notification__continue-shopping"
+            aria-label="{{ 'accessibility.close' | t }}"
+          >
+            {{ 'general.continue_shopping' | t }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </details>
+</pd-cart-modal>

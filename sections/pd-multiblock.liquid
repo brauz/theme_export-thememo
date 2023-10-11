@@ -1,0 +1,127 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    background-color: {{ section.settings.background_color }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="pd-multiblock section-{{ section.id }}-padding">
+  <div class="page-width">
+    {% if section.settings.heading %}
+      <h2 class="pd-heading-2 pd-multiblock__heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+    <ul
+      class="pd-multiblock-list pd-container-with-scrollbar pd-container-with-scrollbar-mobile"
+      role="list"
+    >
+      {%- for block in section.blocks -%}
+        <li class="pd-multiblock-list__item">
+          <a
+            href="{{ block.settings.link }}"
+            class="pd-multiblock-card"
+            {% if block.settings.open_new_tab %} target="_blank"{% endif %}
+          >
+            {%- if block.settings.name != blank -%}
+              <h3 class="pd-multiblock-card__name">{{ block.settings.name }}</h3>
+            {%- endif -%}
+            {%- if block.settings.heading != blank -%}
+              <div class="pd-multiblock-card__heading">{{ block.settings.heading }}</div>
+            {%- endif -%}
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Multiblock",
+  "class": "section",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#F2F4F7"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "block_item",
+      "name": "Multiblock item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Name"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Heading"
+        },
+        {
+          "type": "url",
+          "id": "Link",
+          "label": "Link"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_new_tab",
+          "label": "Open new tab",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Multiblock"
+    }
+  ]
+}
+{% endschema %}

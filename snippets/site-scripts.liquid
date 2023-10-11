@@ -1,0 +1,143 @@
+<script>
+  window.shopUrl = '{{ request.origin }}';
+  window.routes = {
+    cart_add_url: '{{ routes.cart_add_url }}',
+    cart_change_url: '{{ routes.cart_change_url }}',
+    cart_update_url: '{{ routes.cart_update_url }}',
+    cart_url: '{{ routes.cart_url }}',
+    predictive_search_url: '{{ routes.predictive_search_url }}'
+  };
+
+  window.cartStrings = {
+    error: `{{ 'sections.cart.cart_error' | t }}`,
+    quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' }}`
+  }
+
+  window.variantStrings = {
+    addToCart: `{{ 'products.product.add_to_cart' | t }}`,
+    soldOut: `{{ 'products.product.sold_out' | t }}`,
+    unavailable: `{{ 'products.product.unavailable' | t }}`,
+    unavailable_with_option: `{{ 'products.product.value_unavailable' | t: option_value: '[value]' }}`,
+  }
+
+  window.accessibilityStrings = {
+    imageAvailable: `{{ 'products.product.media.image_available' | t: index: '[index]' }}`,
+    shareSuccess: `{{ 'general.share.success_message' | t }}`,
+    pauseSlideshow: `{{ 'sections.slideshow.pause_slideshow' | t }}`,
+    playSlideshow: `{{ 'sections.slideshow.play_slideshow' | t }}`,
+  }
+</script>
+
+<script src="{{ 'jquery-3.6.0.min.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'tinybind.js' | asset_url }}" defer="defer"></script>
+
+{%comment%} GIFT REGISTRY {% endcomment %}
+<script src="{{ 'gift-registry.js' | asset_url }}" defer="defer"></script>
+{% assign host = shop.metafields.gift_registry.host | json %}
+{% assign giftViewerPage = shop.url | append: '/pages/registry' %}
+{% assign timestamp = "now" | date: "%s" %}
+{% assign signature = customer.id | append: ":" | append: timestamp | hmac_sha256: shop.metafields.gift_registry.secret %}
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    window.giftRegistryObject = new GiftRegistry({{ customer.id | json }}, {{timestamp | json}}, {{signature | json}}, {{shop.permanent_domain | json}}, {{giftViewerPage | json}}, {{host}})
+    new GiftSearchPage({{host}}, {{giftViewerPage | json}});
+  })
+</script>
+{%comment%} GIFT REGISTRY END {% endcomment %}
+
+<script src="{{ 'search-form.js' | asset_url }}" defer="defer"></script>
+{%- if settings.predictive_search_enabled -%}
+  <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+<script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
+{%- if settings.cart_type == 'drawer' -%}
+  <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+<script src="{{ 'lists.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'your-lists.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'lists-modal.js' | asset_url }}" defer="defer"></script>
+<script src="https://a.klaviyo.com/media/js/onsite/onsite.js"></script>
+{% render 'backinstock-script' %}
+
+<!--Gorgias Chat Widget Start-->
+<script id="gorgias-chat-widget-install-v2" src="https://config.gorgias.chat/gorgias-chat-bundle-loader.js?applicationId=3069"></script>
+<script id="gorgias-chat-shopify-install">!function(_){_.SHOPIFY_PERMANENT_DOMAIN="{{shop.permanent_domain}}",_.SHOPIFY_CUSTOMER_ID="{{customer.id}}",_.SHOPIFY_CUSTOMER_EMAIL="{{customer.email}}"}(window||{});</script>
+<!--Gorgias Chat Widget End-->
+
+{%- if template.name == 'product' -%}
+  {%- capture contentForQuerystring -%}{{ content_for_header }}{%- endcapture -%}
+  {%- assign pageUrl = contentForQuerystring
+    | split: '"pageurl":"'
+    | last
+    | split: '"'
+    | first
+    | split: '.myshopify.com'
+    | last
+    | replace: '\/', '/'
+    | replace: '%20', ' '
+    | replace: '\u0026', '&'
+  -%}
+  {% capture finalurl %}https://{{ pageUrl }}{% endcapture %}
+
+  {%- for variant in product.variants -%}
+    {%- if pageUrl contains variant.id and variant.metafields.custom.hidden.value -%}
+      <script>
+        window.location.href = "/products/{{ product.handle }}"
+      </script>
+    {%- endif -%}
+  {%- endfor -%}
+  
+  <script>
+    // To power the recently viewed products section, we save the ID of the product inside the local storage
+    (() => {
+      const items = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
+
+      // We check if the current product already exists, and if it does not, we add it at the start
+      if (!items.includes("{{ product.handle }}")) {
+        items.unshift("{{ product.handle }}");
+      }
+
+      // Then, we save the current product into the local storage, by keeping only the 4 most recent
+      try {
+        localStorage.setItem('recentlyViewedProducts', JSON.stringify(items.slice(0, 4)));
+      } catch (error) {
+        // Do nothing, this may happen in Safari in incognito mode
+      }
+    })();
+  </script>
+{%- endif -%}
+
+{% comment %} handle remove LSEP character on windows {% endcomment %}
+<script>
+  document.body.innerHTML = document.body.innerHTML.replace(/\u2028/g, '')
+</script>
+
+<script>
+  // handle iOS specs
+  const platformExpression = /Mac|iPhone|iPod|iPad/i;
+  const rejectedExpression = /Chrome|Edg|Firefox|Android|CriOS|FxiOS|EdgiOS/i;
+  const expectedExpression = /Safari/i;
+
+  const isSafari = (() => {
+    const agent = navigator.userAgent;
+    if (rejectedExpression.test(agent)) {
+        return false;
+    }
+    return platformExpression.test(agent) && expectedExpression.test(agent);
+  })()
+
+  if (isSafari) {
+    document.body.classList.add('safari');
+  }
+
+  const isEdge = /Edg|EdgiOS/i.test(navigator.userAgent);
+  const isFirefox = /Firefox|FxiOS/i.test(navigator.userAgent);
+
+  // handle Edge browser specs
+  if (isEdge) {
+    document.body.classList.add('edge');
+  }
+</script>

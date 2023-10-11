@@ -1,0 +1,54 @@
+<div class="pd-drawer js-pd-drawer size-guide" id="size-guide">
+  <div class="pd-drawer__overlay" data-close-drawer="size-guide">overlay</div>
+  <div class="pd-drawer__inner">
+    <div class="pd-drawer__content">
+      <div class="pd-drawer__header">
+        <h5 class="pd-drawer__heading">Size Guide</h5>
+        <span class="pd-drawer__close" data-close-drawer="size-guide">
+          {%- render 'icon.svg', type: 'x-mark' -%}
+        </span>
+      </div>
+      <div class="pd-drawer__body">
+        <h3 class="size-guide__title">{{ product.title }}</h3>
+        {% if product.metafields.custom.pd_size_guide_heading %}
+          <h4 class="size-guide__heading">{{ product.metafields.custom.pd_size_guide_heading }}</h4>
+        {% endif %}
+        {% liquid
+          assign columns = product.metafields.custom.pd_size_guide_columns | split: '--'
+        %}
+        <table class="size-guide__table">
+          <thead>
+            <th></th>
+            {% for column in columns %}
+              <th>{{ column }}</th>
+            {% endfor %}
+          </thead>
+          <tbody>
+            {% for row in product.metafields.custom.pd_size_guide_rows.value %}
+              {% assign row_tds = row | split: '--' %}
+              <tr>
+                {% for row_td in row_tds %}
+                  <td>{{ row_td }}</td>
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        {% if product.metafields.custom.pd_size_guide_description %}
+          <div class="size-guide__description">{{ product.metafields.custom.pd_size_guide_description | metafield_tag }}</div>
+        {% endif %}
+
+        {% if product.metafields.custom.pd_size_guide_image != blank %}
+          <img
+            class="size-guide__image"
+            src="{{ product.metafields.custom.pd_size_guide_image | image_url }}"
+            width="134"
+            height="104"
+            alt="{{ product.metafields.custom.pd_size_guide_heading }}"
+          >
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+{%- liquid
+  assign padding_top = block.settings.image_padding_top | append: block.settings.image_padding_unit
+  assign padding_right = block.settings.image_padding_right | append: block.settings.image_padding_unit
+  assign padding_bottom = block.settings.image_padding_bottom | append: block.settings.image_padding_unit
+  assign padding_left = block.settings.image_padding_left | append: block.settings.image_padding_unit
+
+  assign padding_top_mobile = block.settings.padding_top
+  assign padding_right_mobile = block.settings.padding_right
+  assign padding_bottom_mobile = block.settings.padding_bottom
+  assign padding_left_mobile = block.settings.padding_left
+
+  if block.settings.use_mobile_padding
+    assign padding_top_mobile = block.settings.image_padding_top_mobile | append: block.settings.image_padding_unit_mobile
+    assign padding_right_mobile = block.settings.image_padding_right_mobile | append: block.settings.image_padding_unit_mobile
+    assign padding_bottom_mobile = block.settings.image_padding_bottom_mobile | append: block.settings.image_padding_unit_mobile
+    assign padding_left_mobile = block.settings.image_padding_left_mobile | append: block.settings.image_padding_unit_mobile
+  endif
+-%}
+
+<div
+  class="pd-image-panel__image pd-image-panel__image--{{ block.settings.image_alignment }}"
+  style="
+    --padding-top: {{ padding_top }};
+    --padding-right: {{ padding_right }};
+    --padding-bottom: {{ padding_bottom }};
+    --padding-left: {{ padding_left }};
+    --padding-top-mobile: {{ padding_top_mobile }};
+    --padding-right-mobile: {{ padding_right_mobile }};
+    --padding-bottom-mobile: {{ padding_bottom_mobile }};
+    --padding-left-mobile: {{ padding_left_mobile }};
+  "
+  {{ block.shopify_attributes }}
+>
+  {% liquid
+    assign image = block.settings.image
+    if block.settings.image_mobile
+      assign image_mobile = block.settings.image_mobile
+    else
+      assign image_mobile = image
+    endif
+  %}
+
+  {%- render 'pd-image', image: image, class: 'hide-mobile' -%}
+  {%- render 'pd-image', image: image_mobile, class: 'hide-desktop' -%}
+</div>

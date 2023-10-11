@@ -1,0 +1,84 @@
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+{%- capture carousel_options -%}
+  {
+    "arrows": false,
+    "dots": true,
+    {% comment %} "slidesToShow": 4, {% endcomment %}
+    "variableWidth": true,
+    "slidesToScroll": 1,
+    "mobileFirst": false,
+    "infinite": false,
+    "responsive": [
+      {
+        "breakpoint": 750,
+        "settings": "unslick"
+      }
+    ]
+  }
+{%- endcapture -%}
+
+{% liquid
+  assign howManyAdded = 0
+  for cartItem in cart.items
+    for _product in section.settings.recommendationCollection.products
+      if cartItem.product.id == _product.id
+        assign howManyAdded = howManyAdded | plus: 1
+        break
+      endif
+    endfor
+  endfor
+
+  assign number_products_showing = section.settings.recommendationCollectionLimit | plus: howManyAdded
+  assign total_products = section.settings.recommendationCollection.products.size
+%}
+
+<div
+  class="
+    pd-cart-carousel pd-product-carousel pd-carousel-has-scrollbar
+    {% if total_products <= number_products_showing %} no-carousel{% endif %}
+  "
+  {% if total_products > number_products_showing %}
+    data-carousel-slider-wrapper
+  {% endif %}
+>
+  <div
+    class="pd-product-carousel__slider pd-container-with-scrollbar pd-container-with-scrollbar-overflow pd-container-with-scrollbar-mobile"
+    {% if total_products > number_products_showing %}
+      data-carousel-slider="{{ carousel_options | escape }}"
+      data-slider="pd-product-carousel"
+    {% endif %}
+  >
+    {% if section.settings.recommendationCollection %}
+      {% for _product in section.settings.recommendationCollection.products limit: number_products_showing %}
+        {% liquid
+          assign isProductAdded = false
+          for cartItem in cart.items
+            if cartItem.product.id == _product.id
+              assign isProductAdded = true
+              break
+            endif
+          endfor
+        %}
+
+        {% if isProductAdded == false %}
+          {% render 'card-product',
+            card_product: _product,
+            class_name: section.settings.product_width_mobile,
+            show_quick_add: true,
+            hide_secondary_image: true,
+            hide_vendor: false,
+            hide_rating: true,
+            hide_swatch: true,
+            show_description: true
+          %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </div>
+  {% if total_products > number_products_showing %}
+    <div data-carousel-scrollbar class="pd-carousel-scrollbar">
+      <span data-carousel-scrollbar-track class="pd-carousel-scrollbar-piece"></span>
+    </div>
+  {% endif %}
+</div>

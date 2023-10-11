@@ -1,0 +1,100 @@
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    position: fixed;
+    bottom: 10rem;
+    z-index: 10;
+  }
+
+  .back-to-top {
+    color: {{ section.settings.back_to_top_button_text_color }};
+    background-color: {{ section.settings.back_to_top_button_bg_color }};
+    border-color: {{ section.settings.back_to_top_button_border_color }};
+    padding: 0.8rem 1.6rem;
+    position: fixed;
+    bottom: 3rem;
+    font-family: var(--font-heading-family-4);
+    font-size: 1.4rem;
+    line-height: 1.5;
+    letter-spacing: 0.28px;
+  }
+
+  .back-to-top .icon--arrow-up {
+    margin-left: 0;
+    margin-right: 1rem;
+  }
+
+  .back-to-top .icon--arrow-up path {
+    stroke: {{ section.settings.back_to_top_button_text_color }};
+  }
+{%- endstyle -%}
+
+<button class="pd-button back-to-top" data-id="shopify-section-{{ section.id }}">
+  {%- render 'icon.svg', type: 'arrow-up' -%}
+  BACK TO TOP
+</button>
+
+{%- javascript -%}
+  (() => {
+    const backToTop = document.querySelector('.back-to-top');
+    const rootElement = document.documentElement;
+    const wrapper = document.getElementById(backToTop.dataset.id);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            wrapper.classList.add('d-none');
+          } else {
+            wrapper.classList.remove('d-none');
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.5,
+      }
+    );
+
+    observer.observe(rootElement);
+
+    backToTop.addEventListener('click', (e) => {
+      rootElement.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    });
+  })();
+{%- endjavascript -%}
+{% schema %}
+{
+  "name": "Back to top button",
+  "tag": "section",
+  "class": "section page-width hide-mobile d-none",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "color",
+      "id": "back_to_top_button_text_color",
+      "label": "Text color"
+    },
+    {
+      "type": "color",
+      "id": "back_to_top_button_bg_color",
+      "label": "Background color"
+    },
+    {
+      "type": "color",
+      "id": "back_to_top_button_border_color",
+      "label": "Border color"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Back to top button"
+    }
+  ]
+}
+{% endschema %}

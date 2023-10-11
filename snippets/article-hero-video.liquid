@@ -1,0 +1,71 @@
+{%- liquid
+  assign video_metafield = article.metafields.custom.video_upload.value
+  assign video_url_id = article.metafields.custom.youtube_video_id
+  assign video_id = video_url_id | split: '?'
+  assign youtube_video_id = video_id[0]
+  assign poster = article.metafields.custom.video_thumbnail.value
+  assign highlighted_tag = article.metafields.custom.highlighted_tag
+-%}
+
+<div class="article-hero-video">
+  <div class="article-hero-video__wrapper">
+    <div class="article-hero-video__video">
+      {%- render 'pd-video-hero-banner',
+        video: video_metafield,
+        youtube_video_id: youtube_video_id,
+        poster: poster,
+        enable_video_looping: data.enable_video_looping,
+        custom_aspect_ratio: data.custom_aspect_ratio,
+        autoplay_video: data.autoplay_video,
+        video_controls: data.video_controls
+      -%}
+    </div>
+
+    <div class="article-hero-video__content">
+      <div class="article-hero-video__content__inner">
+        <div class="article-hero-video__content__breadcrumb">
+          <a class="article-hero-video__content__blog-title" href="{{ blog.url }}">{{ blog.title }}</a>
+          <span>|</span>
+          <a 
+            data-breadcrumb 
+            data-blog-title="{{ blog.title }}"
+            data-blog-url="{{ blog.url }}"
+            data-tag="{{ highlighted_tag | default: article.tags[0] }}" 
+            class="article-hero-video__content__article-tag">
+          </a>
+        </div>
+        <h1 class="article-hero-video__content__heading">{{ article.title }}</h1>
+
+        {%- if blocks.size > 0 -%}
+          {%- render 'social-share', blocks: blocks, article: article -%}
+        {%- endif -%}
+
+        {%- if article.content != blank -%}
+          <div class="article-hero-video__content__description">{{ article.content }}</div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const breadcrumb = document.querySelector('[data-breadcrumb]');
+  let prevUrlData = sessionStorage.getItem('videoHubUrl');
+  const blogTitle = breadcrumb.dataset.blogTitle;
+  const highlightedTag = breadcrumb.dataset.tag;
+
+  if (prevUrlData) {
+    prevUrlData = JSON.parse(prevUrlData);
+    const prevUrl = prevUrlData?.url;
+    const title = prevUrlData?.title || '';
+    breadcrumb.innerHTML = title;
+    breadcrumb.setAttribute('href', prevUrl.toLocaleLowerCase());
+  } else {
+    const blogUrl = breadcrumb.dataset.blogUrl;
+    if (highlightedTag) {
+      const url = `${ blogUrl }#${ highlightedTag.replace(/ /g, '-').replace(/'/g, '') }`;
+      breadcrumb.setAttribute('href', url.toLocaleLowerCase());
+      breadcrumb.innerHTML = highlightedTag;
+    }
+  }
+</script>

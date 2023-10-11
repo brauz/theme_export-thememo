@@ -1,0 +1,60 @@
+{%- liquid
+  assign total_available_blocks = 0
+
+  if block.settings.benefits_icon_01 != blank
+    assign total_available_blocks = total_available_blocks | plus: 1
+  endif
+
+  if block.settings.benefits_icon_02 != blank
+    assign total_available_blocks = total_available_blocks | plus: 1
+  endif
+
+  if block.settings.benefits_icon_03 != blank
+    assign total_available_blocks = total_available_blocks | plus: 1
+  endif
+
+  if block.settings.benefits_icon_04 != blank
+    assign total_available_blocks = total_available_blocks | plus: 1
+  endif
+-%}
+
+<div
+  class="pdp-benefits"
+  style="
+    background-color: {{ block.settings.background_color }};
+    --total-available-blocks: {{ total_available_blocks }};
+  "
+>
+  {% if block.settings.benefits_icon_01 != blank %}
+    <div class="pdp-benefits__item">
+      <div class="pdp-benefits__item__image">
+        {% render 'pd-image', image: block.settings.benefits_icon_01 %}
+      </div>
+      <div class="pdp-benefits__item__text">{{ block.settings.benefits_text_01 }}</div>
+    </div>
+  {% endif %}
+  {% if block.settings.benefits_icon_02 != blank %}
+    <div class="pdp-benefits__item">
+      <div class="pdp-benefits__item__image">
+        {% render 'pd-image', image: block.settings.benefits_icon_02 %}
+      </div>
+      <div class="pdp-benefits__item__text">{{ block.settings.benefits_text_02 }}</div>
+    </div>
+  {% endif %}
+  {% if block.settings.benefits_icon_03 != blank %}
+    <div class="pdp-benefits__item">
+      <div class="pdp-benefits__item__image">
+        {% render 'pd-image', image: block.settings.benefits_icon_03 %}
+      </div>
+      <div class="pdp-benefits__item__text">{{ block.settings.benefits_text_03 }}</div>
+    </div>
+  {% endif %}
+  {% if block.settings.benefits_icon_04 != blank %}
+    <div class="pdp-benefits__item">
+      <div class="pdp-benefits__item__image">
+        {% render 'pd-image', image: block.settings.benefits_icon_04 %}
+      </div>
+      <div class="pdp-benefits__item__text">{{ block.settings.benefits_text_04 }}</div>
+    </div>
+  {% endif %}
+</div>

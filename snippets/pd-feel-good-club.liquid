@@ -1,0 +1,49 @@
+{%- liquid
+  assign active_tab = "register"
+  if replace_route and request.path contains routes.account_login_url
+    assign active_tab = "login" 
+  endif
+-%}
+
+<div class="pd-feel-good-club-tab" data-tabs>
+  <ul class="pd-feel-good-club-tab__header pd-container-with-scrollbar" data-tabs-header>
+    <li
+      data-tabs-header-item
+      class="product__info__heading{% if active_tab == "register" %} active{% endif %}"
+      data-content="register"
+      data-route="{{ routes.account_register_url }}"
+      data-replace-route="{% if replace_route %}true{% else %}false{% endif %}"
+    >
+      Register
+    </li>
+    <li
+      data-tabs-header-item
+      class="product__info__heading{% if active_tab == "login" %} active{% endif %}"
+      data-content="login"
+      data-route="{{ routes.account_login_url }}"
+      data-replace-route="{% if replace_route %}true{% else %}false{% endif %}"
+    >
+      Sign in
+    </li>
+  </ul>
+  <div class="pd-feel-good-club-tab__body" data-tabs-content>
+    <div
+      data-tabs-content-item
+      id="register"
+      class="pd-feel-good-club-tab__text{% if active_tab == "register" %} active{% endif %}"
+    >
+      <h4 class="pd-feel-good-club__register-msg">
+        <span>Create a Feel Good Club account and <strong>get 10% off</strong> your first order, start a Gift Registry, and many more perks! </span>
+        <a href="/pages/loyalty-program">Read More</a>
+      </h4>
+      {%- render 'pd-feel-good-club-main-register' -%}
+    </div>
+    <div
+      data-tabs-content-item
+      id="login"
+      class="pd-feel-good-club-tab__text{% if active_tab == "login" %} active{% endif %}"
+    >
+      {%- render 'pd-feel-good-club-main-login' -%}
+    </div>
+  </div>
+</div>

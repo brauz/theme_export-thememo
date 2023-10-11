@@ -1,0 +1,57 @@
+{%- capture carousel_options -%}
+  {
+    "arrows": true,
+    "dots": true,
+    "slidesToShow": 4,
+    "slidesToScroll": 1,
+    "mobileFirst": false,
+    "infinite": false,
+    "responsive": [
+      {
+        "breakpoint": 768,
+        "settings": "unslick"
+      }
+    ]
+  }
+{%- endcapture -%}
+
+{%- assign related_product_values = related_product | split: '|' -%}
+
+<div 
+  class="article-template__related-product"
+  {% if related_product_values.size > 4 %}
+    data-carousel-slider-wrapper
+  {% endif %}
+>
+  <div class="page-width">
+    {%- if heading_text != blank -%}
+      <h4 class="article-template__related-product__heading pd-heading-4">{{ heading_text }}</h4>
+    {%- endif -%}
+    <div class="article-template__related-product__list pd-container-with-scrollbar pd-container-with-scrollbar-overflow pd-container-with-scrollbar-mobile"
+      {% if related_product_values.size > 4 %}
+        data-carousel-slider="{{ carousel_options | escape }}"
+        data-slider="article-related-product"
+      {% endif %}
+    >
+      {%- for related_product_value in related_product_values -%}
+        {%- assign product_handle =  related_product_value | remove: '[' | remove: ']' | remove: '"' -%}
+        {%- assign _product = all_products[product_handle] -%}
+
+        {% render 'card-product',
+          card_product: _product,
+          show_quick_action: true,
+          hide_secondary_image: false,
+          hide_vendor: false,
+          hide_rating: false,
+          hide_swatch: false,
+          show_description: true
+        %}
+      {%- endfor -%}
+    </div>
+    {% if related_product_values.size > 4 %}
+      <div data-carousel-scrollbar class="pd-carousel-scrollbar">
+        <span data-carousel-scrollbar-track class="pd-carousel-scrollbar-piece"></span>
+      </div>
+    {% endif %}
+  </div>
+</div>

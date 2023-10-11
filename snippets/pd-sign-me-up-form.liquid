@@ -1,0 +1,120 @@
+<div class="sign-me-up-form__heading">
+  <h4 class="pd-heading-4">The Memo Baby Tracker</h4>
+  <p class="body-text">What to know for where you, and your baby, are at. Every week.</p>
+</div>
+
+{% form 'customer' %}
+  <input type="hidden" name="contact[tags]" value="newsletter">
+  <div class="pd-form-group">
+    <label for="RegisterForm-FirstName" class="pd-form-label">
+      {{ 'customer.register.first_name' | t }}
+    </label>
+    <input
+      type="text"
+      name="customer[first_name]"
+      id="RegisterForm-FirstName"
+      {% if form.first_name %}
+        value="{{ form.first_name }}"
+      {% endif %}
+      class="pd-form-input"
+      autocomplete="given-name"
+      placeholder="{{ 'customer.register.first_name' | t }}"
+    >
+  </div>
+  <div class="pd-form-group {% if form.errors contains 'email' %}pd-form-group--error{% endif %}">
+    <label class="pd-form-label" for="NewsletterForm--{{ section.id }}">
+      {{ 'newsletter.label' | t }}
+    </label>
+    <input
+      id="NewsletterForm--{{ section.id }}"
+      class="pd-form-input"
+      type="email"
+      name="contact[email]"
+      value="{{ form.email }}"
+      aria-required="true"
+      autocorrect="off"
+      autocapitalize="off"
+      autocomplete="email"
+      {% if form.errors %}
+        autofocus
+        aria-invalid="true"
+        aria-describedby="Newsletter-error--{{ section.id }}"
+      {% elsif form.posted_successfully? %}
+        aria-describedby="Newsletter-success--{{ section.id }}"
+      {% endif %}
+      placeholder="{{ 'newsletter.label' | t }}"
+      required
+    >
+    {%- if form.errors -%}
+      <span id="Newsletter-error--{{ section.id }}" class="pd-form-note">
+        {%- render 'icon.svg', type: 'error' -%}
+        {{ form.errors.translated_fields.email | capitalize }}
+        {{ form.errors.messages.email }}.
+      </span>
+    {%- endif -%}
+  </div>
+
+  <div class="pd-form-group">
+    <label class="pd-form-label">What brings you here?</label>
+    <div class="pd-form-select">
+      <select
+        required
+        placeholder="What Brings You Here?"
+        type="text"
+        name="customer[what_brings_you_here]"
+        id="WhatBringsYouHere"
+        {% if form.what_brings_you_here %}
+          value="{{ form.what_brings_you_here }}"
+        {% endif %}
+        autocapitalize="words"
+        autofocus
+      >
+        <option value="" disabled selected></option>
+        <option value="parent">Parent</option>
+        <option value="expecting">Expecting</option>
+        <option value="gifting">Gifting</option>
+      </select>
+      {% render 'icon.svg', type: 'chevron-down' %}
+    </div>
+    <span class="pd-form-note">
+      Help us send you only the most relevant info personalised to where you're at in your pregnancy or parenting
+      journey.
+    </span>
+  </div>
+
+  <div class="pd-form-group">
+    <label class="pd-form-label">Due date</label>
+    <input class="pd-form-input" type="date" id="dueDate" name="contact[due_date]" required>
+  </div>
+
+  <div class="pd-form-panel">
+    <button
+      type="submit"
+      class="pd-button pd-button--lively-blue pd-button--full-width"
+      name="commit"
+      id="Subscribe"
+      aria-label="{{ 'newsletter.button_label' | t }}"
+    >
+      Sign me up
+    </button>
+  </div>
+
+  <div class="pd-form-group">
+    <span class="pd-form-note">
+      By signing up you agree to receive marketing communications & accept our
+      <a href="/pages/the-feel-good-club-terms-of-use" target="_blank">Terms and Conditions</a>.
+    </span>
+  </div>
+
+  {%- if form.posted_successfully? -%}
+    <h3
+      class="newsletter-form__message newsletter-form__message--success form__message"
+      id="Newsletter-success--{{ section.id }}"
+      tabindex="-1"
+      autofocus
+    >
+      {% render 'icon-success' -%}
+      {{- 'newsletter.success' | t }}
+    </h3>
+  {%- endif -%}
+{% endform %}

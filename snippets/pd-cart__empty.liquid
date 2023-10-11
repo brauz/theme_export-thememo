@@ -1,0 +1,15 @@
+<div class="cart__warnings">
+  <div class="title-wrapper-with-link">
+    <h1 class="title title--primary cart__empty-text">{{ section.settings.cart_empty_message }}</h1>
+  </div>
+  <a href="{{ routes.all_products_collection_url }}" class="button underlined-link pd-button-continue-shopping">
+    {{ 'general.continue_shopping' | t }}
+  </a>
+
+  {%- if shop.customer_accounts_enabled and customer == null -%}
+    <h2 class="cart__login-title">{{ 'sections.cart.login.title' | t }}</h2>
+    <p class="cart__login-paragraph">
+      {{ 'sections.cart.login.paragraph_html' | t: link: routes.account_login_url }}
+    </p>
+  {%- endif -%}
+</div>

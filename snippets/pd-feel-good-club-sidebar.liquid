@@ -1,0 +1,21 @@
+<aside class="feel-good-club-sidebar">
+  <div
+    class="feel-good-club-sidebar__welcome-message"
+    style="
+      --username-color: {{ settings.username_color }};
+      --welcome-bg-color: {{ settings.welcome_bg_color }};
+      --color: {{ settings.color }};
+    "
+  >
+    <h2>Welcome back, {{ customer.name }}</h2>
+    {{- settings.welcome_message -}}
+  </div>
+  
+  <div class="hide-desktop-and-up">
+    {%- render 'pd-feel-good-club-tier-away-from-next', tier: tier, tier_threshold: tier_threshold -%}
+  </div>
+  
+  {% render 'pd-feel-good-club-sidebar-menu', header: 'FEEL GOOD CLUB BENEFITS', menu_handle: section.settings.main_menu, total_coupons_with_tier: total_coupons_with_tier %}
+  {% render 'pd-feel-good-club-sidebar-menu', header: 'THE MEMO SERVICES', menu_handle: section.settings.extra_menu %}
+  {% render 'pd-feel-good-club-sidebar-menu', header: 'ORDERS & DETAILS', menu_handle: section.settings.order_and_details_menu %}
+</aside>

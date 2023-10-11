@@ -1,0 +1,83 @@
+{% render 'pd-usp-section' %}
+
+{% schema %}
+{
+  "name": "USP section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "presets": [
+    {
+      "name": "USP section"
+    }
+  ],
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#E3F25E"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#0A2657"
+    },
+    {
+      "type": "range",
+      "id":"margin_top",
+      "label": "Margin top",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id":"margin_bottom",
+      "label": "Margin bottom",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id":"padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id":"padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

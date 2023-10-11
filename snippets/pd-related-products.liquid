@@ -1,0 +1,103 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- capture carousel_options -%}
+  {
+    "arrows": true,
+    "dots": true,
+    "slidesToShow": {{ section.settings.number_products_showing }},
+    "slidesToScroll": 1,
+    "mobileFirst": false,
+    "infinite": false,
+    "responsive": [
+      {
+        "breakpoint": 990,
+        "settings": "unslick"
+      }
+    ]
+  }
+{%- endcapture -%}
+
+{% liquid
+  assign _product = product
+  assign number_products_showing = section.settings.number_products_showing
+%}
+
+{% if _product %}
+  <product-recommendations
+    class="related-products"
+    data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ _product.id }}&limit=4"
+  >
+    {% if recommendations.performed and recommendations.products_count > 0 %}
+      {% assign total_products = recommendations.products_count %}
+      <div
+        class="
+          section-{{ section.id }}-padding pd-product-carousel pd-carousel-has-scrollbar
+          {% if total_products <= number_products_showing %} no-carousel{% endif %}
+        "
+        {% if total_products > number_products_showing %}
+          data-carousel-slider-wrapper
+        {% endif %}
+      >
+        <div class="page-width">
+          <div class="pd-product-carousel__header">
+            <div class="pd-product-carousel__header__text {{ section.settings.text_alignment }}">
+              {% if section.settings.heading %}
+                <h2 class="pd-heading-5 pd-heading-underline pd-product-carousel__heading">{{ section.settings.heading }}</h2>
+              {% endif %}
+              {% if section.settings.description %}
+                <div class="description pd-product-carousel__description">{{ section.settings.description }}</div>
+              {% endif %}
+            </div>
+            <div class="pd-product-carousel__button">
+              {% if section.settings.button_label != blank %}
+                <a class="pd-button" href="{{  section.settings.button_link }}">{{ section.settings.button_label }}</a>
+              {% endif %}
+            </div>
+          </div>
+          <div
+            class="pd-product-carousel__slider pd-container-with-scrollbar pd-container-with-scrollbar-overflow pd-container-with-scrollbar-mobile"
+            {% if total_products > number_products_showing %}
+              data-carousel-slider="{{ carousel_options | escape }}"
+              data-slider="pd-product-carousel"
+            {% endif %}
+          >
+            {% for recommendation in recommendations.products %}
+              {% render 'card-product',
+                card_product: recommendation,
+                class_name: section.settings.product_width_mobile,
+                show_quick_action: true,
+                hide_secondary_image: section.settings.hide_secondary_image,
+                hide_vendor: section.settings.hide_vendor,
+                hide_rating: section.settings.hide_rating,
+                hide_swatch: section.settings.hide_swatch
+                show_description: section.settings.show_description,
+              %}
+            {% endfor %}
+          </div>
+          {% if total_products > section.settings.number_products_showing %}
+            <div data-progress-bar class="pd-carousel-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+              <span data-progress-bar-label class="pd-carousel-progress-label"></span>
+            </div>
+          {% endif %}
+          <div class="pd-product-carousel__button pd-product-carousel__button--mobile">
+            {% if section.settings.button_label != blank %}
+              <a class="pd-button" href="{{  section.settings.button_link }}">{{ section.settings.button_label }}</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </product-recommendations>
+{% endif %}

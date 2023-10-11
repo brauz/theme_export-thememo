@@ -1,0 +1,62 @@
+{%- if image.src -%}
+  {%- liquid
+    assign arr_srcset = '165x,480x,765x,900x,1000x,1100x,1300x,1400x,1500x,1700x,1900x,2000x,3000x,3840x' | split: ','
+
+    assign srcset = blank
+    for item in arr_srcset
+      assign suffix = item | replace: 'x', 'w'
+      assign srcset_item = image | img_url: item | append: ' ' | append: suffix
+      assign srcset = srcset | append: srcset_item
+      unless forloop.last
+        assign srcset = srcset | append: ','
+      endunless
+    endfor
+  -%}
+
+  <img
+    {% if id != blank %}
+      id="{{ id }}"
+    {% endif %}
+    {% if class != blank %}
+      class="{{ class }}"
+    {% endif %}
+    {% if lazy %}
+      loading="lazy"
+    {% endif %}
+    fetchpriority="high"
+    srcset="{{ srcset }}"
+    src="{{ image | image_url: width: img_size | default: 1100 }}"
+    sizes="{% if is_halfwidth %}(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | divided_by: 2 }}px, (min-width: 750px) 50vw, 100vw{% else %}100vw{% endif%}"
+    alt="{{ alt | default: '' }}"
+    {% if image.aspect_ratio <= 1 %}
+      data-vertical
+    {% endif %}
+    {% if width %}
+      width="{{ width }}"
+    {% endif %}
+    {% if height %}
+      height="{{ height }}"
+    {% endif %}
+  >
+{%- else -%}
+  <img
+    {% if id != blank %}
+      id="{{ id }}"
+    {% endif %}
+    {% if class != blank %}
+      class="{{ class }}"
+    {% endif %}
+    {% if lazy %}
+      loading="lazy"
+    {% endif %}
+    fetchpriority="high"
+    src="{{ image }}"
+    alt="{{ alt | default: '' }}"
+    {% if width %}
+      width="{{ width }}"
+    {% endif %}
+    {% if height %}
+      height="{{ height }}"
+    {% endif %}
+  >
+{%- endif -%}

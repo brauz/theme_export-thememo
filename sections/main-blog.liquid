@@ -1,0 +1,213 @@
+{{ 'component-article-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{% assign per_page = section.settings.per_page %}
+
+{%- paginate blog.articles by per_page -%}
+  <div class="main-blog section-{{ section.id }}-padding">
+    <div class="page-width">
+      <div class="blog-articles">
+        {% if blog.articles.size == 0 %}
+          <h2 class="pd-heading-2" style="margin: auto">No articles with your filter</h2>
+        {% endif %}
+        {% if blog.articles.size >= 9 %}
+          {% comment %} first column {% endcomment %}
+          <div class="blog-articles__col">
+            {%- for article in blog.articles -%}
+              {% liquid
+                assign idx = forloop.index
+                assign number_block_per_col = per_page | divided_by: 3
+                assign limit_first_col = number_block_per_col
+                assign limit_second_col = number_block_per_col | times: 2
+
+                if section.settings.mobile_highlight_orders != blank and section.settings.mobile_highlight_orders contains idx
+                  assign class_mobile_highlight_orders = 'mobile-highlight'
+                else
+                  assign class_mobile_highlight_orders = ''
+                endif
+              %}
+
+              {% if idx <= limit_first_col %}
+                <div class="blog-articles__article article {{ class_mobile_highlight_orders }}">
+                  {%- render 'article-card',
+                    article: article,
+                    show_date: section.settings.show_date,
+                    show_author: section.settings.show_author,
+                    show_excerpt: true,
+                    show_watch_button: true
+                  -%}
+                </div>
+              {% endif %}
+            {%- endfor -%}
+          </div>
+
+          {% comment %} second column {% endcomment %}
+          <div class="blog-articles__col">
+            {%- for article in blog.articles -%}
+              {% liquid
+                assign idx = forloop.index
+                assign number_block_per_col = per_page | divided_by: 3
+                assign limit_first_col = number_block_per_col
+                assign limit_second_col = number_block_per_col | times: 2
+
+                if section.settings.mobile_highlight_orders != blank and section.settings.mobile_highlight_orders contains idx
+                  assign class_mobile_highlight_orders = 'mobile-highlight'
+                else
+                  assign class_mobile_highlight_orders = ''
+                endif
+              %}
+
+              {% if idx > limit_first_col and idx <= limit_second_col %}
+                <div class="blog-articles__article article {{ class_mobile_highlight_orders }}">
+                  {%- render 'article-card',
+                    article: article,
+                    show_date: section.settings.show_date,
+                    show_author: section.settings.show_author,
+                    show_excerpt: section.settings.show_excerpt,
+                    show_watch_button: true
+                  -%}
+                </div>
+              {% endif %}
+            {%- endfor -%}
+          </div>
+
+          {% comment %} third column {% endcomment %}
+          <div class="blog-articles__col">
+            {%- for article in blog.articles -%}
+              {% liquid
+                assign idx = forloop.index
+                assign number_block_per_col = per_page | divided_by: 3
+                assign limit_first_col = number_block_per_col
+                assign limit_second_col = number_block_per_col | times: 2
+
+                if section.settings.mobile_highlight_orders != blank and section.settings.mobile_highlight_orders contains idx
+                  assign class_mobile_highlight_orders = 'mobile-highlight'
+                else
+                  assign class_mobile_highlight_orders = ''
+                endif
+              %}
+              {% if idx > limit_second_col %}
+                <div class="blog-articles__article article {{ class_mobile_highlight_orders }}">
+                  {%- render 'article-card',
+                    article: article,
+                    show_date: section.settings.show_date,
+                    show_author: section.settings.show_author,
+                    show_excerpt: section.settings.show_excerpt,
+                    show_watch_button: true
+                  -%}
+                </div>
+              {% endif %}
+            {%- endfor -%}
+          </div>
+        {% else %}
+          <div class="blog-articles__inner">
+            {%- for article in blog.articles -%}
+              <div class="blog-articles__article article">
+                {%- render 'article-card',
+                  article: article,
+                  show_date: section.settings.show_date,
+                  show_author: section.settings.show_author,
+                  show_excerpt: true,
+                  show_watch_button: true
+                -%}
+              </div>
+            {%- endfor -%}
+          </div>
+        {% endif %}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+      <div class="pagination-wrapper">
+        <div class="pagination-info">{{ section.settings.per_page }} of {{ blog.articles_count }} items</div>
+        {%- render 'pagination', paginate: paginate -%}
+      </div>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "t:sections.main-blog.name",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "per_page",
+      "min": 9,
+      "max": 36,
+      "step": 3,
+      "label": "Articles per page",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-blog.settings.header.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "default": true,
+      "label": "t:sections.main-blog.settings.show_date.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "default": false,
+      "label": "t:sections.main-blog.settings.show_author.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Show excerpt",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "mobile_highlight_orders",
+      "label": "Mobile highlight orders",
+      "default": "1, 3, 4",
+      "info": "Order of highlighted article on mobile"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ]
+}
+{% endschema %}

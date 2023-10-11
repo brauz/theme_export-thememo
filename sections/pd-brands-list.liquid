@@ -1,0 +1,111 @@
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  .section-{{ section.id }}-color {
+    background-color: {{ section.settings.bg_color }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="section-{{ section.id }}-padding section-{{ section.id }}-color">
+  <div class="page-width">
+    <ul class="brands-list" id="brands-a-to-z">
+      {% capture alphabet %}
+        -A-B-C-D-E-F-G-H-I-J-K-L-M-N-O-P-Q-R-S-T-U-V-W-X-Y-Z-
+      {% endcapture %}
+  
+      {% assign not_alphabet_items = '' %}
+      {% assign letters = alphabet | split: '-' %}
+      {% for letter in letters %}
+        {% if letter != blank %}
+          <li class="brand-group">
+            <h2 class="brand-group__letter"><span class="anchor" id="brands-{{ letter }}"></span>{{ letter }}</h2>
+            {% for vendor in shop.vendors %}
+              {% assign vendor_first_letter = vendor | strip | upcase | slice: 0 %}
+              {% unless alphabet contains vendor_first_letter %}
+                {% unless not_alphabet_items contains vendor %}
+                  {% assign not_alphabet_items = not_alphabet_items | append: vendor | append: '||' %}
+                {% endunless %}
+              {% endunless %}
+              {% if vendor_first_letter == letter %}
+                <div class="brand-list-item">
+                  <a class="description" href="/collections/{{ vendor | handle }}">{{ vendor }}</a>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </li>
+        {% endif %}
+      {% endfor %}
+  
+      {% if not_alphabet_items != blank %}
+        {% assign not_alphabet_vendors = not_alphabet_items | split: '||' %}
+        <li class="brand-group">
+          <h2 class="brand-group__letter"><span class="anchor" id="brands-#"></span>#</h2>
+          {% for vendor in not_alphabet_vendors %}
+            <div class="brand-list-item">
+              <a class="description" href="/collections/{{ vendor | handle }}">{{ vendor }}</a>
+            </div>
+          {% endfor %}
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Brands list",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brands list"
+    }
+  ]
+}
+{% endschema %}
+

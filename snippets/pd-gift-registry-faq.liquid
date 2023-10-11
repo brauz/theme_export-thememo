@@ -1,0 +1,28 @@
+<div class="gift-registry-faq-select">
+  <div class="pd-form-group">
+    <label class="pd-form-label">I need help with</label>
+    <div class="pd-form-select">
+      <select name="gift-registry-faq-select" required>
+        {% for block in section.blocks %}
+          {% if block.type == 'content-block' and block.settings.title != blank %}
+            <option value="{{ block.settings.title | handleize }}">{{ block.settings.title }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+      {% render 'icon.svg', type: 'chevron-down' %}
+    </div>
+  </div>
+</div>
+
+<div class="gift-registry-faq-content">
+  {% for block in section.blocks %}
+    {% if block.type == 'content-block' %}
+      <div class="gift-registry-faq-content-block">
+        {% if block.settings.title != blank %}
+          <h2 id="{{ block.settings.title | handleize }}" class="pd-heading-3 gift-registry-faq-content-block__title">{{ block.settings.title }}</h2>
+        {% endif %}
+        <div class="gift-registry-faq-content-block__content">{{ block.settings.content }}</div>
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>

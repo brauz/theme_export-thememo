@@ -1,0 +1,211 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  .section-{{ section.id }}-color {
+    background-color: {{ section.settings.bg_color }};
+  }
+
+  .section-{{ section.id }}-padding .main-faq__heading> * {
+    color: {{ section.settings.heading_text_color }};
+  }
+
+  .section-{{ section.id }}-padding .main-faq__description > * {
+    color: {{ section.settings.description_text_color }};
+  }
+
+  .section-{{ section.id }}-padding .main-faq__item .main-faq__question {
+    color: {{ section.settings.question_text_color }};
+  }
+
+  .section-{{ section.id }}-padding .main-faq__item .main-faq__answer {
+    color: {{ section.settings.answer_text_color }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+
+    .section-{{ section.id }}-padding .main-faq {
+      width: {{ section.settings.width_desktop }}%;
+      margin-inline: auto;
+    }
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign blocks = section.blocks | where: 'type', 'item'
+
+  if section.settings.use_internal_data
+    if template.name contains 'collection'
+      assign blocks = collection.metafields.custom.faqs.value
+    endif
+
+    if template.name contains 'product'
+      assign blocks = product.metafields.custom.faqs.value
+    endif
+
+    if template.name contains 'page'
+      assign blocks = page.metafields.custom.faqs.value
+    endif
+  endif
+-%}
+
+<div class="section-{{ section.id }}-padding section-{{ section.id }}-color">
+  <div class="page-width main-faq">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="pd-heading-2 main-faq__heading">
+        {{- section.settings.heading -}}
+      </h2>
+    {%- endif -%}
+
+    {%- if section.settings.description != blank -%}
+      <h3 class="pd-heading-3 main-faq__description">
+        {{- section.settings.description -}}
+      </h3>
+    {%- endif -%}
+    <ul class="main-faq__list">
+      {%- if section.settings.use_internal_data -%}
+        {%- for block in blocks -%}
+          <li class="rte main-faq__item">
+            <h4 class="main-faq__question">
+              {{- block.question.value -}}
+            </h4>
+            <div class="description main-faq__answer">
+              {{- block.answer | metafield_tag -}}
+            </div>
+          </li>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for block in blocks -%}
+          <li class="rte main-faq__item">
+            <h4 class="main-faq__question">
+              {{- block.settings.question -}}
+            </h4>
+            <div class="description main-faq__answer">
+              {{- block.settings.answer -}}
+            </div>
+          </li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "use_internal_data",
+      "label": "Get FAQ items from metafield"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "color",
+      "id": "heading_text_color",
+      "label": "Heading text color"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "color",
+      "id": "description_text_color",
+      "label": "Description text color"
+    },
+    {
+      "type": "range",
+      "id": "width_desktop",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Width on desktop",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Questions and answers text color"
+    },
+    {
+      "type": "color",
+      "id": "question_text_color",
+      "label": "Question text color"
+    },
+    {
+      "type": "color",
+      "id": "answer_text_color",
+      "label": "Answer text color"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ"
+    }
+  ]
+}
+{% endschema %}

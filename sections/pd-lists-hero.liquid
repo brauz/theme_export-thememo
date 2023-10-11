@@ -1,0 +1,130 @@
+{% render 'pd-lists-hero' %}
+
+{% schema %}
+{
+  "name": "Lists hero",
+  "class": "lists-hero-section",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#FFE8D9"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Decoration image"
+    },
+    {
+      "type": "image_picker",
+      "id": "decoration_image",
+      "label": "Decoration image"
+    },
+    {
+      "type": "text",
+      "id": "decoration_image_desktop_position",
+      "label": "Decoration image desktop position(%)",
+      "info": "top, left. EX: 80, 40",
+      "default": "80, 40"
+    },
+    {
+      "type": "text",
+      "id": "decoration_image_mobile_position",
+      "label": "Decoration image mobile position(%)",
+      "info": "top, left. EX: 10, 85",
+      "default": "10, 85"
+    },
+    {
+      "type": "number",
+      "id": "decoration_image_desktop_width",
+      "label": "Decoration image desktop width(px)",
+      "default": 60
+    },
+    {
+      "type": "number",
+      "id": "decoration_image_mobile_width",
+      "label": "Decoration image mobile width(px)",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 150,
+      "step": 2,
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 150,
+      "step": 2,
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "button",
+      "name": "Button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "Button url"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button style",
+          "options": [
+            {
+              "label": "Default",
+              "value": ""
+            },
+            {
+              "label": "Bold Coral",
+              "value": "pd-button--bold-coral"
+            },
+            {
+              "label": "Happy Lemonlime",
+              "value": "pd-button--happy-lemonlime"
+            },
+            {
+              "label": "Strong Dark Blue",
+              "value": "pd-button--strong-dark-blue"
+            },
+            {
+              "label": "Lively Blue",
+              "value": "pd-button--lively-blue"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "is_button_outline",
+          "label": "Button outline?",
+          "default": true
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

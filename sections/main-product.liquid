@@ -1,0 +1,557 @@
+<section
+  id="MainProduct-{{ section.id }}"
+  class="page-width main-product"
+  data-section="{{ section.id }}"
+>
+  {{ 'section-main-product.css' | asset_url | stylesheet_tag }}
+  {{ 'component-accordion.css' | asset_url | stylesheet_tag }}
+  {{ 'component-price.css' | asset_url | stylesheet_tag }}
+  {{ 'component-slider.css' | asset_url | stylesheet_tag }}
+  {{ 'component-rating.css' | asset_url | stylesheet_tag }}
+  {{ 'component-loading-overlay.css' | asset_url | stylesheet_tag }}
+  {{ 'component-deferred-media.css' | asset_url | stylesheet_tag }}
+
+  <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+  {% if section.settings.image_zoom == 'hover' %}
+    <script id="EnableZoomOnHover-main" src="{{ 'magnify.js' | asset_url }}" defer="defer"></script>
+  {% endif %}
+
+  {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
+
+  <div class="product">
+    <div class="product__media-wrapper">
+      {% render 'product-media-gallery', variant_images: variant_images %}
+    </div>
+    {% render 'product-info' %}
+  </div>
+
+  {% render 'drawer-size-guide' %}
+
+  {% render 'pd-cart-notification', showDivider: false %}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      function isIE() {
+        const ua = window.navigator.userAgent;
+        const msie = ua.indexOf('MSIE ');
+        const trident = ua.indexOf('Trident/');
+
+        return msie > 0 || trident > 0;
+      }
+
+      if (!isIE()) return;
+      const hiddenInput = document.querySelector('#{{ product_form_id }} input[name="id"]');
+      const noScriptInputWrapper = document.createElement('div');
+      const variantSwitcher =
+        document.querySelector('variant-radios[data-section="{{ section.id }}"]') ||
+        document.querySelector('variant-selects[data-section="{{ section.id }}"]');
+      noScriptInputWrapper.innerHTML = document.querySelector(
+        '.product-form__noscript-wrapper-{{ section.id }}'
+      ).textContent;
+      variantSwitcher.outerHTML = noScriptInputWrapper.outerHTML;
+
+      document.querySelector('#Variants-{{ section.id }}').addEventListener('change', function (event) {
+        hiddenInput.value = event.currentTarget.value;
+      });
+    });
+  </script>
+
+  {%- liquid
+    if product.selected_or_first_available_variant.featured_media
+      assign seo_media = product.selected_or_first_available_variant.featured_media
+    else
+      assign seo_media = product.featured_media
+    endif
+  -%}
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org/",
+      "@type": "Product",
+      "name": {{ product.title | json }},
+      "url": {{ request.origin | append: product.url | json }},
+      {% if seo_media -%}
+        "image": [
+          {{ seo_media | image_url: width: 1920 | prepend: "https:" | json }}
+        ],
+      {%- endif %}
+      "description": {{ product.description | strip_html | json }},
+      {% if product.selected_or_first_available_variant.sku != blank -%}
+        "sku": {{ product.selected_or_first_available_variant.sku | json }},
+      {%- endif %}
+      "brand": {
+        "@type": "Brand",
+        "name": {{ product.vendor | json }}
+      },
+      "offers": [
+        {%- for variant in product.variants -%}
+          {
+            "@type" : "Offer",
+            {%- if variant.sku != blank -%}
+              "sku": {{ variant.sku | json }},
+            {%- endif -%}
+            {%- if variant.barcode.size == 12 -%}
+              "gtin12": {{ variant.barcode }},
+            {%- endif -%}
+            {%- if variant.barcode.size == 13 -%}
+              "gtin13": {{ variant.barcode }},
+            {%- endif -%}
+            {%- if variant.barcode.size == 14 -%}
+              "gtin14": {{ variant.barcode }},
+            {%- endif -%}
+            "availability" : "http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+            "price" : {{ variant.price | divided_by: 100.00 | json }},
+            "priceCurrency" : {{ cart.currency.iso_code | json }},
+            "url" : {{ request.origin | append: variant.url | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.main-product.name",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product gallery"
+    },
+    {
+      "type": "checkbox",
+      "id": "stack_images",
+      "label": "Stack images",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "divider",
+      "name": "Divider",
+      "settings": [
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color",
+          "default": "#d0d5dd"
+        },
+        {
+          "type": "header",
+          "content": "Margin"
+        },
+        {
+          "type": "range",
+          "id": "margin_top",
+          "label": "Margin top",
+          "default": 20,
+          "min": 0,
+          "max": 50,
+          "step": 5,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom",
+          "label": "Margin bottom",
+          "default": 20,
+          "min": 0,
+          "max": 50,
+          "step": 5,
+          "unit": "px"
+        }
+      ]
+    },
+    {
+      "type": "custom_liquid",
+      "name": "Custom Liquid",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "Custom Liquid"
+        }
+      ]
+    },
+    {
+      "type": "membership_message",
+      "name": "Membership message",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title_message",
+          "label": "Title message",
+          "default": "Feel good club ⓘ"
+        },
+        {
+          "type": "header",
+          "content": "Guess"
+        },
+        {
+          "type": "text",
+          "id": "guess_message",
+          "label": "Guess message",
+          "default": "Sign up for 10% off your first order"
+        },
+        {
+          "type": "color",
+          "id": "guess_message_color",
+          "label": "Guess message color",
+          "default": "#0554FF"
+        },
+        {
+          "type": "color",
+          "id": "guess_message_bg_color",
+          "label": "Guess message background color",
+          "default": "#F5F9FF"
+        },
+        {
+          "type": "header",
+          "content": "Tier"
+        },
+        {
+          "type": "text",
+          "id": "tier_message",
+          "label": "Tier message",
+          "default": "Huge tier members save 10%"
+        },
+        {
+          "type": "color",
+          "id": "tier_message_color",
+          "label": "Tier message color",
+          "default": "#FC4734"
+        },
+        {
+          "type": "color",
+          "id": "tier_message_bg_color",
+          "label": "Tier message background color",
+          "default": "#FFF5F4"
+        }
+      ]
+    },
+    {
+      "type": "rating",
+      "name": "Rating",
+      "limit": 1
+    },
+    {
+      "type": "description",
+      "name": "Description",
+      "limit": 1
+    },
+    {
+      "type": "variant_picker",
+      "name": "Variant picker",
+      "limit": 1
+    },
+    {
+      "type": "text_panel",
+      "name": "Text panel",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border color",
+          "default": "#E1D7FF"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color",
+          "default": "#E1D7FF"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "margin_top",
+          "label": "Margin top",
+          "default": 20,
+          "min": 0,
+          "max": 50,
+          "step": 5,
+          "unit": "px"
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom",
+          "label": "Margin bottom",
+          "default": 20,
+          "min": 0,
+          "max": 50,
+          "step": 5,
+          "unit": "px"
+        }
+      ]
+    },
+    {
+      "type": "pd_free_gift",
+      "name": "PD Free Gift",
+      "settings": []
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Buy buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "back_in_stock_msg",
+          "label": "Back in stock message",
+          "default": "Product is currently out of stock."
+        },
+        {
+          "type": "text",
+          "id": "coming_soon_msg",
+          "label": "Coming soon message",
+          "default": "Coming soon. Drop in your email below to be notified when it arrives."
+        },
+        {
+          "type": "text",
+          "id": "estimated_shipping_msg",
+          "label": "Estimated shipping message"
+        }
+      ]
+    },
+    {
+      "type": "buttons",
+      "name": "Buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "color",
+          "id": "wishlist_bg_color",
+          "label": "Wishlist background color",
+          "default": "#ffcfc0"
+        },
+        {
+          "type": "color",
+          "id": "registry_add_bg_color",
+          "label": "Registry background color",
+          "default": "#ffcfc0"
+        }
+      ]
+    },
+    {
+      "type": "payment_message",
+      "name": "Payment message",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Buy now, pay later"
+        }
+      ]
+    },
+    {
+      "type": "pickup_click_collect",
+      "name": "Pick up - Click collect",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "shipping_desc",
+          "label": "Shipping description"
+        },
+        {
+          "type": "header",
+          "content": "Click and Collect"
+        },
+        {
+          "type": "richtext",
+          "id": "click_collect_msg",
+          "label": "Click and collect message"
+        },
+        {
+          "type": "text",
+          "id": "click_collect_time",
+          "label": "Click and collect time",
+          "info": "Monday – Friday--10am - 5pm, Saturday--9am - 5pm, Sunday--10am - 4pm"
+        }
+      ]
+    },
+    {
+      "type": "text_box_note",
+      "name": "Text box note",
+      "settings": [
+        {
+          "type": "color",
+          "id": "backgroud_color",
+          "label": "Background color",
+          "default": "#F2F4F7"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#2E4A7B"
+        },
+        {
+          "type": "text",
+          "id": "related_tag",
+          "label": "Related tag"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    },
+    {
+      "type": "best_for",
+      "name": "Best for",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "best_for_heading",
+          "label": "Best for heading",
+          "default": "Best for"
+        },
+        {
+          "type": "image_picker",
+          "id": "best_for_img_decoration",
+          "label": "Best for image decoration"
+        }
+      ]
+    },
+    {
+      "type": "list_info",
+      "name": "List information",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "list_info_type",
+          "label": "List info type",
+          "options": [
+            {
+              "value": "tabs",
+              "label": "Tabs"
+            },
+            {
+              "value": "accordions",
+              "label": "Accordions"
+            }
+          ],
+          "default": "tabs"
+        }
+      ]
+    },
+    {
+      "type": "pdp_complementary",
+      "name": "Product complementary",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "complementary_heading",
+          "label": "Complementary heading",
+          "default": "Other products for new mums"
+        }
+      ]
+    },
+    {
+      "type": "pdp_benefits",
+      "name": "Product benefits",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color"
+        },
+        {
+          "type": "header",
+          "content": "Benefit 01"
+        },
+        {
+          "type": "image_picker",
+          "id": "benefits_icon_01",
+          "label": "Benefit icon 01",
+          "info": "Dimension: 40x40"
+        },
+        {
+          "type": "text",
+          "id": "benefits_text_01",
+          "label": "Benefit text 01",
+          "default": "Free Delivery over $99*"
+        },
+        {
+          "type": "header",
+          "content": "Benefit 02"
+        },
+        {
+          "type": "image_picker",
+          "id": "benefits_icon_02",
+          "label": "Benefit icon 02",
+          "info": "Dimension: 40x40"
+        },
+        {
+          "type": "text",
+          "id": "benefits_text_02",
+          "label": "Benefit text 02",
+          "default": "Value Packed Rewards"
+        },
+        {
+          "type": "header",
+          "content": "Benefit 03"
+        },
+        {
+          "type": "image_picker",
+          "id": "benefits_icon_03",
+          "label": "Benefit icon 03",
+          "info": "Dimension: 40x40"
+        },
+        {
+          "type": "text",
+          "id": "benefits_text_03",
+          "label": "Benefit text 03",
+          "default": "Same Day Dispatch*"
+        },
+        {
+          "type": "header",
+          "content": "Benefit 04"
+        },
+        {
+          "type": "image_picker",
+          "id": "benefits_icon_04",
+          "label": "Benefit icon 04",
+          "info": "Dimension: 40x40"
+        },
+        {
+          "type": "text",
+          "id": "benefits_text_04",
+          "label": "Benefit text 04",
+          "default": "Easy 30 Day Returns*"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

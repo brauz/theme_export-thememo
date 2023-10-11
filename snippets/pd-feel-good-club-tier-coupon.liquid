@@ -1,0 +1,23 @@
+{%- assign blocks = section.blocks | where: 'type', 'coupon' -%}
+
+<div class="feel-good-club-tier-coupon">
+  <h5 class="body-text tier-coupon__main-heading">Current coupons</h5>
+
+  <ul class="tier-coupon__list">
+    {% for block in blocks %}
+      {% if block.settings.tier == tier %}
+        {%- liquid
+          assign bg_color = settings.little_tier_bg_color
+          if tier == 'big'
+            assign bg_color = settings.big_tier_bg_color
+          elsif tier == 'huge'
+            assign bg_color = settings.huge_tier_bg_color
+          endif
+        -%}
+        <li class="tier-coupon__item" style="--bg-color: {{ bg_color }}">
+          {{ block.settings.description }}
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</div>

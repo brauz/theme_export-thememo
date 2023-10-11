@@ -1,0 +1,107 @@
+{% style %}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .pd-stages-bg {
+    background-color: var(--stages-bg, #E3F25E);
+    transition: all 0.5s;
+  }
+{% endstyle %}
+
+<div
+  class="section-{{ section.id }}-padding pd-stages pd-stages-bg"
+  data-bg-color="{{ section.settings.bg_color }}"
+  style="--stages-bg: {{ section.settings.bg_color }}"
+>
+  <div>
+    <div class="page-width">
+
+      <div class="stages-blocks accordion hide-desktop-and-up">
+        {% if section.settings.heading %}
+          <h2 class="section-title">{{- section.settings.heading -}}</h2>
+        {% endif %}
+        {% for block in section.blocks %}
+          <div class="stages-block">
+            <div class="accordion-control block-title__wrap" data-bg-color="{{ block.settings.bg_color }}">
+              <h3 class="block-title">
+                {{ block.settings.title }}
+
+                {% if block.settings.image_asterisk %}
+                  {% render 'pd-image', image: block.settings.image_asterisk, class: "stages-block__image-atr" %}
+                {% endif %}
+              </h3>
+              {% render 'icon.svg', type: "arrow-down" %}
+            </div>
+            <div class="accordion-panel">
+              {% assign image = block.settings.image_desktop %}
+              {% if block.settings.image %}
+                {% assign image = block.settings.image %}
+              {% endif %}
+              {% render 'pd-image', image: image, class: "stages-block__image" %}
+              <div class="stages-block-content">{{ block.settings.description }}</div>
+
+              {% if block.settings.link != blank %}
+                <a class="link cta" href="{{ block.settings.link }}">LEARN MORE</a>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="stages-blocks stages-blocks--desktop hide-tablet-and-down">
+        <div class="stages-block-images">
+          {% for block in section.blocks%}
+            <div class="stages-block--desktop-image {% if forloop.index0 == 0 %} active {% endif %}">
+              {% render 'pd-image', image: block.settings.image_desktop, class: "stages-block__image" %}
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="stages-block-description">
+          {% if section.settings.heading %}
+            <h2 class="section-title">{{- section.settings.heading -}}</h2>
+          {% endif %}
+          {% for block in section.blocks %}
+            {%- liquid 
+              assign html_tag = "a"
+              if block.type == "text"
+                assign html_tag = "div"
+              endif 
+            -%}
+            
+            <{{html_tag}}
+              data-index="{{ forloop.index0 }}" 
+              data-bg-color="{{ block.settings.bg_color }}" 
+              class="stages-block--desktop-item" 
+              {% if  block.settings.link != blank %} href="{{ block.settings.link }}" {% endif %}
+            >
+              <div class="block-title__wrap">
+                <h3 class="block-title" data-bg-color="{{ block.settings.bg_color }}">
+                  {{ block.settings.title }}
+
+                  {% if block.settings.image_asterisk %}
+                     {% render 'pd-image', image: block.settings.image_asterisk, class: "stages-block__image-atr" %}
+                  {% endif %}
+                </h3>
+                <svg width="60" height="57" viewBox="0 0 60 57" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="6.11226e-05" y1="28.2" x2="57.7895" y2="28.2" stroke="#0A2657" stroke-width="2"/>
+                  <path d="M32.3158 1L58 28.2895L32.3158 55.5789" stroke="#0A2657" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="stages-block--desktop-content">{{ block.settings.description }}</div>
+            </{{html_tag}}>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

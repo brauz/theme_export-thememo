@@ -1,0 +1,133 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    background-color: {{ section.settings.bg_color }};
+  }
+
+  .section-{{ section.id }}-padding .sign-me-up__inner {
+    {% if section.settings.bg_image != blank %}
+      {%- assign bg_image = section.settings.bg_image_mobile | default: section.settings.bg_image -%}
+      background: url('{{ bg_image | img_url: '1500x' }}') no-repeat center center;
+      background-size: cover;
+    {% else %}
+      background: {{ section.settings.bg_color_inner }};
+    {% endif %}
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+
+    .section-{{ section.id }}-padding .sign-me-up__inner {
+      {% if section.settings.bg_image != blank %}
+        background: url('{{ section.settings.bg_image | img_url: '1500x' }}') no-repeat center center;
+        background-size: cover;
+      {% else %}
+        background: {{ section.settings.bg_color_inner }};
+      {% endif %}
+    }
+  }
+{%- endstyle -%}
+
+<div class="section-{{ section.id }}-padding sign-me-up">
+  <div class="page-width">
+    <div class="sign-me-up__inner">
+      <div class="sign-me-up__text">
+        {% if section.settings.heading != blank %}
+          <h4 class="pd-heading-4">{{ section.settings.heading }}</h4>
+        {% endif %}
+
+        {% if section.settings.description != blank %}
+          <div class="body-text">{{ section.settings.description }}</div>
+        {% endif %}
+      </div>
+      <div class="sign-me-up__button">
+        <button type="button" id="SignMeUpFormTrigger" class="pd-button pd-button--lively-blue">
+          {{- section.settings.button_label -}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Sign me up",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color section"
+    },
+    {
+      "type": "color",
+      "id": "bg_color_inner",
+      "label": "Background color inner section"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background image on desktop",
+      "info": "Leave blank to use background color"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image_mobile",
+      "label": "Background image on mobile",
+      "info": "Leave blank to use background color"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 52
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sign me up"
+    }
+  ]
+}
+{% endschema %}

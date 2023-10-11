@@ -1,0 +1,138 @@
+{{ 'section-blog-post.css' | asset_url | stylesheet_tag }}
+
+{% render 'main-article', data: section.settings, blocks: section.blocks %}
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "articleBody": {{ article.content | strip_html | json }},
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": {{ request.origin | append: page.url | json }}
+    },
+    "headline": {{ article.title | json }},
+    {% if article.excerpt != blank %}
+      "description": {{ article.excerpt | strip_html | json }},
+    {% endif %}
+    {% if article.image %}
+      "image": [
+        {{ article | image_url: width: 1920 | prepend: "https:" | json }}
+      ],
+    {% endif %}
+    "datePublished": {{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
+    "dateCreated": {{ article.created_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
+    "author": {
+      "@type": "Person",
+      "name": {{ article.author | json }}
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": {{ shop.name | json }}
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "t:sections.main-article.name",
+  "tag": "section",
+  "class": "section",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Article hero banner"
+    },
+    {
+      "type": "color",
+      "id": "banner_background_color",
+      "label": "Banner background color",
+      "default": "#F0EDFF"
+    },
+    {
+      "type": "image_picker",
+      "id": "decoration_image",
+      "label": "Decoration image"
+    },
+    {
+      "type": "text",
+      "id": "decoration_image_desktop_position",
+      "label": "Decoration image desktop position(%)",
+      "info": "top, left. EX: 80, 40",
+      "default": "80, 40"
+    },
+    {
+      "type": "text",
+      "id": "decoration_image_mobile_position",
+      "label": "Decoration image mobile position(%)",
+      "info": "top, left. EX: 10, 85",
+      "default": "10, 85"
+    },
+    {
+      "type": "number",
+      "id": "decoration_image_desktop_width",
+      "label": "Decoration image desktop width(px)",
+      "default": 60
+    },
+    {
+      "type": "number",
+      "id": "decoration_image_mobile_width",
+      "label": "Decoration image mobile width(px)",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "social_links",
+      "name": "Social links",
+      "settings": [
+        {
+          "type": "select",
+          "id": "share_link",
+          "label": "Share link",
+          "options": [
+            {
+              "value": "facebook",
+              "label": "Facebook"
+            },
+            {
+              "value": "pinterest",
+              "label": "Pinterest"
+            },
+            {
+              "value": "twitter",
+              "label": "Twitter"
+            }
+          ],
+          "default": "facebook"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

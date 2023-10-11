@@ -1,0 +1,21 @@
+{% assign variantsIds = "" %}
+{% for variant in product_data.variants %}
+  {% assign variantsIds = variantsIds | append: variant.id | append: "," %}
+{% endfor %}
+{% assign variantObj = product_data.selected_or_first_available_variant %}
+{% assign variantId = variantObj.id %}
+
+<button
+  class="registry-add-btn"
+  data-add-to-registry
+  data-customer-id="{{customer.id}}"
+  data-variant-id="{{variantId}}"
+  data-variant-price="{{variantObj.price}}"
+  style="display: none;"
+>
+  {% render 'icon.svg', type: 'new-gift' %}
+  <span class="text">
+    <span class="hide-desktop">Gift registry</span>
+    <span class="hide-mobile">Add to gift registry</span>
+  </span>
+</button>

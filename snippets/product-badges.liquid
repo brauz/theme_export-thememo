@@ -1,0 +1,37 @@
+<div class="
+  pd-product-badges
+  {% if is_fullwidth %} pd-product-badges--fullwidth{% endif %}
+  {% if position != blank %} pd-product-badges--{{ position }}{% endif %}
+">
+  {%- if product.available == false -%}
+    <span class="pd-product-badge sold-out">
+      {{- 'products.product.sold_out' | t -}}
+    </span>
+  {%- endif -%}
+
+  {%- unless hide_all_badges and product.available == false -%}
+    {%- for tag in product.tags -%}
+      {%- if tag contains 'label:' -%}
+        {%- liquid
+          assign label = ''
+          assign color = ''
+          assign splitted_tag = tag | split: '|'
+          for item in splitted_tag
+            if item contains 'label:'
+              assign label = item | split: ':' | last
+            endif
+            if item contains 'bg_color:' or item contains 'bg_colour:'
+            assign bg_color = item | split: ':' | last
+            endif
+            if item contains 'text_color:' or item contains 'text_colour:'
+              assign color = item | split: ':' | last
+            endif
+          endfor
+        -%}
+        <span class="pd-product-badge custom" style="background-color: {{ bg_color }};color: {{ color }}">
+          {{- label -}}
+        </span>
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endunless -%}
+</div>

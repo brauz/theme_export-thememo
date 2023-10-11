@@ -1,0 +1,53 @@
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign for_parents = collection.metafields.accentuate.lists_parents_collections | split: '|'
+  assign for_baby = collection.metafields.accentuate.lists_baby_collections | split: '|'
+  assign active_for_baby_tab = false
+  if for_parents == blank and for_baby != blank
+    assign active_for_baby_tab = true
+  endif
+-%}
+
+<section class="lists-collections">
+  <div class="page-width">
+    <ul data-tabs class="lists-tabs">
+      {% if for_parents != blank %}
+        <li data-tab="forParents" class="lists-tab active">For Parents</li>
+      {% endif %}
+      {% if for_baby != blank %}
+        <li data-tab="forBaby" class="lists-tab {% if active_for_baby_tab %}active{% endif %}">For Baby</li>
+      {% endif %}
+    </ul>
+  </div>
+  <div class="lists-tab-contents-wrapper">
+    <div class="page-width">
+      <div data-tab-contents class="lists-tab-contents">
+        {% if for_parents != blank %}
+          <div data-tab-content="forParents" class="lists-tab-content active">
+            {% for parent_collection in for_parents %}
+              {% assign collection_data = collections[parent_collection] %}
+              {% render 'pd-lists-collection', collection_data: collection_data %}
+            {% endfor %}
+          </div>
+        {% endif %}
+        {% if for_baby != blank %}
+          <div data-tab-content="forBaby" class="lists-tab-content {% if active_for_baby_tab %}active{% endif %}">
+            {% for baby_collection in for_baby %}
+              {% assign collection_data = collections[baby_collection] %}
+              {% render 'pd-lists-collection', collection_data: collection_data %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+
+{% schema %}
+{
+  "name": "Lists collection",
+  "class": "lists-collections-section"
+}
+{% endschema %}

@@ -1,0 +1,47 @@
+<script>
+(function() {
+  const colors = {};
+  
+  {% for block in section.blocks %}
+    (function() {
+      const key = {{ block.settings.title | handleize | json }};
+      const value = {{ block.settings.color | json }};
+
+      colors[key] = value;
+    })();
+  {% endfor %}
+
+  const ELM_elementToFill = document.querySelectorAll('[data-color-mapping-item]');
+  ELM_elementToFill.forEach(elm => {
+    const title = elm.getAttribute('data-color-mapping-item');
+    const key = title.toLowerCase().replace(/ /, '-');
+
+    elm.style.backgroundColor = colors[key];
+  })
+})()
+
+</script>
+
+{% schema %}
+{
+  "name": "Color Mapping",
+  "blocks": [
+    {
+      "type": "color",
+      "name": "Color",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Color"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

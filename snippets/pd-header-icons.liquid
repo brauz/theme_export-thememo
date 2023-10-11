@@ -1,0 +1,98 @@
+{%- if shop.customer_accounts_enabled -%}
+  <div class="pd-header__icon">
+    {% render 'icon.svg', type: 'gift' %}
+    <div class="pd-header__title">Registry</div>
+    <ul class="pd-header__dropdown-list">
+      <li class="pd-header__dropdown-item">
+        <a href="{% if customer and customer.tags contains 'Registry-Owner' or customer.tags contains 'old-registry' %}/account?view=gift-registry-dashboard{%- else -%}/pages/gift-registry{%- endif -%}">
+          {% if customer and customer.tags contains 'Registry-Owner' or customer.tags contains 'old-registry' %}
+           {{- "My registry" -}}
+          {% else %}
+            {{- section.settings.first_registry_text -}}
+          {% endif %}
+        </a>
+      </li>
+      {% if section.settings.learn_more_lists_text != blank %}
+        <li class="pd-header__dropdown-item">
+          <a href="{{ section.settings.learn_more_lists_url | default: '#' }}">
+            {{- section.settings.learn_more_lists_text -}}
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+{%- endif -%}
+
+<div class="pd-header__icon">
+  {% render 'icon.svg', type: 'edit' %}
+  <div class="pd-header__title">Lists</div>
+  <ul class="pd-header__dropdown-list">
+    <li class="pd-header__dropdown-item">
+      {% if customer %}
+        <a href="/pages/your-lists">
+          {{- section.settings.first_lists_text -}}
+        </a>
+      {% else %}
+        <a href="{{ routes.account_login_url }}">Login</a>
+      {% endif %}
+    </li>
+    {% if section.settings.learn_more_lists_text != blank %}
+      <li class="pd-header__dropdown-item">
+        <a href="{{ section.settings.learn_more_lists_url | default: '#' }}">
+          {{- section.settings.learn_more_lists_text -}}
+        </a>
+      </li>
+    {% endif %}
+  </ul>
+</div>
+
+{%- if customer -%}
+  <div class="pd-header__icon">
+    <a class="pd-header__link" href="{{ routes.account_url }}?view=feel-good-club-dashboard">
+      {% render 'icon.svg', type: 'smile' %}
+      <div class="pd-header__title">Rewards</div>
+    </a>
+  </div>
+{%- else -%}
+  <div 
+    {% unless request.path contains "/register" or request.path contains "/login" %}
+      data-drawer-id="feel-good-club-drawer"
+      class="pd-header__icon"
+    {% else %}
+      class="pd-header__icon pd-header__icon--disabled" 
+    {% endunless %}
+  >
+    {% render 'icon.svg', type: 'smile' %}
+    <div class="pd-header__title">Rewards</div>
+  </div>
+
+  {% unless request.path contains "/register" or request.path contains "/login" %}
+    {%- render 'pd-feel-good-club-drawer', drawer_banner_image: drawer_banner_image -%}
+  {% endunless %}
+  
+{%- endif -%}
+
+{%- capture cartIcon -%}
+  {% render 'icon.svg', type: 'bag' %}
+  {%- if cart.total_price > 0 -%}
+    {% render 'icon.svg', type: 'circle' %}
+  {%- endif -%}
+  <div class="pd-header__title hide-mobile">
+    {%- if cart.total_price > 0 -%}
+      {{- cart.total_price | money -}}
+    {%- else -%}
+      Cart
+    {%- endif -%}
+  </div>
+  <div class="pd-header__title hide-desktop">{{ cart.total_price | money }}</div>
+{%- endcapture -%}
+
+{%- if settings.cart_type == 'page' -%}
+  <a href="/cart" class="pd-header__icon" id="cart-icon-bubble">
+    {{ cartIcon }}
+  </a>
+{% else %}
+  <div class="pd-header__icon" id="cart-icon-bubble">
+    {{ cartIcon }}
+  </div>
+{%- endif -%}

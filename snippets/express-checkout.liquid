@@ -1,0 +1,69 @@
+<style>
+  .additional-checkout-buttons {
+    position: relative;
+    min-height: 50px;
+  }
+
+  .additional-checkout-buttons .loading-state {
+    position: absolute;
+    background-color: #fafafa;
+  }
+
+  .additional-checkout-buttons .loading-state svg {
+    width: 50px;
+    height: 50px;
+    background: none !important;
+  }
+</style>
+
+{% liquid
+  assign is_registry_order = false
+  for item in checkout.line_items
+    if item.properties._registry != blank
+      assign is_registry_order = true
+    endif
+  endfor
+%}
+
+<div class="additional-checkout-buttons">
+  <div {% if is_registry_order %}data-is-registry-order{% endif %}>
+    {{ alternative_payment_methods }}
+    <div data-express-checkout-loading-state class="loading-state">{% render 'pd-icon.svg', type: 'spinner' %}</div>
+  </div>
+</div>
+
+<script>
+  const ELM_container = document.querySelector('[data-is-registry-order]');
+  const ELM_loadingState = document.querySelector('[data-express-checkout-loading-state]');
+  let times = 0;
+
+  if (!ELM_container) {
+    ELM_loadingState.classList.add('hidden');
+  } else {
+    setTimeout(handlePaymentButtonsVisibility, 500);
+  }
+
+  function handlePaymentButtonsVisibility() {
+    const ELM_contentWrapper = ELM_container.querySelector('[data-shopify="dynamic-web-checkout"] ul');
+    if (ELM_contentWrapper) {
+      const ELM_shopPay = ELM_contentWrapper.querySelector('[data-testid="ShopifyPay-button"]');
+      const ELM_applePay = ELM_contentWrapper.querySelector('[data-testid="ApplePay-button"]');
+      const ELM_paypal = ELM_contentWrapper.querySelector('li iframe');
+      if (ELM_shopPay) {
+        ELM_shopPay.closest('li').remove();
+      }
+      if (ELM_applePay) {
+        ELM_applePay.closest('li').remove();
+      }
+      if (ELM_paypal) {
+        ELM_paypal.closest('li').remove();
+      }
+      ELM_loadingState.classList.add('hidden');
+    } else if(times < 40) {
+      setTimeout(handlePaymentButtonsVisibility, 500);
+      times += 1;
+    } else {
+      ELM_loadingState.classList.add('hidden');
+    }
+  }
+</script>

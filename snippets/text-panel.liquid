@@ -1,0 +1,18 @@
+<div
+  class="text-panel--{{ block.id }} text-panel"
+  style=""
+>
+  <style>
+    .text-panel--{{ block.id }} {
+      border: 1px solid {{ block.settings.border_color }};
+      background-color: {{ block.settings.bg_color }};
+      color: {{ block.settings.text_color }};
+      margin-top: {{ block.settings.margin_top }}px;
+      margin-bottom: {{ block.settings.margin_bottom }}px
+    }
+  </style>
+  {% if  block.settings.image != blank %}
+    <img class="text-panel__image" src="{{ block.settings.image | img_url: '200x' }}" />
+  {% endif %}
+  <div class="text-panel__content">{{  block.settings.content }}</div>
+</div>

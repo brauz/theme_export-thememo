@@ -1,0 +1,160 @@
+<div class="pdp-list-info">
+  {% if block.settings.list_info_type == 'tabs' %}
+    <div class="pdp-tab" data-tabs>
+      <ul class="pdp-tab__header pd-container-with-scrollbar" data-tabs-header>
+        {% if product.description %}
+          <li
+            data-tabs-header-item
+            class="product__info__heading active"
+            data-content="short-product-description"
+          >
+            Details
+          </li>
+        {% endif %}
+        {% if product.metafields.global.why_you_need_it %}
+          <li
+            data-tabs-header-item
+            class="product__info__heading"
+            data-content="why_you_need_it"
+          >
+            Why you need it
+          </li>
+        {% endif %}
+        {% if product.metafields.global.editors_notes %}
+          <li
+            data-tabs-header-item
+            class="product__info__heading"
+            data-content="editors-notes"
+          >
+            Editors notes
+          </li>
+        {% endif %}
+        {% if product.metafields.global.functionality %}
+          <li
+            data-tabs-header-item
+            class="product__info__heading"
+            data-content="functionality"
+          >
+            Specifications
+          </li>
+        {% endif %}
+        {% if product.metafields.global.life_cycle %}
+          <li
+            data-tabs-header-item
+            class="product__info__heading"
+            data-content="life_cycle"
+          >
+            Life cycle
+          </li>
+        {% endif %}
+        {% if product.metafields.global.eco_aware %}
+          <li
+            data-tabs-header-item
+            class="product__info__heading"
+            data-content="eco_aware"
+          >
+            Eco aware
+          </li>
+        {% endif %}
+        {% if product.metafields.global.daily_use %}
+          <li
+            data-tabs-header-item
+            class="product__info__heading"
+            data-content="daily_use"
+          >
+            Daily use
+          </li>
+        {% endif %}
+      </ul>
+      <div class="pdp-tab__body" data-tabs-content>
+        {% if product.description %}
+          <div data-tabs-content-item id="short-product-description" class="pdp-tab__text active">{{ product.description }}</div>
+        {% endif %}
+        {% if product.metafields.global.why_you_need_it %}
+          <div data-tabs-content-item id="why_you_need_it" class="pdp-tab__text">{{ product.metafields.global.why_you_need_it }}</div>
+        {% endif %}
+        {% if product.metafields.global.editors_notes %}
+          <div data-tabs-content-item id="editors-notes" class="pdp-tab__text">{{ product.metafields.global.editors_notes }}</div>
+        {% endif %}
+        {% if product.metafields.global.functionality %}
+          <div data-tabs-content-item id="functionality" class="pdp-tab__text">{{ product.metafields.global.functionality }}</div>
+        {% endif %}
+        {% if product.metafields.global.life_cycle %}
+          <div data-tabs-content-item id="life_cycle" class="pdp-tab__text">{{ product.metafields.global.life_cycle }}</div>
+        {% endif %}
+        {% if product.metafields.global.eco_aware %}
+          <div data-tabs-content-item id="eco_aware" class="pdp-tab__text">{{ product.metafields.global.eco_aware }}</div>
+        {% endif %}
+        {% if product.metafields.global.daily_use %}
+          <div data-tabs-content-item id="daily_use" class="pdp-tab__text">{{ product.metafields.global.daily_use }}</div>
+        {% endif %}
+      </div>
+    </div>
+  {% else %}
+    <div class="pdp-accordion">
+      {% if product.description %}
+        <details class="pdp-accordion__item">
+          <summary class="product__info__heading">
+            Details
+            <span class="pdp-accordion__item__icon icon-toggle"></span>
+          </summary>
+          <div class="pdp-accordion__item__content">{{ product.description }}</div>
+        </details>
+      {% endif %}
+      {% if product.metafields.global.why_you_need_it %}
+        <details class="pdp-accordion__item">
+          <summary class="product__info__heading">
+            Why you need it
+            <span class="pdp-accordion__item__icon icon-toggle"></span>
+          </summary>
+          <div class="pdp-accordion__item__content">{{ product.metafields.global.why_you_need_it }}</div>
+        </details>
+      {% endif %}
+      {% if product.metafields.global.editors_notes %}
+        <details class="pdp-accordion__item">
+          <summary class="product__info__heading">
+            Editors notes
+            <span class="pdp-accordion__item__icon icon-toggle"></span>
+          </summary>
+          <div class="pdp-accordion__item__content">{{ product.metafields.global.editors_notes }}</div>
+        </details>
+      {% endif %}
+      {% if product.metafields.global.functionality %}
+        <details class="pdp-accordion__item">
+          <summary class="product__info__heading">
+            Specifications
+            <span class="pdp-accordion__item__icon icon-toggle"></span>
+          </summary>
+          <div class="pdp-accordion__item__content">{{ product.metafields.global.functionality }}</div>
+        </details>
+      {% endif %}
+      {% if product.metafields.global.life_cycle %}
+        <details class="pdp-accordion__item">
+          <summary class="product__info__heading">
+            Life cycle
+            <span class="pdp-accordion__item__icon icon-toggle"></span>
+          </summary>
+          <div class="pdp-accordion__item__content">{{ product.metafields.global.life_cycle }}</div>
+        </details>
+      {% endif %}
+      {% if product.metafields.global.eco_aware %}
+        <details class="pdp-accordion__item">
+          <summary class="product__info__heading">
+            Eco aware
+            <span class="pdp-accordion__item__icon icon-toggle"></span>
+          </summary>
+          <div class="pdp-accordion__item__content">{{ product.metafields.global.eco_aware }}</div>
+        </details>
+      {% endif %}
+      {% if product.metafields.global.daily_use %}
+        <details class="pdp-accordion__item">
+          <summary class="product__info__heading">
+            Daily use
+            <span class="pdp-accordion__item__icon icon-toggle"></span>
+          </summary>
+          <div class="pdp-accordion__item__content">{{ product.metafields.global.daily_use }}</div>
+        </details>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>

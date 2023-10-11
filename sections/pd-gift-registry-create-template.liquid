@@ -1,0 +1,111 @@
+<style>
+  [section-id="{{ section.id }}"] {
+    background-color: {{ section.settings.bg_color }};
+  }
+
+  [section-id="{{ section.id }}"] .pd-form-panel {
+    background-color: {{ section.settings.form_panel_bg_color }};
+  }
+
+  [section-id="{{ section.id }}"] .anchors {
+    color: {{ section.settings.anchors_text_color }};
+  }
+</style>
+
+{% assign customerId = 5474471215269 %} {%comment%} Need to force as other id might not work {% endcomment %}
+{% assign nowTimestamp = 'now' | date: "%s" %}
+{% assign data = customerId | append: ":" | append: nowTimestamp %}
+{% assign signature = data | hmac_sha256: shop.metafields.gift_registry.secret %}
+<div class="gift-registry-create-decoration-icon hide-desktop">
+  {% render 'pd-image', image: section.settings.decoration_icon %}
+</div>
+<div class="gift-registry-create" section-id="{{ section.id }}">
+  <div class="page-width">
+    <div class="gift-registry-create__inner">
+      <div class="anchors">
+        <h2 class="anchors__header">Set up your registry</h2>
+        <ul>
+          <li>
+            <a href="#deliveryAddress">Delivery Address</a>
+          </li>
+          <li>
+            <a href="#deliveryDate">Delivery Date</a>
+          </li>
+          <li>
+            <a href="#registryDetails">Registry Details</a>
+          </li>
+          <li>
+            <a href="#contactFrequency">Contact frequency</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="gift-registry-create__form">
+        <div class="gift-registry-create-decoration-icon hide-mobile">
+          {% render 'pd-image', image: section.settings.decoration_icon %}
+        </div>
+        {% render 'pd-gift-registry-form', form_id: 'giftRegistryCreate' %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Gift Registry Create",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color"
+    },
+    {
+      "type": "image_picker",
+      "id": "decoration_icon",
+      "label": "Decoration icon"
+    },
+    {
+      "type": "color",
+      "id": "form_panel_bg_color",
+      "label": "Form panel background color",
+      "default": "#F2F4F7"
+    },
+    {
+      "type": "color",
+      "id": "anchors_text_color",
+      "label": "Anchors text color",
+      "default": "#0554FF"
+    },
+    {
+      "type": "text",
+      "id": "submit_button_label",
+      "label": "Submit button label",
+      "default": "CREATE REGISTRY"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "default": "pd-button--happy-lemonlime",
+      "options": [
+        {
+          "label": "Bold Coral",
+          "value": "pd-button--bold-coral"
+        },
+        {
+          "label": "Happy Lemonlime",
+          "value": "pd-button--happy-lemonlime"
+        },
+        {
+          "label": "Strong Dark Blue",
+          "value": "pd-button--strong-dark-blue"
+        },
+        {
+          "label": "Lively Blue",
+          "value": "pd-button--lively-blue"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

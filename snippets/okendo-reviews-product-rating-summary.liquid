@@ -1,0 +1,10 @@
+{%- if  product.metafields.okendo.ProductListingSnippet != blank -%}
+  {% if product.metafields.okendo.summaryData != blank and product.metafields.okendo.summaryData.reviewCount != 0 %}
+    <div
+      data-oke-reviews-product-listing-rating
+      data-oke-reviews-product-id="shopify-{{ product.id }}"
+    >
+      {{ product.metafields.okendo.ProductListingSnippet }}
+    </div>
+  {% endif %}
+{%- endif -%}

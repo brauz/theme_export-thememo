@@ -1,0 +1,95 @@
+<div
+  id="{{ section.settings.section_id }}"
+  class="section-{{ section.id }}-padding section-{{ section.id }}-color pd-rich-text {{ section.settings.custom_class }}"
+>
+  <div
+    class="
+      page-width pd-rich-text__inner
+      pd-rich-text__inner--{{ section.settings.content_alignment }}
+      pd-rich-text__inner-mobile--{{ section.settings.content_alignment_mobile }}
+    "
+  >
+    {%- if section.settings.decoration_image != blank
+      and section.settings.display_as == 'block'
+      and section.settings.always_bottom == false
+    -%}
+      <div class="pd-rich-text__decoration-image">
+        {%- render 'pd-image', image: section.settings.decoration_image -%}
+      </div>
+    {%- endif -%}
+    <div class="pd-rich-text__blocks">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'liquid' -%}
+            {{ block.settings.custom_liquid }}
+          {%- when 'heading' -%}
+            <{{ block.settings.html_tag }}
+              class="block-{{ block.id }} pd-rich-text__heading custom-rte inline-richtext"
+              {{ block.shopify_attributes }}
+            >
+              <span
+                class="
+                  pd-rich-text__heading__wrapper
+                  {% if block.settings.use_underline_shape %}
+                    pd-heading-underline
+                    {{ block.settings.text_underline_color }}
+                  {% else %}
+                    pd-rich-text__heading__wrapper--strong
+                  {% endif %}
+                  pd-rich-text__heading__wrapper--{{ block.settings.text_alignment }}
+                  pd-rich-text__heading__wrapper-mobile--{{ block.settings.text_alignment_mobile }}
+                "
+                style="
+                  color: {{ block.settings.heading_text_color }};
+                  --font-size: {{ block.settings.text_font_size }}px;
+                  --font-size-mobile: {{ block.settings.text_font_size_mobile }}px;
+                  --text-transform: {{ block.settings.text_style }};
+                  --line-height: {{ block.settings.text_line_height }};
+                  {% if block.settings.text_font_family != blank %}
+                    font-family: var(--font-heading-family-{{ block.settings.text_font_family }});
+                  {% endif %}
+                  {% if block.settings.use_underline_shape %}
+                    --underline-position:{{ block.settings.position }}px;
+                  {% endif %}
+                "
+              >
+                {{ block.settings.heading }}
+              </span>
+            </{{ block.settings.html_tag }}>
+          {%- when 'button' -%}
+            <div
+              class="
+                block-{{ block.id }}
+                pd-rich-text__buttons
+                pd-rich-text__buttons--{{ block.settings.button_alignment }}
+                pd-rich-text__buttons-mobile--{{ block.settings.button_alignment_mobile }}
+              "
+              {{ block.shopify_attributes }}
+            >
+              {%- if block.settings.button_label != blank -%}
+                <a
+                  style="background-color: {{ block.settings.button_bg_color }}; color: {{ block.settings.button_text_color}}; border: 1px solid {{ block.settings.button_border_color }}"
+                  {% if block.settings.button_link == blank %}
+                    role="link" aria-disabled="true"
+                  {% else %}
+                    href="{{ block.settings.button_link }}"
+                  {% endif %}
+                  class="pd-button"
+                >
+                  {{- block.settings.button_label | escape -}}
+                </a>
+              {%- endif -%}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+    {%- if section.settings.decoration_image != blank
+      and section.settings.display_as == 'block'
+      and section.settings.always_bottom
+    -%}
+      <div class="pd-rich-text__decoration-image pd-rich-text__decoration-image--always-bottom">
+        {%- render 'pd-image', image: section.settings.decoration_image -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>

@@ -1,0 +1,256 @@
+{% layout none %}
+{% render 'pd-theme-css' %}
+{{ 'base.css' | asset_url | stylesheet_tag }}
+{{ 'component-loading-overlay.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'app.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .global-elements-table {
+    margin: 10px 0;
+    border-collapse: collapse;
+  }
+
+  .global-elements-table td {
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+  }
+
+  .global-elements-table td > p {
+    margin: 10px 0;
+  }
+</style>
+
+{% comment %} SVG ICONS {% endcomment %}
+<table class="global-elements-table">
+  <tr>
+    <td>
+      <h2>SVG icons</h2>
+      <p>Snippet: <mark>icon.svg.liquid</mark></p>
+      <p>Usage: <mark>render 'icon.svg', type: 'xxxx'</mark></p>
+    </td>
+    <td>
+      <h3>ARROWS</h3>
+      <p>Type: <mark>arrow-45-degree</mark></p>
+      <p>{% render 'icon.svg', type: 'arrow-45-degree' %}</p>
+      <p>Type: <mark>arrow-down</mark></p>
+      <p>{% render 'icon.svg', type: 'arrow-down' %}</p>
+    </td>
+    <td>
+      <h3>HEADER</h3>
+      <p>Type: <mark>gift</mark></p>
+      <p>{% render 'icon.svg', type: 'gift' %}</p>
+      <p>Type: <mark>edit</mark></p>
+      <p>{% render 'icon.svg', type: 'edit' %}</p>
+      <p>Type: <mark>smile</mark></p>
+      <p>{% render 'icon.svg', type: 'smile' %}</p>
+      <p>Type: <mark>bag</mark></p>
+      <p>{% render 'icon.svg', type: 'bag' %}</p>
+      <p>Type: <mark>search</mark></p>
+      <p>{% render 'icon.svg', type: 'search' %}</p>
+    </td>
+    <td>
+      <h3>SOCIAL NETWORKS</h3>
+      <p>Type: <mark>instagram</mark></p>
+      <p>{% render 'icon.svg', type: 'instagram' %}</p>
+      <p>Type: <mark>tiktok</mark></p>
+      <p>{% render 'icon.svg', type: 'tiktok' %}</p>
+      <p>Type: <mark>facebook</mark></p>
+      <p>{% render 'icon.svg', type: 'facebook' %}</p>
+      <p>Type: <mark>twitter</mark></p>
+      <p>{% render 'icon.svg', type: 'twitter' %}</p>
+      <p>Type: <mark>pinterest</mark></p>
+      <p>{% render 'icon.svg', type: 'pinterest' %}</p>
+    </td>
+    <td>
+      <h3>Buttons</h3>
+      <p>Type: <mark>heart-plus</mark></p>
+      <p>{% render 'icon.svg', type: 'heart-plus' %}</p>
+      <p>Type: <mark>small-gift</mark></p>
+      <p>{% render 'icon.svg', type: 'small-gift' %}</p>
+    </td>
+  </tr>
+</table>
+
+{% comment %} BUTTONS {% endcomment %}
+<table class="global-elements-table">
+  <tr>
+    <td><h2>Buttons</h2></td>
+    <td>
+      <p>Class <mark>pd-button</mark></p>
+      <p>Icon use: <mark>render 'icon.svg', type: 'arrow-45-degree'</mark></p>
+      <p><button class="pd-button">Default</button></p>
+      <p><button class="pd-button">WITH ICON {% render 'icon.svg', type: 'arrow-45-degree' %}</button></p>
+      <p>Class <mark>pd-button pd-button--outline</mark></p>
+      <p><button class="pd-button pd-button--outline">Default outline</button></p>
+      <p><button class="pd-button pd-button--outline">WITH ICON {% render 'icon.svg', type: 'arrow-45-degree' %}</button></p>
+    </td>
+    <td>
+      <p>Class <mark>pd-button pd-button--bold-coral</mark></p>
+      <p>Icon use: <mark>render 'icon.svg', type: 'arrow-45-degree'</mark></p>
+      <p><button class="pd-button pd-button--bold-coral">BOLD CORAL</button></p>
+      <p><button class="pd-button pd-button--bold-coral">WITH ICON {% render 'icon.svg', type: 'arrow-45-degree' %}</button></p>
+      <p>Class <mark>pd-button pd-button--bold-coral pd-button--outline</mark></p>
+      <p><button class="pd-button pd-button--bold-coral pd-button--outline">BOLD CORAL</button></p>
+      <p><button class="pd-button pd-button--bold-coral pd-button--outline">WITH ICON {% render 'icon.svg', type: 'arrow-45-degree' %}</button></p>
+    </td>
+    <td>
+      <p>Class <mark>pd-button pd-button--happy-lemonlime</mark></p>
+      <p><button class="pd-button pd-button--happy-lemonlime">HAPPY LEMONLIME</button></p>
+      <p><button class="pd-button pd-button--happy-lemonlime">WITH ICON {% render 'icon.svg', type: 'arrow-45-degree' %}</button></p>
+      <p>Class <mark>pd-button pd-button--happy-lemonlime pd-button--outline</mark></p>
+      <p><button class="pd-button pd-button--happy-lemonlime pd-button--outline">HAPPY LEMONLIME</button></p>
+      <p><button class="pd-button pd-button--happy-lemonlime pd-button--outline">WITH ICON {% render 'icon.svg', type: 'arrow-45-degree' %}</button></p>
+    </td>
+    <td>
+      <p>Class <mark>pd-button pd-button--strong-dark-blue</mark></p>
+      <p><button class="pd-button pd-button--strong-dark-blue">STRONG DARK BLUE</button></p>
+      <p><button class="pd-button pd-button--strong-dark-blue">WITH ICON {% render 'icon.svg', type: 'arrow-45-degree' %}</button></p>
+      <p>Class <mark>pd-button pd-button--strong-dark-blue pd-button--outline</mark></p>
+      <p><button class="pd-button pd-button--strong-dark-blue pd-button--outline">STRONG DARK BLUE</button></p>
+      <p><button class="pd-button pd-button--strong-dark-blue pd-button--outline">WITH ICON {% render 'icon.svg', type: 'arrow-45-degree' %}</button></p>
+    </td>
+    <td>
+      <p>Class <mark>pd-button pd-button--lively-blue</mark></p>
+      <p><button class="pd-button pd-button--lively-blue">LIVELY BLUE</button></p>
+      <p><button class="pd-button pd-button--lively-blue">WITH ICON {% render 'icon.svg', type: 'arrow-45-degree' %}</button></p>
+      <p>Class <mark>pd-button pd-button--lively-blue pd-button--outline</mark></p>
+      <p><button class="pd-button pd-button--lively-blue pd-button--outline">LIVELY BLUE</button></p>
+      <p><button class="pd-button pd-button--lively-blue pd-button--outline">WITH ICON {% render 'icon.svg', type: 'arrow-45-degree' %}</button></p>
+    </td>
+  </tr>
+</table>
+
+{% comment %} LINKS {% endcomment %}
+<table class="global-elements-table">
+  <tr>
+    <td><h2>Links</h2></td>
+    <td>
+      <p>Class <mark>pd-link</mark></p>
+      <p><a class="pd-link" href="#">REGISTER</a></p>
+    </td>
+    <td>
+      <p>Icon use: <mark>render 'icon.svg', type: 'arrow-45-degree'</mark></p>
+      <p><a class="pd-link" href="#">REGISTER {% render 'icon.svg', type: 'arrow-45-degree' %}</a></p>
+    </td>
+  </tr>
+</table>
+
+{% comment %} HEADINGS {% endcomment %}
+<table class="global-elements-table">
+  <tr>
+    <td><h2>Headings</h2></td>
+    <td>
+      <p>class: <mark>pd-heading-1</mark> or <mark>h1</mark> tag</p>
+      <h1 class="pd-heading-1">Heading 1</h1>
+    </td>
+    <td>
+      <p>class: <mark>pd-heading-2</mark> or <mark>h2</mark> tag</p>
+      <h2 class="pd-heading-2">Heading 2</h2>
+    </td>
+    <td>
+      <p>class: <mark>pd-heading-3</mark> or <mark>h3</mark> tag</p>
+      <h3 class="pd-heading-3">Heading 3</h3>
+    </td>
+    <td>
+      <p>class: <mark>pd-heading-4</mark> or <mark>h4</mark> tag</p>
+      <h4 class="pd-heading-4">Heading 4</h4>
+    </td>
+    <td>
+      <p>class: <mark>pd-heading-3 pd-heading-underline</mark></p>
+      <h3 class="pd-heading-3 pd-heading-underline">Heading 3 <strong>with underline</strong></h3>
+    </td>
+  </tr>
+</table>
+
+{% comment %} SCROLLBAR  {% endcomment %}
+<table class="global-elements-table">
+  <tr>
+    <td><h2>Scrollbar</h2></td>
+    <td>
+      <p>Class: <mark>pd-container-with-scrollbar</mark></p>
+      <div style="max-width: 400px;">
+        <div class="pd-container-with-scrollbar">
+          <div style="min-width: 600px">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          </div>
+        </div>
+      </div>
+    </td>
+    <td>
+      <p>Class: <mark>pd-container-with-scrollbar pd-container-with-scrollbar--style-2</mark></p>
+      <div style="max-width: 400px;">
+        <div class="pd-container-with-scrollbar pd-container-with-scrollbar--style-2">
+          <div style="min-width: 600px">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          </div>
+        </div>
+      </div>
+    </td>
+  </tr>
+</table>
+
+{% comment %} FORM  {% endcomment %}
+<table class="global-elements-table">
+  <tr>
+    <td><h2>Form elements</h2></td>
+    <td>
+      <p>Class: <mark>pd-form-input</mark></p>
+      <input type="text" class="pd-form-input" />
+    </td>
+    <td>
+      <p>Class: <mark>pd-form-textarea</mark></p>
+      <textarea class="pd-form-textarea"></textarea>
+    </td>
+    <td>
+      <p>Container class: <mark>pd-form-group</mark>, label class: <mark>pd-form-label</mark></p>
+      <div class="pd-form-group">
+        <label class="pd-form-label">Name</label>
+        <input type="text" class="pd-form-input" />
+      </div>
+    </td>
+  </tr>
+</table>
+
+{% comment %} IMAGE SNIPPET {% endcomment %}
+<table class="global-elements-table">
+  <tr>
+    <td>
+      <h2>Image snippet (lazyload)</h2>
+      <p>Use: <mark>render 'pd-image', image: '[image object]', classnames: 'custom-class'</mark></p>
+    </td>
+    <td>
+      {% render 'pd-image', image: settings.logo %}
+    </td>
+  </tr>
+</table>
+
+{% comment %} PRODUCT CARD {% endcomment %}
+<table class="global-elements-table">
+  <tr>
+    <td>
+      <h2>Product card</h2>
+      {% comment %} <p>Use: <mark>render 'pd-image', image: '[image object]'</mark></p> {% endcomment %}
+    </td>
+    <td>
+      <div style="max-width: 300px">
+        {% assign card_product = all_products['apline-pom-pom-beanie-raspberry-1'] %}
+        {% render 'card-product', 
+          card_product: card_product,
+          show_description: true
+        %}
+      </div>
+    </td>
+    <td>
+      <h3>Usage:</h3>
+      <p><mark>render 'card-product', card_product: product</mark></p>
+      <h3>Params:</h3>
+      <p><mark>card_product</mark> - product object (required)</p>
+      <p><mark>hide_secondary_image</mark> - To hide 2nd image. Default: false</p>
+      <p><mark>hide_vendor</mark> - To hide vendor. Default: false</p>
+      <p><mark>hide_rating</mark> - To hide rating. Default: false</p>
+      <p><mark>show_description</mark> - To show description. Default: false. Field: <mark>product.metafields.card.short_description</mark></p>
+    </td>
+  </tr>
+</table>

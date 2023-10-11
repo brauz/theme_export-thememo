@@ -1,0 +1,101 @@
+<div class="customer login section-{{ section.id }}-padding">
+  {%- render 'pd-recovery-password' -%}
+  <div id="login">
+    {%- if recover_success == true -%}
+      <h3 class="form__message" tabindex="-1" autofocus>
+        <svg aria-hidden="true" focusable="false" viewBox="0 0 13 13">
+          <path d="M6.5 12.35C9.73087 12.35 12.35 9.73086 12.35 6.5C12.35 3.26913 9.73087 0.65 6.5 0.65C3.26913 0.65 0.65 3.26913 0.65 6.5C0.65 9.73086 3.26913 12.35 6.5 12.35Z" fill="#428445" stroke="white" stroke-width="0.7"/>
+          <path d="M5.53271 8.66357L9.25213 4.68197" stroke="white"/>
+          <path d="M4.10645 6.7688L6.13766 8.62553" stroke="white">
+        </svg>
+        {{ 'customer.recover_password.success' | t }}
+      </h3>
+    {%- endif -%}
+    {%- form 'customer_login', novalidate: 'novalidate', return_to: "/account?view=feel-good-club-dashboard" -%}
+
+      {%- assign form_errors = form.errors | default_errors -%}
+
+      <div class="pd-form-group {% if form_errors contains 'email' %}pd-form-group--error{% endif %}">
+        <label for="CustomerEmail" class="pd-form-label">
+          {{ 'customer.login_page.email' | t }}
+        </label>
+        <input
+          type="email"
+          name="customer[email]"
+          id="CustomerEmail"
+          autocomplete="email"
+          autocorrect="off"
+          autocapitalize="off"
+          {% if form_errors contains 'form' %}
+            aria-invalid="true"
+          {% endif %}
+          class="pd-form-input"
+          placeholder="{{ 'customer.login_page.email' | t }}"
+        >
+          {%- if form_errors contains 'email' -%}
+            <span id="LoginEmail-email-error" class="pd-form-note">
+              {%- render 'icon.svg', type: 'error' -%}
+              Invalid email
+            </span>
+          {%- endif -%}
+      </div>
+
+      {%- if form.password_needed -%}
+        <div class="pd-form-group {% if form_errors contains 'password' %}pd-form-group--error{% endif %}">
+          <label for="CustomerPassword" class="pd-form-label">
+            {{ 'customer.login_page.password' | t }}
+          </label>
+          <input
+            type="password"
+            value=""
+            name="customer[password]"
+            id="CustomerPassword"
+            autocomplete="current-password"
+            {% if form.errors contains 'form' %}
+              aria-invalid="true"
+            {% endif %}
+            class="pd-form-input"
+            placeholder="{{ 'customer.login_page.password' | t }}"
+          >
+          {%- if form_errors contains 'password' -%}
+            <span id="LoginPassword-password-error" class="pd-form-note">
+              {%- render 'icon.svg', type: 'error' -%}
+              Invalid password
+            </span>
+          {%- endif -%}
+        </div>
+        <div class="pd-form-group">
+          <a href="#recover">Forgot password?</a>
+        </div>
+      {%- endif -%}
+
+      <div class="pd-form-group">
+        <button class="pd-button pd-button--lively-blue">
+          {{ 'customer.login_page.sign_in' | t }}
+        </button>
+      </div>
+
+      <div class="pd-form-group">
+        <p class="description form-register-trigger">
+          Don’t have an account?&nbsp;
+          <span class="register-trigger">Register now</span>
+        </p>
+      </div>
+    {%- endform -%}
+  </div>
+
+  {%- if shop.checkout.guest_login -%}
+    <div>
+      <hr>
+      <h2>{{ 'customer.login_page.guest_title' | t }}</h2>
+
+      {%- form 'guest_login' -%}
+        <div class="pd-form-group">
+          <button class="pd-button pd-button--lively-blue">
+            {{ 'customer.login_page.guest_continue' | t }}
+          </button>
+        </div>
+      {%- endform -%}
+    </div>
+  {%- endif -%}
+</div>

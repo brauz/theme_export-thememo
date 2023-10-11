@@ -1,0 +1,116 @@
+{%- capture carousel_options -%}
+  {
+    "arrows": {{ section.settings.show_arrows }},
+    "dots": true,
+    "slidesToShow": {{ section.settings.number_products_showing }},
+    "slidesToScroll": 1,
+    "mobileFirst": false,
+    "infinite": false,
+    "responsive": [
+      {
+        "breakpoint": 990,
+        "settings": "unslick"
+      }
+    ]
+  }
+{%- endcapture -%}
+
+{% liquid
+  assign number_products_showing = section.settings.number_products_showing
+  assign _blocks = blocks
+  if _blocks == blank
+    assign _blocks = section.blocks
+  endif
+  if _blocks.size > 0
+    assign total_products = _blocks.size
+  else
+    assign total_products = section.settings.selected_collection.products.size
+  endif
+%}
+
+<div
+  class="
+    section-{{ section.id }}-padding pd-product-carousel pd-carousel-has-scrollbar
+    {% if total_products <= number_products_showing %} no-carousel{% endif %}
+  "
+  {% if total_products > number_products_showing %}
+    data-carousel-slider-wrapper
+  {% endif %}
+>
+  <div
+    class="
+      page-width
+      {% if section.settings.display_as_flexbox %}
+        pd-product-carousel__inner
+        pd-product-carousel__inner--{{ section.settings.carousel_alignment }}
+      {% endif %}
+    "
+  >
+    <div class="pd-product-carousel__main-content">
+      <div class="pd-product-carousel__header {{ section.settings.text_alignment }}">
+        <div class="pd-product-carousel__header__text">
+          {% if section.settings.heading %}
+            <h2 class="pd-heading-4 pd-heading-underline pd-product-carousel__heading">
+              {{ section.settings.heading }}
+            </h2>
+          {% endif %}
+          {% if section.settings.description %}
+            <div class="description pd-product-carousel__description">{{ section.settings.description }}</div>
+          {% endif %}
+        </div>
+        {% if section.settings.button_label != blank %}
+          <div class="pd-product-carousel__button">
+            <a class="pd-button" href="{{  section.settings.button_link }}">{{ section.settings.button_label }}</a>
+          </div>
+        {% endif %}
+      </div>
+      <div
+        class="pd-product-carousel__slider pd-container-with-scrollbar pd-container-with-scrollbar-overflow pd-container-with-scrollbar-tablet"
+        {% if total_products > number_products_showing %}
+          data-carousel-slider="{{ carousel_options | escape }}"
+          data-slider="pd-product-carousel"
+        {% endif %}
+      >
+        {% if _blocks.size > 0 %}
+          {% for block in _blocks %}
+            {% render 'card-product',
+              card_product: block.settings.selected_product,
+              class_name: section.settings.product_width_mobile,
+              show_quick_action: true,
+              hide_secondary_image: section.settings.hide_secondary_image,
+              hide_vendor: section.settings.hide_vendor,
+              hide_rating: section.settings.hide_rating,
+              hide_swatch: section.settings.hide_swatch,
+              show_description: section.settings.show_description
+            %}
+          {% endfor %}
+        {% else %}
+          {% if section.settings.selected_collection %}
+            {% for _product in section.settings.selected_collection.products limit: 8 %}
+              {% render 'card-product',
+                card_product: _product,
+                class_name: section.settings.product_width_mobile,
+                show_quick_action: true,
+                hide_secondary_image: section.settings.hide_secondary_image,
+                hide_vendor: section.settings.hide_vendor,
+                hide_rating: section.settings.hide_rating,
+                hide_swatch: section.settings.hide_swatch,
+                show_description: section.settings.show_description
+              %}
+            {% endfor %}
+          {% endif %}
+        {% endif %}
+      </div>
+      {% if total_products > section.settings.number_products_showing %}
+        <div data-carousel-scrollbar class="pd-carousel-scrollbar">
+          <span data-carousel-scrollbar-track class="pd-carousel-scrollbar-piece"></span>
+        </div>
+      {% endif %}
+      <div class="pd-product-carousel__button pd-product-carousel__button--mobile">
+        {% if section.settings.button_label != blank %}
+          <a class="pd-button" href="{{  section.settings.button_link }}">{{ section.settings.button_label }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

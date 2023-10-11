@@ -1,0 +1,70 @@
+{%-liquid
+  assign predefined_lists = ''
+  for block in section.blocks
+    assign predefined_lists = predefined_lists | append: block.settings.title
+    if block.settings.relevant_url != blank
+      assign predefined_lists = predefined_lists | append: ':' | append: block.settings.relevant_url
+    endif
+    assign predefined_lists = predefined_lists | append: '|'
+  endfor
+-%}
+
+<your-lists
+  data-predefined-lists="{{ predefined_lists }}"
+  data-add-all-error-message="{{ section.settings.add_all_error_message }}"
+  data-lists-page-url="{{ section.settings.lists_page_url }}"
+  data-list-products-note="{{ section.settings.list_products_note }}"
+  class="your-lists"
+>
+  <div class="page-width">
+    <div data-lists-placeholder class="your-lists__lists"></div>
+    <div data-lists-detail-placeholder class="lists-detail-wrapper"></div>
+    <div class="loading-state">{% render 'icon.svg', type: 'spinner' %}</div>
+  </div>
+</your-lists>
+
+{% render 'pd-cart-notification', showDivider: false %}
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Your lists",
+  "settings": [
+    {
+      "type": "url",
+      "id": "lists_page_url",
+      "label": "Lists page url"
+    },
+    {
+      "type": "richtext",
+      "id": "add_all_error_message",
+      "label": "Add all product error message",
+      "default": "<p>Add all products failed because some product in the list is not available. Please try adding product by product!</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "list_products_note",
+      "label": "List product note",
+      "default": "<p>Don't forget to double check the size/colour of selections</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "pre-defined-list",
+      "name": "Pre-defined list",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "List title"
+        },
+        {
+          "type": "url",
+          "id": "relevant_url",
+          "label": "Relevant url"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

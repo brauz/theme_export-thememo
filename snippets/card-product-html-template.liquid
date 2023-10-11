@@ -1,0 +1,149 @@
+<div
+  class="card-wrapper product-card-wrapper recently-viewed-products__item"
+>
+  {%- unless template.name == 'collection' -%}
+    {{ 'component-rating.css' | asset_url | stylesheet_tag }}
+    {{ 'component-card.css' | asset_url | stylesheet_tag }}
+  {%- endunless -%}
+  <div class=" card card--standard card--media" style="--ratio-percent: 100%;">
+    <div class="card__inner color-background-2 gradient ratio" style="--ratio-percent: 100%;">
+      {%- if show_quick_action -%}
+        <div class="product-buttons product-buttons--quick-view">
+          <div class="product-buttons__button product-buttons__button--wishlist">
+            <button
+              data-add-to-lists-button
+              data-product-title="{itemTitle}"
+              data-product-image="{itemFeaturedImage}"
+              data-empi="{itemId}"
+              data-epi="{currentVariantId}"
+              data-du="{currentUrl}"
+              class="add-to-lists-button"
+            >
+              {% render 'icon.svg', type: 'wishlist' %}
+              <span class="text">
+                <span class="hide-desktop">Wishlist</span>
+                <span class="hide-mobile">Add to wishlist</span>
+              </span>
+            </button>
+          </div>
+
+          {% if customer.tags contains 'Registry-Owner' %}
+            <div class="product-buttons__button product-buttons__button--registry-add registry-add add-to-registry-wrapper">
+              <button
+                class="registry-add-btn"
+                data-add-to-registry
+                data-customer-id="{{customer.id}}"
+                data-variant-id="{currentVariantId}"
+                data-variant-price="{currentVariantPrice}"
+              >
+                {% render 'icon.svg', type: 'gift' %}
+                <span class="text">
+                  <span class="hide-desktop">Gift registry</span>
+                  <span class="hide-mobile">Add to gift registry</span>
+                </span>
+              </button>
+            </div>
+          {% endif %}
+        </div>
+      {%- endif -%}
+
+      <div class="card__media">
+        <div class="media media--transparent media--hover-effect">{itemImages}</div>
+        <div
+          class="
+            pd-product-badges
+            {% if is_fullwidth %} pd-product-badges--fullwidth{% endif %}
+            {% if position != blank %} pd-product-badges--{{ position }}{% endif %}
+          "
+        >
+          {itemBadges}
+        </div>
+      </div>
+      <div class="card__content">
+        <div class="card__information">
+          <h3 class="card__heading" id="title-{{ section_id }}-{itemId}">
+            <a
+              href="{itemUrl}"
+              id="CardLink-{{ section_id }}-{itemId}"
+              class="full-unstyled-link"
+              aria-labelledby="CardLink-{{ section_id }}-{itemId} Badge-{{ section_id }}-{itemId}"
+            >
+              {itemTitle}
+            </a>
+          </h3>
+        </div>
+      </div>
+    </div>
+    <div class="card__content">
+      <div class="card__information">
+        <span class="visually-hidden">Vendor:</span>
+        <div class="caption-with-letter-spacing light card__vendor">{itemVendor}</div>
+        <h3 class="card__heading" id="title-{{ section_id }}-{itemId}">
+          <a
+            href="{itemUrl}"
+            id="CardLink-{{ section_id }}-{itemId}"
+            class="full-unstyled-link"
+            aria-labelledby="CardLink-{{ section_id }}-{itemId} Badge-{{ section_id }}-{itemId}"
+          >
+            {itemTitle}
+          </a>
+        </h3>
+        <div class="card-information">
+          {%- if show_description -%}
+            <span class="caption-large light card__description">{itemShortDescription}</span>
+          {%- endif %}
+
+          {%- if hide_rating != true -%}
+            <div class="card__rating">
+              <div class="rating" role="img" aria-label="{itemReview.value} out of {itemReview.scaleMax} stars">
+                <span
+                  aria-hidden="true"
+                  class="rating-star color-icon-text"
+                  style="--rating: {itemReview.value}; --rating-max: {itemReview.scaleMax}; --rating-decimal: 0;"
+                ></span>
+              </div>
+              <p class="rating-text caption">
+                <span aria-hidden="true">{itemReview.value} / {itemReview.scaleMax}</span>
+              </p>
+              <p class="rating-count caption">
+                <span aria-hidden="true" class="visually-hidden">(3)</span>
+                <span>{itemReview.ratingCount}</span>
+              </p>
+            </div>
+          {%- endif -%}
+
+          {% comment %} <div class="card-product-colors-wrapper">{itemSwatches}</div> {% endcomment %}
+
+          <div class="price pd-price {itemPriceClass}">
+            <div class="price__container">
+              <div class="price__regular">
+                <span class="visually-hidden visually-hidden--inline">
+                  {{- 'products.product.price.regular_price' | t -}}
+                </span>
+                <span class="price-item price-item--regular" style="color: {{ color_price_regular }}">
+                  {itemMoneyPrice}
+                </span>
+              </div>
+              <div class="price__sale">
+                <span class="visually-hidden visually-hidden--inline">
+                  {{- 'products.product.price.sale_price' | t -}}
+                </span>
+                <span class="price-item price-item--sale price-item--last" style="color: {{ color_price_sale }}">
+                  {itemMoneyPrice}
+                </span>
+                <span class="visually-hidden visually-hidden--inline">
+                  {{- 'products.product.price.regular_price' | t -}}
+                </span>
+                <span>
+                  <s class="price-item price-item--regular" style="color: {{ color_price_compared_at }}">
+                    {itemCompareAtPrice}
+                  </s>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

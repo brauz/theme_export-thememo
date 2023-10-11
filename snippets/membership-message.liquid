@@ -1,0 +1,32 @@
+<style>
+  .membership-message .guess-message,
+  .membership-message .name {
+    color: {{ block.settings.guess_message_color }};
+  }
+
+  .membership-message .name {
+    background-color: {{ block.settings.guess_message_bg_color }};
+  }
+
+  .membership-message--authenticated .tier-message,
+  .membership-message--authenticated .name {
+    color: {{ block.settings.tier_message_color }};
+  }
+
+  .membership-message--authenticated .name {
+    background-color: {{ block.settings.tier_message_bg_color }};
+  }
+</style>
+
+<div class="membership-message {% if customer.id %} membership-message--authenticated{% endif %}">
+  <span class="name">{{ block.settings.title_message }}</span>
+  {% if customer.id %}
+    <span class="tier-message">
+      {{ block.settings.tier_message }}
+    </span>
+  {% else %}
+    <span class="guess-message">
+      {{ block.settings.guess_message }}
+    </span>
+  {% endif %}
+</div>

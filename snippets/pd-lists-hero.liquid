@@ -1,0 +1,95 @@
+{%- liquid
+  assign data = section.settings
+  assign title = data.title
+  assign description = data.description
+  assign description_classnames = ''
+  if collection != blank
+    assign title = collection.title
+    assign description = collection.metafields.accentuate.list_description.html
+  else
+    assign description_classnames = 'larger'
+  endif
+-%}
+
+<style>
+  [section-id="{{ section.id }}"] .lists-hero-inner {
+    padding-top: {{ data.padding_top }}px;
+    padding-bottom: {{ data.padding_bottom }}px;
+  }
+
+  @media screen and (max-width: 767px) {
+    [section-id="{{ section.id }}"] .lists-hero-inner {
+      padding-top: {{ data.padding_top | times: 0.6 }}px;
+      padding-bottom: {{ data.padding_bottom | times: 0.6 }}px;
+    }
+  }
+</style>
+
+<section section-id="{{ section.id }}" class="lists-hero section-{{ section.id }}" style="background-color: {{ data.bg_color }};">
+  <div class="page-width">
+    {% render 'breadcrumbs' %}
+  </div>
+  <div class="page-width lists-hero-inner">
+    <h1 class="pd-heading-2 lists-hero__title">{{ title }}</h1>
+    {% if description != blank %}
+      <div class="lists-hero__description {{ description_classnames }}">{{ description }}</div>
+    {% endif %}
+
+    {% assign buttons = section.blocks | where: 'type', 'button' %}
+    {% if buttons.size > 0 %}
+      <div class="lists-hero__buttons">
+        {% for button in buttons %}
+          <a href="{{ button.settings.button_url }}" class="pd-button {{ button.settings.button_style }} {% if button.settings.is_button_outline %}pd-button--outline{% endif %}">{{ button.settings.button_label }}</a>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if collection != blank %}
+      {%- liquid
+        assign list_for_you = collection.metafields.accentuate.list_for_you | split: '|'
+        assign list_for_baby = collection.metafields.accentuate.list_for_baby | split: '|'
+        assign download_url = collection.metafields.accentuate.list_download_url
+        assign TEXT_download_label = 'Download/print list'
+        assign TEXT_for_you = 'FOR YOU'
+        assign TEXT_for_baby = 'FOR BABY'
+      -%}
+
+      <div data-lists-dropdown class="lists-dropdown">
+        <h3 data-toggle-lists-dropdown class="pd-heading-3 lists-dropdown__holder">
+          <span class="lists-dropdown__holder-text">View List</span>
+          {% render 'icon.svg', type: 'chevron-down' %}
+        </h3>
+        <div class="lists-dropdown__content">
+          <a target="_blank" class="lists-dropdown__download-button" href="{{ download_url }}">
+            {% render 'icon.svg', type: 'download' %}
+            <span>{{ TEXT_download_label }}</span>
+          </a>
+          {% if list_for_you != blank %}
+            <h6 class="lists-dropdown__title">{{ TEXT_for_you }}</h6>
+            {% for item in list_for_you %}
+              <span class="lists-dropdown__item">{{ item }}</span>
+            {% endfor %}
+          {% endif %}
+          {% if list_for_baby != blank %}
+            <h6 class="lists-dropdown__title">{{ TEXT_for_baby }}</h6>
+            {% for item in list_for_baby %}
+              <span class="lists-dropdown__item">{{ item }}</span>
+            {% endfor %}
+          {% endif %}
+          <a data-toggle-lists-dropdown class="lists-dropdown__button-close">Close</a>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if section.settings.decoration_image %}
+      {% render 'decoration-image',
+        section_id: section.id,
+        image: section.settings.decoration_image,
+        desktop_position: section.settings.decoration_image_desktop_position
+        mobile_position: section.settings.decoration_image_mobile_position,
+        desktop_width: section.settings.decoration_image_desktop_width,
+        mobile_width: section.settings.decoration_image_mobile_width
+      %}
+    {% endif %}
+  </div>
+</section>

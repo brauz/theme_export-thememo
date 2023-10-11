@@ -1,0 +1,30 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ data.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ data.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  .section-{{ section.id }}-padding .article-hero-video {
+    background-color: {{ data.banner_background_color }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ data.padding_top }}px;
+      padding-bottom: {{ data.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- assign related_product = article.metafields.related_section.related_product -%}
+
+<article class="article-with-video-template section-{{ section.id }}-padding" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="article-with-video-template__wrapper">
+    {%- render 'article-hero-video', data: data, blocks: blocks, article: article -%}
+
+    {%- if related_product.size > 0 -%}
+      {%- assign heading_text = article.metafields.related_section_head.text -%}
+      {%- render 'article-related-product', heading_text: heading_text, related_product: related_product -%}
+    {%- endif -%}
+  </div>
+</article>

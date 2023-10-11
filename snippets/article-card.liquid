@@ -1,0 +1,94 @@
+{% comment %}
+  Renders an article card for a given blog with settings to either show the image or not.
+
+  Accepts:
+  - article: {Object} Article object
+  - type: {String} vertical | horizontal. Default is vertical
+  - show_date: {boolean}
+  - show_author: {boolean}
+  - show_watch_button: {boolean}
+
+  Usage:
+  {% render 'article-card', article: article %}
+{% endcomment %}
+
+{% liquid
+  assign show_date = show_date | default: false
+  assign show_author = show_author | default: false
+  assign show_watch_button = show_watch_button | default: false
+
+  if blog != nil
+    assign selected_blog = blog
+  else
+    assign split_1 = article.url | split: '/blogs/'
+    assign split_2 = split_1[1] | split: '/'
+    assign blog_handle = split_2[0] | strip
+    assign selected_blog = blogs[blog_handle]
+  endif
+%}
+
+{%- if article and article != empty -%}
+  {%- liquid
+    assign ratio = 1
+    if media_aspect_ratio != null
+      assign ratio = media_aspect_ratio
+    endif
+  -%}
+  <div class="article-card-wrapper card-wrapper">
+    <div class="card article-card card--media card--{{ type }}">
+      <div class="article-card__inner ratio">
+        {% if article.metafields.custom.youtube_video_id %}
+          <a href="{{ article.url }}" class="icon-play">
+            {% render 'icon-play-button' %}
+          </a>
+        {% endif %}
+        {%- if article.image -%}
+          <div class="article-card__image-wrapper card__media">
+            <div
+              class="article-card__image media media--hover-effect"
+              {% if section.settings.media_height == 'adapt' %}
+                style="padding-bottom: {{ 1 | divided_by: article.image.aspect_ratio | times: 100 }}%;"
+              {% endif %}
+            >
+              {% render 'pd-image', image: article.image %}
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+      <div class="article-card__content">
+        <div class="article-card__information">
+          <h2 class="article-card__subheading">{{ selected_blog.title }}</h2>
+          <h3 class="article-card__heading">
+            <a href="{{ article.url }}" class="full-unstyled-link" title="{{ article.title }}">
+              {% if type == "vertical" %}
+                {{ article.title | truncate: 100 | escape }}
+              {% else %}
+                {{ article.title | truncate: 50 | escape }}
+              {% endif %}
+            </a>
+          </h3>
+          <div class="article-card__info">
+            {%- if show_date -%}
+              <span class="circle-divider">{{ article.published_at | time_tag: format: 'date' }}</span>
+            {%- endif -%}
+            {%- if show_author -%}
+              <span>{{ article.author }}</span>
+            {%- endif -%}
+          </div>
+          {%- if show_excerpt -%}
+            {%- if article.excerpt.size > 0 or article.content.size > 0 -%}
+              <div class="article-card__excerpt" title="{{ article.excerpt | strip_html }}">
+                {{ article.excerpt | strip_html | truncatewords: 10 }}
+              </div>
+            {%- endif -%}
+          {%- endif -%}
+          {% if show_watch_button and article.metafields.custom.youtube_video_id %}
+            <a href="{{ article.url }}" class="watch-button">
+              Watch
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}

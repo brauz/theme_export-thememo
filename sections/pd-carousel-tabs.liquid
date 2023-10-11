@@ -1,0 +1,301 @@
+{% render 'pd-carousel-tabs' %}
+
+{% schema %}
+{
+  "name": "Carousel Tabs",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "presets": [
+    {
+      "name": "Carousel Tabs"
+    }
+  ],
+  "settings": [
+    {
+      "type": "color",
+      "id": "header_bg_color",
+      "label": "Header background color"
+    },
+    {
+      "type": "color",
+      "id": "body_bg_color",
+      "label": "Body background color",
+      "default": "#F9F8F6"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "select",
+      "id": "title_alignment",
+      "label": "Title alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#0554FF"
+    },
+    {
+      "type": "header",
+      "content": "Tab"
+    },
+    {
+      "type": "text",
+      "id": "tabs_label",
+      "label": "Tabs label",
+      "default": "Lists by stage"
+    },
+    {
+      "type": "color",
+      "id": "tab_bg_color",
+      "label": "Tab background color",
+      "default": "#F2F4F7"
+    },
+    {
+      "type": "color",
+      "id": "active_tab_bg_color",
+      "label": "Active tab background color",
+      "default": "#CCC2FF"
+    },
+    {
+      "type": "header",
+      "content": "Arrow"
+    },
+    {
+      "type": "checkbox",
+      "id": "carousel_enable_arrows",
+      "label": "Enable carousel arrows",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "arrow_bg_color",
+      "label": "Arrow background color",
+      "default": "#ccc2ff"
+    },
+    {
+      "type": "header",
+      "content": "Metafield"
+    },
+    {
+      "type": "text",
+      "id": "metafield_id",
+      "label": "ID"
+    },
+    {
+      "type": "header",
+      "content": "Carousel"
+    },
+    {
+      "type": "range",
+      "id": "carousel_cards_spacing",
+      "label": "Spacing between cards",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "carousel_cards_per_view",
+      "label": "Cards per row",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "carousel_enable_scrollbar",
+      "label": "Enable carousel scrollbar",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        }
+      ]
+    },
+    {
+      "type": "content-card",
+      "name": "Content card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab",
+          "label": "Tab"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "header",
+          "content": "Button"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "Button link"
+        },
+        {
+          "type": "checkbox",
+          "id": "display_as_link",
+          "label": "Display as link"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button style",
+          "options": [
+            {
+              "label": "Default",
+              "value": ""
+            },
+            {
+              "label": "Bold Coral",
+              "value": "pd-button--bold-coral"
+            },
+            {
+              "label": "Happy Lemonlime",
+              "value": "pd-button--happy-lemonlime"
+            },
+            {
+              "label": "Strong Dark Blue",
+              "value": "pd-button--strong-dark-blue"
+            },
+            {
+              "label": "Lively Blue",
+              "value": "pd-button--lively-blue"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "use_custom_button_styles",
+          "label": "Use custom button styles"
+        },
+        {
+          "type": "color",
+          "id": "button_bg_color",
+          "label": "Button background color"
+        },
+        {
+          "type": "color",
+          "id": "button_border_color",
+          "label": "Button border color"
+        },
+        {
+          "type": "color",
+          "id": "button_text_color",
+          "label": "Button text color"
+        },
+        {
+          "type": "header",
+          "content": "Badge"
+        },
+        {
+          "type": "richtext",
+          "id": "badge_title",
+          "label": "Title"
+        },
+        {
+          "type": "color",
+          "id": "badge_bg_color",
+          "label": "Background color"
+        },
+        {
+          "type": "color",
+          "id": "badge_text_color",
+          "label": "Text color"
+        },
+        {
+          "type": "number",
+          "id": "badge_pos_top",
+          "label": "Top Position",
+          "default": 10
+        },
+        {
+          "type": "number",
+          "id": "badge_pos_left",
+          "label": "Left Position"
+        },
+        {
+          "type": "number",
+          "id": "badge_pos_bottom",
+          "label": "Bottom Position"
+        },
+        {
+          "type": "number",
+          "id": "badge_pos_right",
+          "label": "Right Position"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,86 @@
+<style>
+  [section-id="{{ section.id }}"] {
+    background-color: {{ section.settings.bg_color }};
+    margin-top: {{ section.settings.margin_top }}px;
+    margin-bottom: {{ section.settings.margin_bottom }}px;
+    color: {{ section.settings.text_color }};
+  }
+
+  [section-id="{{ section.id }}"] .steps-slider-inner {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+  @media screen and (max-width: 767px) {
+    [section-id="{{ section.id }}"] .steps-slider-inner {
+      padding-top: {{ section.settings.padding_top | times: 0.6 }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.6 }}px;
+    }
+  }
+
+  {% liquid
+    assign position = section.settings.decoration_image_desktop_position | split: ','
+    assign position_top = position | first
+    assign position_left = position | last
+  %}
+  [section-id="{{ section.id }}"] .steps-slider__decoration-image {
+    width: {{ section.settings.decoration_image_desktop_width }}px;
+    {% if position_top != blank %}
+      top: {{ position_top }}%;
+    {% endif %}
+    {% if position_left != blank %}
+      left: {{ position_left }}%;
+    {% endif %}
+  }
+
+  [section-id="{{ section.id }}"] .step-number {
+    border-color: {{ section.settings.step_numbers_bg_color }};
+  }
+
+  [section-id="{{ section.id }}"] .step-number.active {
+    background-color: {{ section.settings.step_numbers_bg_color }};
+  }
+</style>
+
+<steps-slider 
+  section-id="{{ section.id }}" 
+  data-items-count="{{ section.blocks.size }}"
+  data-time-to-switch="{{ section.settings.time_to_switch_slide }}"
+  class="steps-slider"
+>
+  <div class="page-width">
+    <div class="steps-slider-inner">
+      {% if section.settings.decoration_image != blank %}
+        {% render 'pd-image', image: section.settings.decoration_image, class: "steps-slider__decoration-image" %}
+      {% endif %}
+      <p class="steps-slider__subtitle">{{ section.settings.subtitle }}</p>
+      <h2 class="steps-slider__title">{{ section.settings.title }}</h2>
+      <div class="steps-slider__content">
+        <div class="steps-slider__step-numbers">
+          {% for block in section.blocks %}
+            <span data-step-number data-step="{{ forloop.index }}" class="step-number {% if forloop.index == 1 %}active{% endif %}">{{ forloop.index }}</span>
+          {% endfor %}
+        </div>
+        <div class="steps-slider__step-contents">
+          {% for block in section.blocks %}
+            <div data-step="{{ forloop.index }}" class="steps-slider-step {% if forloop.index == 1 %}active{% endif %}">
+              {% if block.settings.title != blank %}
+                <h3 class="pd-heading-3 steps-slider-step__title">{{ block.settings.title }}</h3>
+              {% endif %}
+              {% if block.settings.description != blank %}
+                <div class="steps-slider-step__description">{{ block.settings.description }}</div>
+              {% endif %}
+              {% if block.settings.button_label != blank %}
+                <a href="{{ block.settings.button_url }}" class="pd-button pd-button--big {{ block.settings.button_style }} {% if block.settings.is_button_outline %}pd-button--outline{% endif %}">{{ block.settings.button_label }}</a>
+              {% endif %}
+              <div class="steps-slider-step__image" style="background-color: {{ block.settings.bg_color }}">
+                {% if block.settings.image != blank %}
+                  <img src="{{ block.settings.image | img_url: '900' }}" />
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</steps-slider>

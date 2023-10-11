@@ -1,0 +1,28 @@
+<div class="gift-registry-tracker" data-gift-tracker data-tinybind-binder>
+  <div rv-class-hidden="data.isLoading">
+  <div class="gift-registry-tracker__empty" rv-if="data.giftTracker.0 | not">
+    <h5 class="pd-heading-5 empty-title">{{ section.settings.empty_title }}</h5>
+    <div class="empty-message">{{ section.settings.empty_message }}</div>
+  </div>
+  <div class="tracker-container" rv-if="data.giftTracker.0">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Gift</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr rv-each-giftgiver="data.giftTracker">
+            <td><strong>{giftgiver.name}<strong></td>
+            <td>{giftgiver.date}</td>
+            <td>
+              <img class="giver-product-img" rv-each-product="giftgiver.products" rv-src="product.attributes.product_image_src"/>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  </div>
+  </div>
+</div>

@@ -1,0 +1,160 @@
+<script>
+  const variantsArr = [];
+  {% for variant in product.variants %}
+    {% liquid
+      assign hidden = false
+      if variant.metafields.custom.hidden.value
+        assign hidden = true
+      endif
+    %}
+    variantsArr.push({...{{ variant | json}}, hidden: {{ hidden }} });
+  {% endfor %}
+</script>
+
+<div class="product__info-wrapper">
+  <product-info
+    id="ProductInfo-{{ section.id }}"
+    data-section="{{ section.id }}"
+    data-url="{{ product.url }}"
+    class="product__info-container"
+  >
+    {%- assign product_form_id = 'product-form-' | append: section.id -%}
+
+    <div class="product__info__header">
+      {% render 'breadcrumbs' %}
+      <h3 class="product__vendor">{{ product.vendor }}</h3>
+      <h2 class="pd-heading-2">
+        {{ product.title | escape }}
+      </h2>
+
+      {% render 'pdp-price' %}
+      {% render 'payment-instalment-msg', price: product.selected_or_first_available_variant.price %}
+    </div>
+
+    {% if section.settings.show_quantity %}
+      {% render 'pdp-quantity' %}
+    {% endif %}
+
+    {% for block in section.blocks %}
+      {% case block.type %}
+        {% when 'divider' %}
+          <div class="divider--{{ block.id }} divider">
+            {% style %}
+              .divider--{{ block.id }} {
+                background-color: {{ block.settings.background_color }};
+                margin-top: {{ block.settings.margin_top }}px;
+                margin-bottom: {{ block.settings.margin_bottom }}px;
+              }
+            {% endstyle %}
+          </div>
+
+        {% when 'custom_liquid' %}
+          <div {{ block.shopify_attributes }}>{{ block.settings.custom_liquid }}</div>
+
+        {% when 'membership_message' %}
+          {% render 'membership-message', block: block %}
+
+        {% when 'rating' %}
+          <div class="product-rating">
+            {% render 'okendo-reviews-product-rating-summary', product: product %}
+          </div>
+
+        {% when 'description' %}
+          {% liquid
+            assign product_desc = product.description | truncatewords: 14
+            if product.metafields.my_fields.short_product_description != blank
+              assign product_desc = product.metafields.my_fields.short_product_description
+            endif
+          %}
+          {% if product_desc != blank %}
+            <div class="product__description">{{ product_desc }}</div>
+          {% endif %}
+
+        {% when 'variant_picker' %}
+          {% render 'pdp-variant-picker', product: product, block: block, product_form_id: product_form_id %}
+
+        {% when 'text_panel' %}
+          {% render 'text-panel', block: block %}
+
+        {% when 'pd_free_gift' %}
+          {% render 'pd-text-panel-free-gift', product: product, type: 'product' %}
+
+        {% when 'buy_buttons' %}
+          {%- render 'buy-buttons',
+            block: block,
+            product: product,
+            product_form_id: product_form_id,
+            section_id: section.id
+          -%}
+
+        {% when 'buttons' %}
+          {% render 'product-buttons', block: block, product: product %}
+
+        {% when 'payment_message' %}
+          <div class="payment-message">
+            <span class="payment-message__text">{{ block.settings.text }}</span>
+            <div class="payment-message__images">
+              <img src="{{ 'payment-afterpay.png' | asset_img_url: '60x' }}" alt="afterpay">
+              <img src="{{ 'payment-klarma.png' | asset_img_url: '60x' }}" alt="klarma">
+              <img src="{{ 'payment-zip.png' | asset_img_url: '60x' }}" alt="zip">
+            </div>
+          </div>
+
+        {% when 'pickup_click_collect' %}
+          {% render 'pickup-click-collect', product: product, block: block %}
+
+        <div class="divider">&nbsp;</div>
+
+        <div
+          id="brauz-find-in-store-config-product-page"
+          data-sd="{{ shop.permanent_domain }}"
+          data-cvi="{{ product.first_available_variant.id }}"
+          data-hodv="{{ product.has_only_default_variant }}"
+          style="display: none; width: 0"
+        ></div>
+        <div id="brauz-find-in-store-product-page"></div>
+        <script src="https://d3aq2u4yw77ivo.cloudfront.net/find-in-store/shopify/thememo/find-in-store.shopify.thememo.prod.js" async></script>
+
+        {% when 'text_box_note' %}
+          {% assign related_tag = block.settings.related_tag %}
+          {% if product.tags contains related_tag %}
+            <div class="text-box-note-{{ block.id }} text-box-note">
+              {% style %}
+                .text-box-note-{{ block.id }} {
+                  background-color: {{ block.settings.backgroud_color }};
+                  color: {{ block.settings.text_color }}
+                }
+              {% endstyle %}
+              {{ block.settings.text }}
+            </div>
+          {% endif %}
+
+        {% when 'best_for' %}
+          {% if product.metafields.custom.pd_best_for %}
+            <div class="best-for">
+              <h3 class="product__info__heading best-for__heading">{{ block.settings.best_for_heading }}</h3>
+              <ul class="best-for__list">
+                {% for item in product.metafields.custom.pd_best_for.value %}
+                  <li>{{ item }}</li>
+                {% endfor %}
+              </ul>
+              {% if block.settings.best_for_img_decoration != blank %}
+                <div class="best-for__decoration">
+                  {% render 'pd-image', image: block.settings.best_for_img_decoration %}
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+
+        {% when 'list_info' %}
+          {% render 'pdp-list-info', block: block %}
+
+        {% when 'pdp_complementary' %}
+          {% render 'pdp-complementary', block: block %}
+
+        {% when 'pdp_benefits' %}
+          {% render 'pdp-benefits', block: block %}
+      {% endcase %}
+    {% endfor %}
+  </product-info>
+</div>

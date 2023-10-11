@@ -1,0 +1,25 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ data.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ data.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  .section-{{ section.id }}-padding.main-404 {
+    background: {{ data.background_color }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ data.padding_top }}px;
+      padding-bottom: {{ data.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="main-404 section-{{ section.id }}-padding">
+  <div class="main-404__inner page-width">
+    <h2 class="main-404__heading">{{ data.heading }}</h2>
+    <div class="main-404__subheading">{{ data.subheading }}</div>
+    <div class="main-404__decoration">{%- render 'pd-image', image: data.decoration_2 -%}</div>
+  </div>
+</div>

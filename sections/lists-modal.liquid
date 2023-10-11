@@ -1,0 +1,47 @@
+{%-liquid
+  assign predefined_lists = ''
+  for block in blocks
+    assign predefined_lists = predefined_lists | append: block.settings.title
+    if block.settings.relevant_url != blank
+      assign predefined_lists = predefined_lists | append: ':' | append: block.settings.relevant_url
+    endif
+    assign predefined_lists = predefined_lists | append: '|'
+  endfor
+-%}
+
+<lists-modal
+  data-predefined-lists="{{ predefined_lists }}"
+  data-lists-page-url="{{ data.lists_page_url }}"
+  data-pen-icon='{{ pen_icon }}'
+  class="lists-modal pd-modal pd-modal--small js-pd-modal modal-wishlist"
+  id="modal-wishlist"
+>
+  <div class="pd-modal__overlay" data-close-modal="modal-wishlist">Overlay</div>
+  <div class="pd-modal__inner">
+    <div class="pd-modal__header">
+      <div data-product-placeholder class="modal-wishlist__header"></div>
+      <span class="pd-modal__close" data-close-modal="modal-wishlist">
+        {%- render 'icon.svg', type: 'x-mark' -%}
+      </span>
+    </div>
+    <div class="pd-modal__body">
+      <div class="lists-modal-dialog">
+        <p class="pd-modal__title">Select any relevant list</p>
+        <div class="wiislist-list" data-lists-placeholder></div>
+        <div class="loading-state">Loading</div>
+        <div class="pd-modal__buttons">
+          <button data-toggle-create-list-form class="pd-button pd-button--outline create">Create new list</button>
+          <button data-add-to-list-button class="pd-button add" disabled>Add to list</button>
+        </div>
+        <div class="create-list-form hidden">
+          <div class="create-list-form__title">List name</div>
+          <input class="create-list-form__input" type="text" name="newList" />
+          <div class="create-list-form__button">
+            <button data-toggle-create-list-form class="pd-button pd-button--outline cancel">Cancel</button>
+            <button data-create-list class="pd-button add">Create list</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</lists-modal>

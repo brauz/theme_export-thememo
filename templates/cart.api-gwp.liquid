@@ -1,0 +1,76 @@
+{%- layout none -%}
+
+{% liquid
+  assign applicableProducts = settings.gwp_with_purchase_applicable_collection.products
+  assign giftProducts = settings.gwp_with_purchase_reward_collection.products
+  assign excludedProducts = settings.gwp_with_purchase_excluded_collection.products
+  assign minimumSpend = settings.gwp_with_purchase_minimum_threshold
+  assign cartTotalMoney = 0
+
+  assign anyProductsApplicableForGift = false
+  assign isThresHoldReached = true
+  assign anyGiftProductInCart = false
+  assign howManyGiftProducts = giftProducts.size
+
+  for item in cart.items
+    assign itemNotExcluded = true
+    if excludedProducts != blank
+      for p in excludedProducts
+        if p.id == item.product.id
+          assign itemNotExcluded = false
+          break
+        endif
+      endfor
+    endif
+
+    if itemNotExcluded
+      assign cartTotalMoney = cartTotalMoney | plus: item.final_line_price
+    endif
+  endfor
+
+  if applicableProducts != blank
+    for item in cart.items
+      for p in applicableProducts
+        if item.product.id == p.id
+          assign anyProductsApplicableForGift = true
+        endif
+      endfor
+    endfor
+  endif
+
+  if minimumSpend > 0
+    assign cartTotalMoney = cartTotalMoney | money
+    assign cartTotalNumber = cartTotalMoney | replace: '$', '' | replace: ',', ''
+    assign cartRemaining = minimumSpend | minus: cartTotalNumber
+    if cartRemaining > 0
+      assign isThresHoldReached = false
+    endif
+  endif
+
+  if giftProducts != blank
+    for item in cart.items
+      for p in giftProducts
+        if item.product.id == p.id
+          assign anyGiftProductInCart = true
+        endif
+      endfor
+    endfor
+  endif
+
+  assign shouldAddGiftToCart = false
+  assign giftProduct = giftProducts | first
+  assign giftProductId = giftProduct.id
+%}
+
+{ "anyProductsApplicableForGift": {{ anyProductsApplicableForGift }}, "isThresHoldReached": {{ isThresHoldReached }},
+"anyGiftProductInCart": {{ anyGiftProductInCart }}, "shouldAddGiftToCart":
+{% if anyProductsApplicableForGift
+  and isThresHoldReached
+  and anyGiftProductInCart == false
+  and howManyGiftProducts == 1
+%}
+  true
+{% else %}
+  false
+{% endif -%}
+, "giftProductId" : "{{ giftProductId }}", "giftVariantId": "{{ giftProduct.variants.first.id }}" }

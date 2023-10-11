@@ -1,0 +1,98 @@
+{% render 'main-article-with-video', data: section.settings, blocks: section.blocks %}
+
+{% schema %}
+{
+  "name": "Main article with video",
+  "max_blocks": 3,
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Article hero video"
+    },
+    {
+      "type": "color",
+      "id": "banner_background_color",
+      "label": "Banner background color",
+      "default": "#FAFAFA"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay_video",
+      "label": "Autoplay video",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_video_looping",
+      "label": "Loop video",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "video_controls",
+      "label": "Video controls",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "custom_aspect_ratio",
+      "label": "Custom aspect ratio (Width/Height)",
+      "info": "Leave blank if you want to use default"
+    }, 
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "social_links",
+      "name": "Social links",
+      "settings": [
+        {
+          "type": "select",
+          "id": "share_link",
+          "label": "Share link",
+          "options": [
+            {
+              "value": "facebook",
+              "label": "Facebook"
+            },
+            {
+              "value": "pinterest",
+              "label": "Pinterest"
+            },
+            {
+              "value": "twitter",
+              "label": "Twitter"
+            }
+          ],
+          "default": "facebook"
+        }
+      ]
+    }
+  ]
+} 
+{% endschema %}

@@ -1,0 +1,176 @@
+{% assign page_title = 'Registry Dashboard' %}
+<div class="page-width">
+  <div class="gift-registry-page gift-registry-page--2-columns">
+    <div class="gift-registry-page__sidebar">
+      {% render 'pd-gift-registry-sidebar', page_title: page_title %}
+    </div>
+    <div class="gift-registry-page__content">
+      <nav class="breadcrumbs" role="navigation" aria-label="breadcrumbs">
+        <ol class="breadcrumbs__list">
+          <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link" href="/account" aria-current="page">My Account</a>
+          </li>
+          <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link" href="/account?view=gift-registry-dashboard" aria-current="page">Gift Registry</a>
+          </li>
+        </ol>
+      </nav>
+
+      <h1 class="pd-heading-3 gift-registry-page__heading-title">{{ page_title }}</h1>
+
+      {% render 'pd-gift-registry-intro-panel' %}
+      {% render 'pd-steps-section' %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Gift Registry Dashboard",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Sidebar"
+    },
+    {
+      "type": "text",
+      "id": "main_menu",
+      "label": "Main menu",
+      "default": "n-gift-registry-sidebar"
+    },
+    {
+      "type": "text",
+      "id": "help_menu",
+      "label": "Help menu",
+      "default": "n-gift-registry-help"
+    },
+    {
+      "type": "header",
+      "content": "Steps section"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#FFE8D9"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#0A2657"
+    },
+    {
+      "type": "range",
+      "id": "steps_in_a_row",
+      "label": "Steps in a row (Desktop)",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "Button url"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button style",
+          "options": [
+            {
+              "label": "Default",
+              "value": ""
+            },
+            {
+              "label": "Bold Coral",
+              "value": "pd-button--bold-coral"
+            },
+            {
+              "label": "Happy Lemonlime",
+              "value": "pd-button--happy-lemonlime"
+            },
+            {
+              "label": "Strong Dark Blue",
+              "value": "pd-button--strong-dark-blue"
+            },
+            {
+              "label": "Lively Blue",
+              "value": "pd-button--lively-blue"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "is_button_outline",
+          "label": "Button outline?",
+          "default": true
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

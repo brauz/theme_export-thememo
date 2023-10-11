@@ -1,0 +1,28 @@
+<div class="article-hero-banner">
+  <div class="article-hero-banner__wrapper">
+    <div class="article-hero-banner__content">
+      <div class="article-hero-banner__content__inner">
+        <p class="article-hero-banner__content__subheading">{{ blog.title }}</p>
+        <div class="article-hero-banner__content__author">
+          {{ article.author }} <span>|</span> {{ article.published_at | date: '%d.%m.%Y' }}
+        </div>
+        <h1 class="article-hero-banner__content__heading">{{ article.title }}</h1>
+
+        {%- if blocks.size > 0 -%}
+          {%- render 'social-share', blocks: blocks, article: article -%}
+        {%- endif -%}
+      </div>
+    </div>
+    <div class="article-hero-banner__image">{%- render 'pd-image', image: article.image -%}</div>
+  </div>
+  {%- if data.decoration_image != nil -%}
+    {%- render 'decoration-image'
+      section_id: section.id,
+      image: data.decoration_image,
+      desktop_position: data.decoration_image_desktop_position
+      mobile_position: data.decoration_image_mobile_position,
+      desktop_width: data.decoration_image_desktop_width,
+      mobile_width: data.decoration_image_mobile_width
+    -%}
+  {%- endif -%}
+</div>

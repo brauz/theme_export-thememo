@@ -1,0 +1,54 @@
+{%- render 'pd-announcement-bar' -%}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "max_blocks": 12,
+  "class": "pd-announcement-bar-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Carousel autoplay"
+    },
+    {
+      "type": "text",
+      "id": "interval",
+      "label": "Carousel autoplay interval (in seconds)",
+      "info": "Use with autoplay option",
+      "default": "2"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Announcement item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "default": "Welcome to our store",
+          "label": "Announcement text"
+        },
+        {
+          "type": "url",
+          "id": "text_link",
+          "label": "Announcement link"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color",
+          "default": "#E8E0FF"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#0A2657"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

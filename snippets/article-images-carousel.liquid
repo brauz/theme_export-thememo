@@ -1,0 +1,41 @@
+{%- capture carousel_options -%}
+  {
+    "arrows": false,
+    "dots": true,
+    "slidesToShow": 2.75,
+    "slidesToScroll": 1,
+    "mobileFirst": false,
+    "infinite": false,
+    "responsive": [
+      {
+        "breakpoint": 767,
+        "settings": "unslick"
+      }
+    ]
+  }
+{%- endcapture -%}
+
+<div class="article-template__images-carousel__wrapper" 
+  {% if images_select.size > 2 %}
+    data-carousel-slider-wrapper
+  {% endif %}
+>
+  <div class="article-template__images-carousel pd-container-with-scrollbar pd-container-with-scrollbar-overflow pd-container-with-scrollbar-mobile"
+    {% if images_select.size > 2 %}
+      data-carousel-slider="{{ carousel_options | escape }}"
+      data-slider="article-images-carousel"
+    {% endif %}
+  >
+    {%- for image_item in images_select -%}
+      {%- assign img = image_item.src -%}
+      <div class="article-template__images-carousel__item">{%- render 'pd-image', image: img -%}</div>
+    {%- endfor -%}
+  </div>
+  {% if images_select.size > 2 %}
+    <div class="pd-carousel-scrollbar__wrapper page-width">
+      <div data-carousel-scrollbar class="pd-carousel-scrollbar">
+        <span data-carousel-scrollbar-track class="pd-carousel-scrollbar-piece"></span>
+      </div>
+    </div>
+  {% endif %}
+</div>

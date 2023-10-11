@@ -1,0 +1,104 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ data.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ data.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  .section-{{ section.id }}-padding.articles-related {
+    background-color: {{ data.background_color }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ data.padding_top }}px;
+      padding-bottom: {{ data.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- capture carousel_options -%}
+  {
+    "arrows": false,
+    "dots": true,
+    "slidesToShow": 4,
+    "slidesToScroll": 1,
+    "mobileFirst": false,
+    "infinite": false,
+    "responsive": [
+      {
+        "breakpoint": 768,
+        "settings": "unslick"
+      }
+    ]
+  }
+{%- endcapture -%}
+
+{% assign selected_values = article.metafields.related_articles.article | split: '|' %}
+
+<div class="articles-related section-{{ section.id }}-padding">
+  <div 
+    class="articles-related__wrapper"
+    {% if selected_values.size > 4 %}
+      data-carousel-slider-wrapper
+    {% endif %}
+  >
+    <h4 class="articles-related__heading pd-heading-4 page-width">{{ data.heading }}</h4>
+    {%- if selected_values.size > 0 -%}
+      <div 
+        class="articles-related__frames pd-container-with-scrollbar pd-container-with-scrollbar-overflow"
+        {% if selected_values.size > 4 %}
+          data-carousel-slider="{{ carousel_options | escape }}"
+          data-slider="article-with-video-related-articles"
+        {% endif %}
+      >
+        {%- for selected_value in selected_values -%}
+          {%- assign article_handle = selected_value | remove: '[' | remove: ']' | remove: '"' -%}
+          {%- assign art = articles[article_handle] -%}
+
+          <div class="articles-related__item">
+            <div class="articles-related__item__wrapper">
+              <div class="articles-related__item__image">{%- render 'pd-image', image: art.image -%}</div>
+              <div class="articles-related__item__content">
+                <div class="articles-related__item__content__inner">
+                  <p class="articles-related__item__content__subtitle">
+                    <a href="{{ blog.url }}">{{ blog.title }}</a>
+                  </p>
+                  <h3 class="articles-related__item__content__title">
+                    <a href="{{ art.url }}">{{ art.title }}</a>
+                  </h3>
+
+                  {%- if data.show_date or data.show_author -%}
+                    <div class="articles-related__item__content__info">
+                      {%- if data.show_date -%}
+                        <span class="circle-divider">{{ art.published_at | time_tag: format: 'date' }}</span>
+                      {%- endif -%}
+                      {%- if data.show_author -%}
+                        <span>{{ art.author }}</span>
+                      {%- endif -%}
+                    </div>
+                  {%- endif -%}
+
+                  {%- if data.show_excerpt -%}
+                    {%- if art.excerpt.size > 0 or art.content.size > 0 -%}
+                      <div class="articles-related__item__content__excerpt" title="{{ art.excerpt | strip_html }}">
+                        {{ art.excerpt | strip_html | truncatewords: 10 }}
+                      </div>
+                    {%- endif -%}
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {% if selected_values.size > 4 %}
+        <div class="pd-carousel-scrollbar__wrapper page-width">
+          <div data-carousel-scrollbar class="pd-carousel-scrollbar">
+            <span data-carousel-scrollbar-track class="pd-carousel-scrollbar-piece"></span>
+          </div>
+        </div>
+      {% endif %}
+    {%- endif -%}
+  </div>
+</div>

@@ -1,0 +1,94 @@
+<style>
+  .section-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+    margin-top: {{ section.settings.margin_top }}px;
+    margin-bottom: {{ section.settings.margin_bottom }}px;
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  .section-{{ section.id }} .simple-content-panel__inner {
+    align-items: {{ section.settings.text_alignment }};
+    text-align: {{ section.settings.text_alignment }};
+  }
+
+  @media screen and (max-width: 767px) {
+    .section-{{ section.id }} {
+      margin-top: {{ section.settings.margin_top | times: 0.6 }}px;
+      margin-bottom: {{ section.settings.margin_bottom | times: 0.6 }}px;
+      padding-top: {{ section.settings.padding_top | times: 0.6 }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.6 }}px;
+    }
+  }
+</style>
+
+<div class="section-{{ section.id }} simple-content-panel">
+  <div class="page-width">
+    {% if section.settings.show_breadcrumbs %}
+      {% render 'breadcrumbs' %}
+    {% endif %}
+
+    <div class="simple-content-panel__inner">
+      {% for block in section.blocks %}
+        {% assign item = block.settings %}
+
+        {% if block.type == 'title' %}
+          {% style %}
+            .section-{{ section.id }} .simple-content-panel__title {
+              font-size: {{ item.text_font_size }}px;
+              color: {{ item.text_color }};
+            }
+
+            @media screen and (max-width: 767px) {
+              .section-{{ section.id }} .simple-content-panel__title {
+                font-size: {{ item.text_font_size_mobile }}px;
+              }
+            }
+          {% endstyle %}
+          <h2 class="pd-{{ item.style }} simple-content-panel__title">{{ item.title }}</h2>
+        {% endif %}
+
+        {% if block.type == 'content' %}
+          {% style %}
+            .section-{{ section.id }} .simple-content-panel__content {
+              font-size: {{ item.text_font_size }}px;
+              color: {{ item.text_color }};
+            }
+
+            @media screen and (max-width: 767px) {
+              .section-{{ section.id }} .simple-content-panel__content {
+                font-size: {{ item.text_font_size_mobile }}px;
+              }
+            }
+          {% endstyle %}
+          <div class="simple-content-panel__content">{{ item.content }}</div>
+        {% endif %}
+
+        {% if block.type == 'button' %}
+          <a
+            href="{{ item.button_url }}"
+            class="
+              pd-button
+              {{ item.button_style }}
+              {% if item.is_button_outline %}pd-button--outline{% endif %}
+              {% if item.is_button_big %}pd-button--big{% endif %}
+            "
+          >
+            {{ item.button_label }}
+          </a>
+        {% endif %}
+
+        {% if block.type == 'decoration_image' %}
+          {% render 'decoration-image',
+            section_id: section.id,
+            image: item.image,
+            desktop_position: item.decoration_image_desktop_position
+            mobile_position: item.decoration_image_mobile_position,
+            desktop_width: item.decoration_image_desktop_width,
+            mobile_width: item.decoration_image_mobile_width
+          %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>

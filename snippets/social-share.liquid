@@ -1,0 +1,40 @@
+{%- liquid
+  assign share_url = request.origin | append: article.url
+  assign article_title = article.title
+-%}
+
+<ul class="social-share">
+  {%- for block in blocks -%}
+    <li 
+      class="social-share__item"
+    >
+      {%- if block.settings.share_link == 'facebook' -%}
+        <a
+          target="_blank"
+          href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse"
+          class="fb-xfbml-parse-ignore social-share__link"
+        >
+          {%- render 'icon-socials', icon: 'facebook' -%}
+        </a>
+
+      {%- elsif block.settings.share_link == 'pinterest' -%}
+        <a
+          target="_blank"
+          href="http://pinterest.com/pin/create/link/?url={{ share_url }}"
+          class="social-share__link"
+        >
+          {%- render 'icon-socials', icon: 'pinterest' -%}
+        </a>
+
+      {%- elsif block.settings.share_link == 'twitter' -%}
+        <a
+        target="_blank"
+        class="twitter-share-button social-share__link"
+        href="https://twitter.com/intent/tweet"
+        >
+          {%- render 'icon-socials', icon: 'twitter' -%}
+        </a>
+      {%- endif -%}
+    </li>
+  {%- endfor -%}
+</ul>

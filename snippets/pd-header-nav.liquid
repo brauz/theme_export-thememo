@@ -1,0 +1,178 @@
+{%- liquid
+  assign level = level | default: 1
+
+  # link to the others navigation to bypass maximum of 3 of levels in Shopify navigation #
+  assign menu_item_handle = blank
+  if menu.links == blank and menu.title contains '[NAV]'
+    assign menu_item_handle = menu.title | remove: '[NAV]'
+    if menu.title contains '[HANDLE--'
+      assign test = menu_item_handle | remove: '[HANDLE--' | split: ']' | first
+      assign menu_item_handle = menu_item_handle | remove: '[HANDLE--' | split: ']' | first
+    else
+      assign menu_item_handle = menu_item_handle | remove: '[ICON--' | split: ']' | last | handle
+    endif
+    assign menu = linklists[menu_item_handle]
+  endif
+-%}
+
+{%- if menu.links != blank -%}
+  <ul level="{{ level }}">
+    {%- for item in menu.links -%}
+      <li
+        level="{{ level }}"
+        class="
+          menu-item
+          {% if item.title contains 'HIDDEN' %}
+            menu-item--visibility-hidden
+          {% endif %}
+          {% if item.title contains '[SHOP-ALL]' %}
+            menu-item--shop-all
+          {% endif %}
+          {% if item.title contains "[IMAGE]" %}
+            menu-item--image
+          {% endif %}
+          {% if item.title contains "[IMAGE]" and item.title contains "[IMAGES]"  %}
+            menu-item--images pd-container-with-scrollbar
+          {% endif %}
+          {% if item.title contains "[ALPHABET]" %}
+            menu-item--alphabet
+          {% endif %}
+          {% if item.title contains "[LETTER]" %}
+            menu-item--letter
+          {% endif %}
+          {% if item.title contains "[SALE]" %}
+            menu-item--sale
+          {% endif %}
+          {% if forloop.index == 1 and level == 1 %}
+            active
+          {% endif %}
+        "
+      >
+        {%- if item.title contains '[IMAGE]' -%}
+          {%- liquid
+            assign arr = item.title | remove: '[IMAGES]' | split: '[IMAGE]'
+            assign images = arr | slice: 1, arr.size
+            assign blocks = section.blocks | where: 'type', 'image-menu-navigation'
+          -%}
+          <div class="image-list">
+            {%- for block in blocks -%}
+              {%- assign title = block.settings.title | strip_html -%}
+              {%- if images contains title -%}
+                {%- liquid
+                  assign card_style = 'image-left'
+                  if images.size > 1 and images[1] contains title
+                    assign card_style = ''
+                  endif
+                -%}
+                {%- render 'card-content',
+                  card_style: card_style,
+                  card_width: block.settings.card_width,
+                  bg_color: block.settings.bg_color,
+                  title_text_color: block.settings.title_text_color,
+                  button_text_color: block.settings.button_text_color,
+                  image: block.settings.image,
+                  title: title,
+                  button_label: block.settings.button_label,
+                  button_url: block.settings.button_link,
+                  display_as_link: true,
+                  use_custom_button_styles: true
+                -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- elsif item.title contains '[LETTER]' -%}
+          {%- liquid
+            assign letter = item.title | remove: '[LETTER]'
+            assign has_vendors = false
+            assign numbers = '0123456789'
+            for vendor in shop.vendors
+              assign vendor_first_letter = vendor | strip | upcase | slice: 0
+              if vendor_first_letter == letter or letter contains '#' and numbers contains vendor_first_letter
+                assign has_vendors = true
+              endif
+            endfor
+          -%}
+
+          {%- if has_vendors -%}
+            <details class="letter__wrapper">
+              <summary class="letter">
+                <span>{{ letter }}</span>
+                {%- render 'icon.svg', type: 'minus' -%}
+                {%- render 'icon.svg', type: 'plus' -%}
+              </summary>
+              <div class="letter__list">
+                {% for vendor in shop.vendors %}
+                  {% assign vendor_first_letter = vendor | strip | upcase | slice: 0 %}
+                  {% if vendor_first_letter == letter or letter contains '#' and numbers contains vendor_first_letter %}
+                    <div class="letter__item">
+                      <a href="/collections/{{ vendor | handle }}">{{ vendor }}</a>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </details>
+          {%- else -%}
+            <div class="letter">{{ letter }}</div>
+          {%- endif -%}
+        {%- else -%}
+          <a
+            {% if item.url != blank and item.url != '#' %}
+              href="{{ item.url }}"
+            {% endif %}
+            class="description"
+          >
+            {%- liquid
+              assign icon = blank
+              if item.title contains 'ICON'
+                assign icon = item.title | remove: '[ICON--' | split: ']' | first | downcase
+              endif
+
+              assign title = item.title | split: '[' | last | split: ']' | last
+              if item.title contains '[HIDDEN]'
+                assign title = item.title
+              endif
+
+              assign links = item.links
+              if links == blank and item.title contains '[NAV]'
+                assign title_handle = item.title | remove: '[NAV]'
+                if item.title contains '[HANDLE--'
+                  assign title_handle = title_handle | remove: '[HANDLE--' | split: ']' | first
+                  assign title = item.title | remove: '[NAV]' | remove: '[HANDLE--'| split: ']' | last
+                else
+                  assign title_handle = title_handle | remove: '[ICON--' | split: ']' | last | handle
+                endif
+                assign links = linklists[title_handle].links
+              endif
+            -%}
+
+            {% if item.title contains '[SHOP-ALL]' %}
+              <span class="text-with-icon back-button">
+                {%- render 'icon.svg', type: 'chevron-left' -%}
+                {{- 'Back' -}}
+              </span>
+            {%- endif -%}
+
+            <span class="text-with-icon">
+              {%- if icon != blank -%}
+                {%- render 'icon-signature.svg', type: icon -%}
+              {% endif %}
+              {{- title -}}
+            </span>
+
+            {%- if links != blank -%}
+              {%- if item.title contains '[ALPHABET]' -%}
+                {%- render 'icon.svg', type: 'plus' -%}
+                {%- render 'icon.svg', type: 'minus' -%}
+              {%- else -%}
+                {%- render 'icon.svg', type: 'chevron-right' -%}
+              {%- endif -%}
+            {%- endif -%}
+          </a>
+        {%- endif -%}
+
+        {%- assign _level = level | plus: 1 -%}
+        {%- render 'pd-header-nav', level: _level, menu: item -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

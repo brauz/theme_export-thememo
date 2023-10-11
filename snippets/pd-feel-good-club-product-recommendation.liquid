@@ -1,0 +1,5 @@
+{% comment %} product recommendation using searchspring app -> PENDING  {% endcomment %}
+{%- assign blocks = section.blocks | where: "type", "carousel-item"-%}
+<div class="feel-good-club-product-recommendation">
+  {% render 'pd-product-carousel', blocks: blocks %}
+</div>

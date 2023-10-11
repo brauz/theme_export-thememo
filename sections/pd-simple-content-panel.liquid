@@ -1,0 +1,283 @@
+{% render 'pd-simple-content-panel' %}
+
+{% schema %}
+{
+  "name": "Simple content panel",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "presets": [
+    {
+      "name": "Simple content panel"
+    }
+  ],
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Show breadcrumbs",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#F0EDFF"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin top",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin bottom",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "title",
+      "name": "Title",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Style",
+          "options": [
+            {
+              "label": "Heading 2",
+              "value": "heading-2"
+            },
+            {
+              "label": "Heading 3",
+              "value": "heading-3"
+            },
+            {
+              "label": "Heading 4",
+              "value": "heading-4"
+            },
+            {
+              "label": "Heading 5",
+              "value": "heading-5"
+            }
+          ],
+          "default": "heading-4"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#0A2657"
+        },
+        {
+          "type": "range",
+          "id": "text_font_size",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size on desktop",
+          "default": 36
+        },
+        {
+          "type": "range",
+          "id": "text_font_size_mobile",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size on mobile",
+          "default": 22
+        }
+      ]
+    },
+    {
+      "type": "content",
+      "name": "Content",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#0A2657"
+        },
+        {
+          "type": "range",
+          "id": "text_font_size",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size on desktop",
+          "default": 24
+        },
+        {
+          "type": "range",
+          "id": "text_font_size_mobile",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size on mobile",
+          "default": 22
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "Button url"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button style",
+          "options": [
+            {
+              "label": "Default",
+              "value": ""
+            },
+            {
+              "label": "Bold Coral",
+              "value": "pd-button--bold-coral"
+            },
+            {
+              "label": "Happy Lemonlime",
+              "value": "pd-button--happy-lemonlime"
+            },
+            {
+              "label": "Strong Dark Blue",
+              "value": "pd-button--strong-dark-blue"
+            },
+            {
+              "label": "Lively Blue",
+              "value": "pd-button--lively-blue"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "is_button_outline",
+          "label": "Button outline?",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "is_button_big",
+          "label": "Big button?",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "decoration_image",
+      "name": "Decoration image",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Dimension: 500x300"
+        },
+        {
+          "type": "text",
+          "id": "decoration_image_desktop_position",
+          "label": "Decoration image desktop position(%)",
+          "info": "top, left. EX: 20, 40",
+          "default": "20, 40"
+        },
+        {
+          "type": "text",
+          "id": "decoration_image_mobile_position",
+          "label": "Decoration image mobile position(%)",
+          "info": "top, left. EX: 10, 85",
+          "default": "10, 85"
+        },
+        {
+          "type": "number",
+          "id": "decoration_image_desktop_width",
+          "label": "Decoration image desktop width(px)",
+          "default": 60
+        },
+        {
+          "type": "number",
+          "id": "decoration_image_mobile_width",
+          "label": "Decoration image mobile width(px)",
+          "default": 60
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

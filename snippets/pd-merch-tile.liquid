@@ -1,0 +1,149 @@
+{% liquid
+  assign video_main = block.settings.video
+  if block.settings.video_mobile
+    assign video_mobile = block.settings.video_mobile
+  else
+    assign video_mobile = video_main
+  endif
+
+  assign cover_video = block.settings.desktop_image_src
+  if block.settings.mobile_image_src
+    assign cover_video_mobile = block.settings.mobile_image_src
+  else
+    assign cover_video_mobile = cover_video
+  endif
+%}
+
+{% capture video_block %}
+  <div class="pd-merch-tile__video-wrapper hide-mobile">
+    {% render 'pd-video-merch-tile',
+      video: video_main,
+      enable_video_looping: true,
+      auto_play: true,
+      poster: cover_video
+    %}
+  </div>
+  <div class="pd-merch-tile__video-wrapper hide-desktop">
+    {% render 'pd-video-merch-tile',
+      video: video_mobile,
+      enable_video_looping: true,
+      auto_play: true,
+      poster: cover_video_mobile
+    %}
+  </div>
+{% endcapture %}
+
+{% liquid
+  assign image_main = block.settings.desktop_image_src
+  if block.settings.mobile_image_src
+    assign image_mobile = block.settings.mobile_image_src
+  else
+    assign image_mobile = image_main
+  endif
+%}
+
+{% capture image_block %}
+  {% liquid
+    assign image_width = null
+    if block.settings.image_banner_width and block.settings.image_banner_width != 0
+      assign image_width = block.settings.image_banner_width
+    endif
+
+    assign image_height = null
+    if block.settings.image_banner_height and block.settings.image_banner_height != 0
+      assign image_height = block.settings.image_banner_height
+    endif
+  %}
+  {%- if image_main != blank -%}
+    {{
+      image_main
+      | image_url: width: image_width, height: image_height
+      | image_tag: alt: block.settings.banner_image_title, class: 'hide-mobile', loading: 'lazy'
+    }}
+  {%- endif -%}
+  {%- if image_mobile != blank -%}
+    {{
+      image_mobile
+      | image_url: width: image_width, height: image_height
+      | image_tag: alt: block.settings.banner_image_title, class: 'hide-desktop', loading: 'lazy'
+    }}
+  {%- endif -%}
+{% endcapture %}
+
+<section
+  class="pd-merch-tile"
+  style="--bgColor: {{block.settings.collection_bg_color}};"
+>
+  {% assign collectionBlockHeight = '100%' %}
+  {%- if block.settings.collection_height != blank and block.settings.collection_height != 0 -%}
+    {% assign collectionBlockHeight = block.settings.collection_height | append: 'px' %}
+  {%- endif -%}
+  <main
+    style="
+      --height: {{collectionBlockHeight}};
+      --flexDirection: {{block.settings.collection_direction}};
+    "
+  >
+    <a
+      href="{{block.settings.image_block_link}}"
+      class="pd-merch-tile__block pd-merch-tile__block-image"
+      style="
+        --horizontalAlignment:{{block.settings.image_horizontal_alignment}};
+        --verticalAlignment:{{block.settings.image_vertical_alignment}};
+      "
+    >
+      {% if video_main or video_mobile %}
+        {{ video_block }}
+      {% else %}
+        {{ image_block }}
+      {% endif %}
+    </a>
+
+    {%- if block.settings.main_title != blank
+      or block.settings.main_description != blank
+      or block.settings.cta_label != blank
+    -%}
+      <div
+        class="pd-merch-tile__block pd-merch-tile__block-text"
+        style="
+          --horizontalAlignment:{{block.settings.text_horizontal_alignment}};
+          --verticalAlignment:{{block.settings.text_vertical_alignment}};
+        "
+      >
+        {%- if block.settings.main_title != blank -%}
+          <h2
+            class="pd-merch-tile__block-banner_title pd-heading-underline"
+            style="--textColor: {{block.settings.main_title_color}};"
+          >
+            {{ block.settings.main_title }}
+          </h2>
+        {%- endif -%}
+
+        {%- if block.settings.main_description != blank -%}
+          <p
+            class="pd-merch-tile__block-banner_description"
+            style="--textColor: {{block.settings.main_description_color}};"
+          >
+            {{ block.settings.main_description }}
+          </p>
+        {%- endif -%}
+
+        <div class="pd-ctas">
+          {%- if block.settings.cta_label != blank -%}
+            <a
+              class="btn-cta pd-button pd-merch-tile__block-banner_cta"
+              href="{{block.settings.cta_link}}"
+              style="
+                --textColor: {{block.settings.cta_text_color}};
+                --bgColor: {{block.settings.cta_bg_color}};
+                --borderColor: {{block.settings.cta_border_color}};
+              "
+            >
+              {{- block.settings.cta_label -}}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </main>
+</section>

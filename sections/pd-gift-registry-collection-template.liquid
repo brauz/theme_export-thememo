@@ -1,0 +1,87 @@
+{% assign page_title = 'Manage Registry' %}
+{% render 'pd-cart-notification', showDivider: false %}
+<div class="page-width" data-tinybind-binder>
+  <div class="gift-registry-page gift-registry-page--2-columns gift-registry-page--collection">
+    <div class="gift-registry-page__sidebar">
+      {% render 'pd-gift-registry-sidebar', page_title: page_title %}
+    </div>
+    <div class="gift-registry-page__content">
+      <nav class="breadcrumbs" role="navigation" aria-label="breadcrumbs">
+        <ol class="breadcrumbs__list">
+          <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link" href="/account" aria-current="page">My Account</a>
+          </li>
+          <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link" href="/account?view=gift-registry-dashboard" aria-current="page">Gift Registry</a>
+          </li>
+        </ol>
+      </nav>
+
+      <h1 class="pd-heading-3 gift-registry-page__heading-title">{{ page_title }}</h1>
+      <div class="hidden" rv-class-hidden="data.isLoading">
+        {% render 'pd-gift-registry-intro-panel' %}
+        {% if section.settings.message_panel_text != blank %}
+          {% render 'pd-message-panel', 
+            message: section.settings.message_panel_text, 
+            bg_color: section.settings.message_panel_bg_color,
+            text_color: section.settings.message_panel_text_color
+          %}
+        {% endif %}
+      </div>
+      <div data-registry-grid id="gift-registry-collection" rv-if="data.registryProducts.length">
+        <template data-registry-item-template>
+          {% render 'pd-gift-registry-item-template' %}
+        </template>
+        <div data-registry-grid-container class="gift-registry-grid">
+        </div>
+      </div>
+      <div rv-class-hidden="data.isLoading | not" class="loading-state hidden">{% render 'icon.svg', type: 'spinner' %}</div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Gift Registry Collection",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Sidebar"
+    },
+    {
+      "type": "text",
+      "id": "main_menu",
+      "label": "Main menu",
+      "default": "n-gift-registry-sidebar"
+    },
+    {
+      "type": "text",
+      "id": "help_menu",
+      "label": "Help menu",
+      "default": "n-gift-registry-help"
+    },
+    {
+      "type": "header",
+      "content": "Simple Message panel"
+    },
+    {
+      "type": "richtext",
+      "id": "message_panel_text",
+      "label": "Message panel - Text",
+      "default": "<p><strong>Want to add something else?</strong> Easy! Browse the store and use the Gift Registry button to add</p>"
+    },
+    {
+      "type": "color",
+      "id": "message_panel_bg_color",
+      "label": "Message panel - Background color",
+      "default": "#F2F4F7"
+    },
+    {
+      "type": "color",
+      "id": "message_panel_text_color",
+      "label": "Message panel - Text color",
+      "default": "#2E4A7B"
+    }
+  ]
+}
+{% endschema %}

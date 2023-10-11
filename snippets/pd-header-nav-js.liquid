@@ -1,0 +1,119 @@
+<script defer="defer">
+  document.addEventListener('DOMContentLoaded', () => {
+    handleDesktopNav();
+    handleMobileNav();
+  });
+
+  function handleDesktopNav() {
+    if (window.innerWidth < BREAKPOINTS['desktop-medium']) return;
+    const listItems = document.querySelectorAll(`.pd-header li[level="1"]`);
+
+    listItems.forEach((item) => {
+      item.addEventListener('mouseenter', () => {
+        document.body.classList.add('disabled-scroll');
+        document.querySelector('.pd-header').classList.add('bg-overlay');
+      });
+
+      item.addEventListener('mouseleave', () => {
+        document.body.classList.remove('disabled-scroll');
+        document.querySelector('.pd-header').classList.remove('bg-overlay');
+      });
+    });
+  }
+
+  function handleMobileNav() {
+    if (window.innerWidth >= BREAKPOINTS['desktop-medium']) return;
+    const ELM_container = document.querySelector('.pd-header__nav.mobile-nav');
+    const ELM_menuWrappers = ELM_container.querySelectorAll('ul[level]');
+    const ELM_hamburder = document.querySelector('.pd-header__hamburger-menu');
+
+    ELM_hamburder.querySelector('summary').addEventListener('click', (e) => {
+      document.body.classList.toggle('disabled-scroll');
+      document.querySelector('.pd-header').classList.toggle('bg-overlay');
+    });
+
+    /* document.addEventListener('click', (e) => {
+      if (!e.target.closest('.pd-header__hamburger-menu') && ELM_hamburder.hasAttribute('open')) {
+        ELM_hamburder.click();
+      }
+    }); */
+
+    ELM_menuWrappers.forEach((item) => {
+      const level = item.getAttribute('level');
+      const ELM_menuItems = item.querySelectorAll(`li[level="${level}"]`);
+      ELM_menuItems.forEach((innerItem, i, self) => {
+        innerItem.addEventListener('click', (e) => {
+          if (e.target.matches(`li:not([level="1"]) .text-with-icon:not(.back-button)`)) return;
+
+          //Level 1 specific
+          if (e.target.matches(`li[level="1"] .text-with-icon:not(.back-button)`)) {
+            e.preventDefault();
+            const currentElm = e.target.closest('li');
+            const currentLevel = currentElm.getAttribute('level');
+            document.querySelector(`li.active[level="1"]`).classList.remove('active');
+            currentElm.classList.add('active');
+            return;
+          }
+
+          // handle back on previous level
+          if (e.target.matches('.back-button')) {
+            e.preventDefault();
+            const currentElm = e.target.closest('li.menu-item--shop-all');
+            const currentLevel = currentElm.getAttribute('level');
+            const accentElm = innerItem.querySelector(`li.active[level="${parseInt(currentLevel) - 1}"]`);
+            accentElm?.classList?.remove('active');
+            accentElm?.closest('ul').classList.remove('overflow-hidden');
+            return;
+          }
+
+          // handle show/hide brand letter list
+          if (e.target.closest(`details.letter__wrapper`)) {
+            const details = e.target.closest('details.letter__wrapper');
+            const parentDetails = details.closest('li');
+            const currentLevel = parentDetails.getAttribute('level');
+            const accentElm = details.closest(`ul[level="${parseInt(currentLevel) - 1}"]`);
+
+            if (details.hasAttribute('open')) {
+              parentDetails.classList.remove('active');
+              accentElm.classList.remove('overflow-auto');
+              accentElm.classList.add('overflow-hidden');
+            } else {
+              self.forEach((deeperItem) => {
+                if (deeperItem.getAttribute('level') == currentLevel) {
+                  deeperItem.classList.remove('active');
+                  deeperItem.querySelector('details').removeAttribute('open');
+                }
+              });
+              parentDetails.classList.add('active');
+              accentElm.classList.remove('overflow-hidden');
+              accentElm.classList.add('overflow-auto');
+            }
+            return;
+          }
+
+          e.preventDefault();
+          e.stopPropagation();
+          // handle select to a menu navgation item that has children
+          const currentElm = e.target.closest('li');
+          const currentLevel = currentElm.getAttribute('level');
+
+          if (currentElm.classList.contains('active')) {
+            currentElm.classList.toggle('active');
+          } else {
+            self.forEach((deeperItem) => {
+              if (deeperItem.getAttribute('level') === currentLevel) {
+                deeperItem.classList.remove('active');
+              }
+            });
+            currentElm.classList.add('active');
+            e.target.closest('.pd-header__nav.mobile-nav').scrollTo({ top: 0 });
+          }
+
+          if (level > 1) {
+            innerItem.closest('ul').classList.add('overflow-hidden');
+          }
+        });
+      });
+    });
+  }
+</script>

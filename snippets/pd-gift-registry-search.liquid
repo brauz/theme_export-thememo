@@ -1,0 +1,36 @@
+<div rv-if="data.searchPerformed | not" class="gift-registry-search">
+  <div class="gift-registry-search-inner">
+    <div class="gift-registry-search__banner">
+      {% render 'pd-image', image: section.settings.banner_image %}
+    </div>
+    <div class="gift-registry-search__form">
+      <h1 class="pd-heading-3 gift-registry-search__title" rv-if="data.queryParams.link | not">Find a registry</h1>
+      <div class="pd-form-panel" rv-if="data.queryParams.link | not">
+        <h3 class="pd-heading-3 pd-form-header">Search by name</h3>
+        <div class="pd-form-group">
+          <label class="pd-form-label">Registry name</label>
+          <div class="pd-form-input-with-icon">
+            <input class="pd-form-input" type="text" id="first_last_name" rv-value="data.searchPhrase" />
+            {% render 'icon.svg', type: 'search' %}
+          </div>
+          <span class="pd-form-note">First/Last name</span>
+        </div>
+        <button class="pd-button pd-button--big pd-button--lively-blue" rv-on-click="methods.onFullNameSearch">Search</button>
+      </div>
+      <div class="pd-form-panel">
+        <h3 class="pd-heading-3 pd-form-header" rv-if="data.queryParams.link | not">Use a directly link</h3>
+        <h3 class="pd-heading-3 pd-form-header" rv-if="data.queryParams.link | and data.registryName" rv-text="data.registryName">Login to view your friend's Registry</h3>
+        <div class="pd-form-group" rv-if="data.hideInput | not">
+          <label class="pd-form-label">Link</label>
+          <input rv-if="data.hideInput | not" class="pd-form-input" type="text" id="direct_link" rv-value="data.link" />
+        </div>
+        <div class="pd-form-group">
+          <label class="pd-form-label">Password</label>
+          <input class="pd-form-input" type="password" id="registry_password" rv-value="data.password" />
+          <span class="pd-form-note">Unsure of the password? Please check the email you received from your friend otherwise if you still aren’t having any luck, please reach out to your friend as The Memo does not have access to passwords due to privacy reasons </span>
+        </div>
+        <button class="pd-button pd-button--big pd-button--lively-blue" rv-on-click="methods.onGoClick">Go</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+<div 
+  class="gift-registry-item" 
+  data-product-id="{product_id}" 
+  data-variant-id="{variant_id}" 
+  data-product-handle="{product_handle}"
+  data-qty-available="{quantity_available}"
+  data-index="{product_index}"
+  style="order: {order}"
+>
+  {is_drop_ship}
+  <div class="gift-registry-item-inner">
+    <div class="gift-registry-item__image">
+      <img src="{product_image_src}"/>
+    </div>
+    <div class="gift-registry-item__info">
+      <p class="gift-registry-item__title">{product_title}</p>
+      <p class="gift-registry-item__price">{variant_price}</p>
+      <div class="gift-registry-item__actions">
+        <div class="gift-registry-item__quantity">
+          <a href="#" data-quantity="down" data-item-index="{product_index}">−</a>
+          <input aria-label="Quantity" class="select-on-focus" name="quantity" value="{product_quantity}" data-item-index="{product_index}">
+          <a href="#" data-quantity="up" data-item-index="{product_index}">+</a>
+        </div>
+        {gift_registry_item_button}
+      </div>
+      <a data-remove-registry-item-button data-item-index="{product_index}" class="gift-registry-item__remove-button">Remove</a>
+      <div data-registry-item-error-message class="gift-registry-item__error-message"></div>
+    </div>
+  </div>
+</div>

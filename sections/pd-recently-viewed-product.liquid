@@ -1,0 +1,251 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  .section-{{ section.id }}-color {
+    background-color: {{ section.settings.bg_color }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- capture render_card_product_html_template -%}
+  {%- render 'card-product-html-template',
+    show_quick_action: true,
+    hide_secondary_image: section.settings.hide_secondary_image,
+    hide_vendor: section.settings.hide_vendor,
+    hide_rating: section.settings.hide_rating,
+    hide_swatch: section.settings.hide_swatch,
+    show_description: section.settings.show_description,
+    section_id: section.id,
+    lazy_load: lazy_load,
+    badge_position: section.settings.badge_position,
+    is_badge_fullwidth: section.settings.is_badge_fullwidth,
+    color_price_sale: section.settings.color_price_sale
+    color_price_compared_at: section.settings.color_price_compared_at,
+    color_price_regular: section.settings.color_price_regular
+  -%}
+{%- endcapture -%}
+
+<script>
+  const cardProductHTMLTemplate = `{{ render_card_product_html_template }}`;
+</script>
+
+<script src="{{ 'recently-viewed-products.js' | asset_url }}" defer="defer"></script>
+
+<div class="section-{{ section.id }}-padding section-{{ section.id }}-color recently-viewed-products">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <h2
+        class="
+          recently-viewed-products__heading
+          recently-viewed-products__heading--{{ section.settings.text_alignment }}
+          recently-viewed-products__heading-mobile--{{ section.settings.text_alignment_mobile }}
+        "
+      >
+        {{ section.settings.heading }}
+      </h2>
+    {%- endif -%}
+
+    <recently-viewed-products hide-all-badges="{{ section.settings.hide_all_badges }}">
+      <div class="recently-viewed-products__list pd-container-with-scrollbar"></div>
+    </recently-viewed-products>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Recently viewed",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color"
+    },
+    {
+      "type": "checkbox",
+      "id": "center_items",
+      "label": "Center items",
+      "info": "Only works when number of products being showed is lower than settings"
+    },
+    {
+      "type": "header",
+      "content": "Header text"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment_mobile",
+      "label": "Text alignment mobile",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Bold words to apply underline"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-collection-product-grid.settings.header__3.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_secondary_image",
+      "default": false,
+      "label": "Hide second image on hover"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_vendor",
+      "default": false,
+      "label": "Hide vendor"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_rating",
+      "default": false,
+      "label": "Hide product rating"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_swatch",
+      "label": "Hide swatch",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show description",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "badge_position",
+      "options": [
+        {
+          "value": "",
+          "label": "Top"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "",
+      "label": "Badge position"
+    },
+    {
+      "type": "checkbox",
+      "id": "is_badge_fullwidth",
+      "label": "Fullwidth badge",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_all_badges",
+      "label": "Hide all badges when product is out of stock",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Price color"
+    },
+    {
+      "type": "color",
+      "id": "color_price_regular",
+      "label": "Regular price text color"
+    },
+    {
+      "type": "color",
+      "id": "color_price_sale",
+      "label": "Sale price text color"
+    },
+    {
+      "type": "color",
+      "id": "color_price_compared_at",
+      "label": "Compare-at price text color"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#101828"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Recently viewed"
+    }
+  ]
+}
+{% endschema %}

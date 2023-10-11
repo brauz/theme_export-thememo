@@ -1,0 +1,139 @@
+{% render 'pd-faq-accordions' %}
+
+{% schema %}
+{
+  "name": "FAQ Accordions",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "presets": [
+    {
+      "name": "FAQ Accordions"
+    }
+  ],
+  "settings": [
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button url"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "options": [
+        {
+          "label": "Default",
+          "value": ""
+        },
+        {
+          "label": "Bold Coral",
+          "value": "pd-button--bold-coral"
+        },
+        {
+          "label": "Happy Lemonlime",
+          "value": "pd-button--happy-lemonlime"
+        },
+        {
+          "label": "Strong Dark Blue",
+          "value": "pd-button--strong-dark-blue"
+        },
+        {
+          "label": "Lively Blue",
+          "value": "pd-button--lively-blue"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "is_button_outline",
+      "label": "Button outline?",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "step_numbers_bg_color",
+      "label": "Step numbers' background color",
+      "default": "#CCC2FF"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin top",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin bottom",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Metafield"
+    },
+    {
+      "type": "text",
+      "id": "metafield_id",
+      "label": "ID"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "accordion",
+      "name": "Accordion",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "question",
+          "label": "Question"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

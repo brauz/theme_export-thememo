@@ -1,0 +1,22 @@
+<div class="pd-drawer js-pd-drawer pd-feel-good-club pd-feel-good-club-drawer" id="feel-good-club-drawer">
+  <div class="pd-drawer__overlay" data-close-drawer="feel-good-club-drawer">overlay</div>
+  <div class="pd-drawer__inner">
+    <div class="pd-drawer__content">
+      <div class="pd-drawer__header">
+        <h5 class="pd-drawer__heading">Feel Good Club Account</h5>
+        <span class="pd-drawer__close" data-close-drawer="feel-good-club-drawer">
+          {%- render 'icon.svg', type: 'x-mark' -%}
+        </span>
+      </div>
+
+      <div class="pd-drawer__body">
+        {%- if drawer_banner_image != blank -%}
+          <div class="pd-drawer__image">
+            {%- render 'pd-image', image: drawer_banner_image -%}
+          </div>
+        {%- endif -%}
+        {%- render 'pd-feel-good-club', replace_route: false -%}
+      </div>
+    </div>
+  </div>
+</div>

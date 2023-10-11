@@ -1,0 +1,83 @@
+{% unless content_for_header contains "Shopify.designMode" %}
+  <script>
+      function handleRegistryReferenceUrl() {
+          const urlParams = new URLSearchParams(window.location.search);
+          let p = urlParams.get('p');
+          let r = urlParams.get('r');
+  
+          if (!r || !p) {
+              console.log('redirect in liquid');
+              url = "{{section.settings.redirect_url}}" + "?link=" + window.location.href + "&n=Login to registry";
+              window.location.href = url;
+          }
+      }
+      handleRegistryReferenceUrl();
+  </script>
+{% endunless %}
+
+{% render 'pd-cart-notification', showDivider: false %}
+<div data-gift-givers-view class="gift-registry-view">
+  <div class="gift-registry-view__banner">
+    {% if section.settings.banner_image != blank %}
+      {% render 'pd-image', image: section.settings.banner_image %}
+    {% endif %}
+    <div class="page-width">
+      <h1 class="pd-heading-2">{registry_name}</h1>
+      <div class="gift-registry-view__banner__text">{registry_message}</div>
+    </div>
+  </div>
+  <div class="gift-registry-view__header">
+    <div class="page-width">
+      <div class="items-count">{item_count}</div>
+      <div class="gift-registry-sort">
+        <label class="pd-form-label">Sort by:</label>
+        <div class="pd-form-select">
+          <select data-sort-registry-items>
+            <option>Please select one</option>
+            <option value="ASC"  data-field="item_price">Price Low to High</option>
+            <option value="DESC" data-field="item_price">Price High to Low</option>
+          </select>
+          {% render 'icon.svg', type: 'arrow-up-down' %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="gift-registry-view__body">
+    <div class="page-width">
+      <input type="hidden" id="publicRegistryId" name="public_registry_id" value="{registry_id}">
+      <input type="hidden" id="publicRegistryRegistrantName" name="public_registry_name" value="{registrant_name}">
+      <input type="hidden" id="publicRegistryRegistrantEmail" name="public_registry_email" value="{registrant_email}">
+      <input type="hidden" id="publicRegistryDate" name="public_registry_date" value="{registry_date}">
+      <input type="hidden" id="publicRegistyStatus" name="public_registry_status" value="{registry_status}">
+
+      <div data-gift-giver-grid>
+        <template data-gift-giver-item-template>
+          {% render 'pd-gift-giver-item-template' %}
+        </template>
+        <div data-gift-giver-grid-container class="gift-registry-grid">
+        </div>
+        <div data-gift-giver-pagination-container></div>
+      </div>
+    </div>
+  </div>
+  <div class="loading-state">{% render 'icon.svg', type: 'spinner' %}</div>
+  <back-to-top class="pd-button">
+    {% render 'icon.svg', type: 'arrow-down' %}
+    <span>Back to top</span>
+  </back-to-top>
+</div>
+
+{% render 'pd-gift-registry-msg-drawer' %}
+
+{% schema %}
+{
+  "name": "Gift Registry Guest View",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "Banner image"
+    }
+  ]
+}
+{% endschema %}

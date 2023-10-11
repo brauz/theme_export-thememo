@@ -1,0 +1,149 @@
+{{ 'section-main-page.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  .section-{{ section.id }}-color {
+    background-color: {{ section.settings.bg_color }};
+  }
+
+  .section-{{ section.id }}-padding .page-banner__breadcrumbs .breadcrumbs__link {
+    color: {{ section.settings.breadcrums_text_color }};
+  }
+
+  [section-id="{{ section.id }}"] .page-banner__text.mobile-{{ section.settings.text_alignment_mobile }} {
+    align-items: {{ section.settings.text_alignment_mobile }};
+    text-align: {{ section.settings.text_alignment_mobile }};
+  }
+
+  .section-{{ section.id }}-padding .page-banner__heading > * {
+    color: {{ section.settings.heading_text_color }};
+  }
+
+  .section-{{ section.id }}-padding .page-banner__description > * {
+    color: {{ section.settings.description_text_color }};
+  }
+
+  .section-{{ section.id }}-padding .page-banner__heading--{{ section.settings.heading_text_alignment_mobile }} {
+    text-align: {{ section.settings.heading_text_alignment_mobile }};
+  }
+
+  .section-{{ section.id }}-padding .page-banner__description--{{ section.settings.description_text_alignment_mobile }} {
+    text-align: {{ section.settings.description_text_alignment_mobile }};
+  }
+
+  {% if section.settings.decoration_image != blank %}
+    .section-{{ section.id }}-padding .page-banner__heading span::after {
+      content: '';
+      background-image: url({{ section.settings.decoration_image | img_url: '150x' }});
+    }
+  {% endif %}
+
+  @media screen and (min-width: 768px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+
+    .section-{{ section.id }}-padding .page-banner__text {
+      margin: 0 auto;
+      width: {{ section.settings.width }}%;
+    }
+
+    [section-id="{{ section.id }}"] .page-banner__text.desktop-{{ section.settings.text_alignment }} {
+      align-items: {{ section.settings.text_alignment }};
+    }
+
+    .section-{{ section.id }}-padding .page-banner__heading--{{ section.settings.heading_text_alignment }} {
+      text-align: {{ section.settings.heading_text_alignment }};
+    }
+
+    .section-{{ section.id }}-padding .page-banner__description--{{ section.settings.description_text_alignment }} {
+      text-align: {{ section.settings.description_text_alignment }};
+    }
+  }
+{%- endstyle -%}
+
+<div section-id={{ section.id }} class="section-{{ section.id }}-padding section-{{ section.id }}-color page-banner">
+  {%- if section.settings.image != blank -%}
+    <div class="page-banner__top-section hide-mobile">
+      {%- if section.settings.show_breadcrumbs -%}
+        <div class="page-width page-banner__breadcrumbs">
+          {%- render 'breadcrumbs' -%}
+        </div>
+      {%- endif -%}
+      {%- render 'pd-image', image: section.settings.image -%}
+    </div>
+  {%- else -%}
+    {%- if section.settings.show_breadcrumbs -%}
+      <div class="page-width page-banner__breadcrumbs hide-mobile">
+        {%- render 'breadcrumbs' -%}
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+
+  {%- if section.settings.image_mobile != blank -%}
+    <div class="page-banner__top-section hide-desktop">
+      {%- if section.settings.show_breadcrumbs -%}
+        <div class="page-width page-banner__breadcrumbs">
+          {%- render 'breadcrumbs' -%}
+        </div>
+      {%- endif -%}
+      {%- render 'pd-image', image: section.settings.image_mobile -%}
+    </div>
+  {%- else -%}
+    {%- if section.settings.show_breadcrumbs -%}
+      <div class="page-width page-banner__breadcrumbs hide-desktop">
+        {%- render 'breadcrumbs' -%}
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+
+  <div class="page-width page-banner__text {{ section.settings.text_position }} desktop-{{ section.settings.text_alignment }} mobile-{{ section.settings.text_alignment_mobile }}">
+    {%- if section.settings.heading -%}
+      {% case section.settings.heading_type %}
+        {% when 'h1' %}
+          <h1 class="pd-heading-1 page-banner__heading">
+            <span>{{- section.settings.heading -}}</span>
+          </h1>
+        {% when 'h2' %}
+          <h2 class="pd-heading-2 page-banner__heading">
+            <span>{{- section.settings.heading -}}</span>
+          </h2>
+        {% when 'h3' %}
+          <h3 class="pd-heading-3 page-banner__heading">
+            <span>{{- section.settings.heading -}}</span>
+          </h3>
+        {% when 'h4' %}
+          <h4 class="pd-heading-4 page-banner__heading">
+            <span>{{- section.settings.heading -}}</span>
+          </h4>
+        {% when 'h5' %}
+          <h5 class="pd-heading-5 page-banner__heading">
+            <span>{{- section.settings.heading -}}</span>
+          </h5>
+        {% when 'h6' %}
+          <h6 class="pd-heading-6 page-banner__heading">
+            <span>{{- section.settings.heading -}}</span>
+          </h6>
+      {% endcase %}
+    {%- endif -%}
+
+    {%- if section.settings.description -%}
+      <div class="page-banner__description">
+        {{- section.settings.description -}}
+      </div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="page-banner__buttons">
+        {%- for block in section.blocks -%}
+          <a href="{{ block.settings.button_url }}" class="pd-button {{ block.settings.button_style }} {% if block.settings.is_button_outline %}pd-button--outline{% endif %} {% if block.settings.is_button_big %}pd-button--big{% endif %}">{{ block.settings.button_label }}</a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>

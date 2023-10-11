@@ -1,0 +1,102 @@
+{% render 'pd-banner-with-various-icons' %}
+
+{% schema %}
+{
+  "name": "Banner with various icons",
+  "presets": [
+    {
+      "name": "Banner with various icons"
+    }
+  ],
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Banner image (Desktop)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Banner image (Mobile)"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_h1_tag",
+      "label": "Use H1 tag?"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Show breadcrumbs",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin top",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin bottom",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "icon",
+      "name": "Icon",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Icon"
+        },
+        {
+          "type": "number",
+          "id": "width_desktop",
+          "label": "Icon width (Desktop)",
+          "default": 90
+        },
+        {
+          "type": "number",
+          "id": "width_mobile",
+          "label": "Icon width (Mobile)",
+          "default": 51
+        },
+        {
+          "type": "text",
+          "id": "position_desktop",
+          "label": "Position (Desktop)",
+          "default": "90, 80",
+          "info": "Top, Left. Unit: %, EX: 90, 80"
+        },
+        {
+          "type": "text",
+          "id": "position_mobile",
+          "label": "Position (Mobile)",
+          "default": "20, 60",
+          "info": "Top, Left. Unit: %, EX: 20, 60"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

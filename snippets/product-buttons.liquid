@@ -1,0 +1,31 @@
+{% comment %}
+  - product - product object
+  - show_quick_view - boolean
+{% endcomment %}
+
+<style>
+  {% if block.settings.wishlist_bg_color != blank %}
+    .product-buttons__button--wishlist button {
+      background-color: {{ block.settings.wishlist_bg_color }};
+    }
+  {% endif %}
+
+  {% if block.settings.registry_add_bg_color %}
+    .product-buttons__button--registry-add button {
+      background-color: {{ block.settings.registry_add_bg_color }};
+    }
+  {% endif %}
+</style>
+
+
+<div class="product-buttons {% if show_quick_view %} product-buttons--quick-view{% endif %}">
+  <div class="product-buttons__button product-buttons__button--wishlist">
+    {% render 'add-to-lists-button', product_data: product %} 
+  </div>
+
+  {% if customer.tags contains 'Registry-Owner' %}
+    <div class="product-buttons__button product-buttons__button--registry-add registry-add">
+    {% render 'add-to-registry-button', product_data: product %}
+  </div>
+  {% endif %}  
+</div>

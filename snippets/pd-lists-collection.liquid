@@ -1,0 +1,43 @@
+{%- liquid
+  assign title = collection_data.title
+  if collection_data.metafields.accentuate.lists_title != blank
+    assign title = collection_data.metafields.accentuate.lists_title
+  endif
+  assign description = collection_data.metafields.accentuate.lists_description.html
+  assign button_label = collection_data.metafields.accentuate.lists_button_label
+  assign button_url = collection_data.metafields.accentuate.lists_button_url
+  assign how_many = collection_data.metafields.accentuate.lists_how_many
+-%}
+
+{% capture collection_products %}
+  {% for product_data in collection_data.products %}
+    {% render 'card-product', 
+      card_product: product_data,
+      class_name: 'swiper-slide'
+    %}
+  {% endfor %}
+{% endcapture %}
+
+<div class="lists-collection">
+  <div class="lists-collection__info">
+    <h3 class="pd-heading-4 lists-collection__title">{{ title }}</h3>
+    {% if description != blank %}
+      <div class="lists-collection__description">{{ description }}</div>
+    {% endif %}
+    <div class="lists-collection__details">
+      {% if button_label != blank %}
+        {% if button_url != blank %}
+          <a class="lists-collection__button" href="{{ button_url }}">{{ button_label }}</a>
+        {% else %}
+          <span class="lists-collection__button" href="{{ button_url }}">{{ button_label }}</span>
+        {% endif %}
+      {% endif %}
+      {% if how_many != blank %}
+        <span class="pd-heading-4 lists-collection__how-many">{{ how_many }}</span>
+      {% endif %}
+    </div>
+  </div>
+  <div class="pd-container-with-scrollbar lists-collection__products">
+    {{ collection_products }}
+  </div>
+</div>

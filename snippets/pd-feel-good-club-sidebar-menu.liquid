@@ -1,0 +1,45 @@
+{% assign page_params = content_for_header | split: '"pageurl":"' | last | split: '"' | first | split: '?' | last %}
+
+<nav class="feel-good-club-sidebar-menu">
+  <div class="pdp-accordion">
+    <details class="pdp-accordion__item">
+      <summary class="product__info__heading">
+        <h5>{{ header }}</h5>
+        {%- render 'icon.svg', type: "chevron-down" -%}
+      </summary>
+      <div class="pdp-accordion__item__content">
+        <ul>
+          {% for link in linklists[menu_handle].links %}
+            {% liquid
+              assign link_title = link.title
+              if link.title contains '['
+                assign link_title = link.title | split: '[' | first
+                assign tag = link.title | split: '[' | last | replace: ']', ''
+              endif
+            %}
+
+            <li>
+              <a
+                href="{{ link.url }}"
+                {% if link.url contains page_params %}
+                  class="active"
+                {% endif %}
+              >
+                {{- link_title }}
+                {%- if link.title contains "[BADGE-NUMBER]" and total_coupons_with_tier != blank and total_coupons_with_tier != 0 -%}
+                  <span class="feel-good-club-sidebar-menu__badge">{{ total_coupons_with_tier }}</span>
+                {%- endif -%}
+                {%- if link.title contains "[BADGE-NEW]" -%}
+                  <span class="feel-good-club-sidebar-menu__badge feel-good-club-sidebar-menu__badge--new">New</span>
+                {%- endif -%}
+                {%- if link.title contains "[ANCHOR]" -%}
+                  {% render 'icon.svg', type: "arrow-up-right" %}
+                {%- endif -%}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </details>
+  </div>
+</nav>

@@ -1,0 +1,64 @@
+<style>
+  [section-id="{{ section.id }}"] {
+    background-color: {{ section.settings.bg_color }};
+    margin-top: {{ section.settings.margin_top }}px;
+    margin-bottom: {{ section.settings.margin_bottom }}px;
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    color: {{ section.settings.text_color }};
+  }
+
+  @media screen and (max-width: 767px) {
+    [section-id="{{ section.id }}"] {
+      margin-top: {{ section.settings.margin_top | times: 0.6 }}px;
+      margin-bottom: {{ section.settings.margin_bottom | times: 0.6 }}px;
+      padding-top: {{ section.settings.padding_top | times: 0.6 }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.6 }}px;
+    }
+  }
+
+  {% if section.settings.steps_in_a_row == 2 %}
+    [section-id="{{ section.id }}"] .steps-section-inner {
+      max-width: 80rem;
+      margin: 0 auto;
+    }
+
+    @media screen and (min-width: 768px) {
+      [section-id="{{ section.id }}"] .steps-section-step {
+        padding-left: 5%;
+        padding-right: 5%;
+      }
+    }
+  {% endif %}
+
+  @media screen and (min-width: 768px) {
+    [section-id="{{ section.id }}"] .steps-section-step {
+      width: calc(100% / {{ section.settings.steps_in_a_row }});
+    }
+  }
+</style>
+
+<div section-id="{{ section.id }}" class="steps-section">
+  <div class="page-width">
+    {% if section.settings.title != blank %}
+      <h2 class="pd-heading-4 steps-section-title">{{ section.settings.title }}</h2>
+    {% endif %}
+    {% if section.settings.description != blank %}
+      <div class="steps-section-description">{{ section.settings.description }}</div>
+    {% endif %}
+    <div class="steps-section-inner">
+      {% for block in section.blocks %}
+        <div class="steps-section-step">
+          {% if block.settings.icon != blank %}
+            <img class="steps-section-step__icon" src="{{ block.settings.icon | img_url: '73' }}" />
+          {% endif %}
+          <h5 class="steps-section-step__title">{{ block.settings.title }}</h5>
+          <div class="steps-section-step__description">{{ block.settings.description }}</div>
+          {% if block.settings.button_label != blank %}
+            <a href="{{ block.settings.button_url }}" class="pd-button {{ block.settings.button_style }} {% if block.settings.is_button_outline %}pd-button--outline{% endif %}">{{ block.settings.button_label }}</a>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

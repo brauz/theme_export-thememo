@@ -1,0 +1,82 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ data.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ data.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  .section-{{ section.id }}-padding.articles-with-video-related {
+    background-color: {{ data.background_color }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ data.padding_top }}px;
+      padding-bottom: {{ data.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign tag = article.metafields.custom.highlighted_tag
+  if tag == blank 
+    assign tag = article.tag.first
+  endif
+  assign count = 0
+-%}
+
+{%- capture articles -%}
+  {%- for art in blog.articles -%}
+    {%- if count > 9 -%}
+      {% break %}
+    {%- endif -%}
+    {%- if art.tags contains tag and art.id != article.id  -%}
+      {%- render 'article-card', 
+        article: art, 
+        show_date: data.show_date, 
+        show_author: data.show_author, 
+        show_watch_button: data.show_watch_button,
+        show_excerpt: data.show_excerpt 
+      -%}
+      {%- assign count = count | plus: 1 -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- capture carousel_options -%}
+  {
+    "arrows": true,
+    "dots": false,
+    "slidesToShow": 3,
+    "slidesToScroll": 1,
+    "mobileFirst": false,
+    "infinite": false,
+    "responsive": [
+      {
+        "breakpoint": 768,
+        "settings": "unslick"
+      }
+    ]
+  }
+{%- endcapture -%}
+
+<div class="articles-with-video-related section-{{ section.id }}-padding">
+  <div class="page-width">
+    <div 
+      class="articles-with-video-related__wrapper"
+      {% if blog.articles.size > 3 %}
+        data-carousel-slider-wrapper
+      {% endif %}
+    >
+      <h2 class="articles-with-video-related__heading">{{ data.heading }}</h2>
+      <div 
+        class="articles-with-video-related__frames pd-container-with-scrollbar pd-container-with-scrollbar-overflow pd-container-with-scrollbar-mobile"
+        {% if blog.articles.size > 3 %}
+          data-carousel-slider="{{ carousel_options | escape }}"
+          data-slider="article-with-video-related-articles"
+        {% endif %}
+      >
+        {{ articles }}
+      </div>
+    </div>
+  </div>
+</div>

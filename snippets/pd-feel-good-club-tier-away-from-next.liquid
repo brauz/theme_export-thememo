@@ -1,0 +1,46 @@
+{%- liquid
+  assign result = tier_threshold | minus: customer.total_spent | times: 100
+  assign render_result = result | money_without_currency
+  assign message = 'You are $' | append: render_result | append: ' away from more benefits.'
+  if result < 0
+    assign message = "You get 10% off all orders<br />Some exclusions apply"
+  endif
+-%}
+
+<ul class="feel-good-club-tier">
+  {% for block in section.blocks %}
+    {%- if block.type == 'tier' -%}
+      {%- assign downcase_heading = block.settings.heading | downcase -%}
+      {%- if downcase_heading contains tier -%}
+        {%- liquid 
+          assign bg_color = settings.little_tier_bg_color  
+          if tier == "big"
+            assign bg_color = settings.big_tier_bg_color
+          elsif tier == "huge"
+            assign bg_color = settings.huge_tier_bg_color
+          endif
+        -%}
+        <li
+          class="tier"
+          style="
+            --bg-color: {{ bg_color }};
+            --heading-color: {{ block.settings.heading_color }};
+          "
+        >
+          {%- if block.settings.image != blank -%}
+            <div class="tier__image">
+              {%- render 'pd-image', image: block.settings.image -%}
+            </div>
+          {%- endif -%}
+          <div class="tier__text">
+            <h4 class="pd-heading-4">{{ block.settings.heading }}</h4>
+            {%- if message != blank -%}
+              <p class="body-text">{{ message }}</p>
+            {%- endif -%}
+            <a href="/pages/loyalty-program">Learn more</a>
+          </div>
+        </li>
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+</ul>

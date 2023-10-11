@@ -1,0 +1,38 @@
+<div rv-if="data.searchPerformed" class="gift-registry-results">
+  <div class="page-width">
+    <h2 class="pd-heading-3 gift-registry-results__title">Find a gift registry</h2>
+    <label class="pd-form-label">Search Results</label>
+    <div class="gift-registry-results__form">
+      <input class="pd-form-input" type="text" id="first_last_name" rv-value="data.searchPhrase"/>
+      <button class="pd-button pd-button--big pd-button--lively-blue" rv-on-click="methods.onFullNameSearch">Search</button>
+    </div>
+    <div class="message-panel" style="background-color: #FFE8D9; padding: 2.4rem 3.2rem;">
+      <h4 class="pd-heading-5" style="margin-bottom: 1.2rem; font-size: 1.6rem">Unsure of the password?</h4>
+      <p>Please check the email you received from your friend otherwise if you aren’t still having any luck, please reach out to your friend as The Memo does not have access to passwords due to privacy reasons.</p>
+    </div>
+    <div class="gift-registry-results__table-wrapper">
+      <table class="gift-registry-results__table">
+        <thead>
+          <tr>
+            <td>Name</td>
+            <td>First name</td>
+            <td>Last name</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr rv-each-registry="data.searchResults">
+            <td class="registry-result-name" rv-data-registry-id="registry.id" rv-on-click="methods.goToRegistry">
+              <span rv-data-registry-id="registry.id" rv-text="registry.attributes.name"></span>
+            </td>
+            <td class="registry-result-name" rv-data-registry-id="registry.id" rv-on-click="methods.goToRegistry">
+              <span rv-data-registry-id="registry.id" rv-text="registry.attributes.first_name"></span>
+            </td>
+            <td class="registry-result-name" rv-data-registry-id="registry.id" rv-on-click="methods.goToRegistry">
+              <span rv-data-registry-id="registry.id" rv-text="registry.attributes.last_name"></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

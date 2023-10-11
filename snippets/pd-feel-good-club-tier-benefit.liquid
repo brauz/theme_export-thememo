@@ -1,0 +1,56 @@
+{%- assign blocks = section.blocks | where: 'type', 'benefit' -%}
+
+<div class="feel-good-club-tier-benefit">
+  <h5 class="body-text tier-benefit__main-heading">All Benefits</h5>
+
+  <div class="tier-benefit-tab" data-tabs>
+    <ul class="tier-benefit-tab__header" data-tabs-header>
+      <li
+        data-tabs-header-item
+        class="tier-benefit-tab__header-item {% if tier == "little" %} active{% endif %}"
+        data-content="little"
+      >
+        Little Tier
+      </li>
+      <li
+        data-tabs-header-item
+        class="tier-benefit-tab__header-item {% if tier == "big" %} active{% endif %}"
+        data-content="big"
+      >
+        Big Tier
+      </li>
+      <li
+        data-tabs-header-item
+        class="tier-benefit-tab__header-item {% if tier == "huge" %} active{% endif %}"
+        data-content="huge"
+      >
+        Huge Tier
+      </li>
+    </ul>
+    <div class="tier-benefit-tab__body" data-tabs-content>
+      {%- assign tiers_arr = "little,big,huge" | split:"," -%}
+      {%- for item in  tiers_arr -%}
+        <div
+          data-tabs-content-item
+          id="{{ item }}"
+          class="tier-benefit-tab__text{% if tier == item %} active{% endif %}"
+        >
+          <ul class="tier-benefit__list">
+            {% for block in blocks %}
+              {% if block.settings.tier == item %}
+                <li class="tier-benefit__item" {{ block.shopify_attributes }} >
+                  {%- if block.settings.image != blank -%}
+                    <div class="tier-benefit__image">
+                      {%- render 'pd-image', image: block.settings.image  -%}
+                    </div>
+                  {%- endif -%}
+                  <span class="body-text">{{ block.settings.title }}</span>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>

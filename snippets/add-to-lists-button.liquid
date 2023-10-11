@@ -1,0 +1,15 @@
+<button
+  data-add-to-lists-button
+  data-product-title='{{ product_data.title }}'
+  data-product-image="{{ product_data.featured_media | img_url: '60x' }}" 
+  data-empi="{{ product_data.id }}"
+  data-epi="{{ product_data.selected_or_first_available_variant.id }}"
+  data-du="{{ canonical_url }}"
+  class="add-to-lists-button"
+>
+  {% render 'icon.svg', type: 'new-heart-plus' %}
+  <span class="text">
+    <span class="hide-desktop">Wishlist</span>
+    <span class="hide-mobile">Add to wishlist</span>
+  <span>
+</button>

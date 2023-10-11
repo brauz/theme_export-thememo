@@ -1,0 +1,99 @@
+{% render 'product-media-modal' variant_images: variant_images %}
+
+{%- if product.media.size > 0 -%}
+  <script src="{{ 'product-modal.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- liquid
+  if section.settings.hide_variants and variant_images.size == product.media.size
+    assign single_media_visible = true
+  endif
+
+  assign media_count = product.media.size
+  if section.settings.hide_variants and media_count > 1 and variant_images.size > 0
+    assign media_count = media_count | minus: variant_images.size | plus: 1
+  endif
+
+  if media_count == 1 or single_media_visible
+    assign single_media_visible_mobile = true
+  endif
+-%}
+
+<div class="product-media-gallery {% if section.settings.stack_images %} product-media-gallery--has-stack {% endif %}">
+  {% render 'product-badges', product: product %}
+  {% if section.settings.stack_images %}
+    <div class="product-media-gallery__stack">
+      {%- for media in product.media -%}
+        {% liquid
+          assign media_position = media_position | default: 0 | plus: 1
+          assign ratio_image = media.aspect_ratio | default: media.preview_image.aspect_ratio
+          if ratio_image > 1.4
+            assign class_media_ratio = "full-width"
+          else
+            assign class_media_ratio = "half-width"
+          endif
+        %}
+
+        {%- if media.media_type == 'image' -%}
+          <div class="product-media-gallery__stack__image-wrapper {{ class_media_ratio }}">
+            {% render 'product-thumbnail',
+              media: media,
+              media_count: media_count,
+              position: media_position,
+              loop: false,
+              modal_id: section.id,
+              lazy_load: lazy_load
+            %}
+          </div>
+        {% else %}
+          <div class="product-media-gallery__stack__video-wrapper {{ class_media_ratio }}">
+            {% render 'pd-video',
+              video: media,
+              enable_video_looping: true,
+              auto_play: true,
+              poster: media.preview_image
+            %}
+          </div>
+        {% endif %}
+      {%- endfor -%}
+    </div>
+  {% endif %}
+  <div class="product-media-gallery__carousel">
+    <div class="slider-for">
+      {%- for media in product.media -%}
+        {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
+          <div class="product__media-item">
+            {%- liquid
+              assign media_position = media_position | default: 0 | plus: 1
+              assign lazy_load = false
+              if media_position > 1
+                assign lazy_load = true
+              endif
+            -%}
+            {% render 'product-thumbnail',
+              media: media,
+              media_count: media_count,
+              position: media_position,
+              loop: false,
+              modal_id: section.id,
+              lazy_load: lazy_load
+            %}
+          </div>
+        {%- endunless -%}
+      {%- endfor -%}
+    </div>
+    {% if media_count > 1 %}
+      <div class="slider-nav">
+        {%- for media in product.media -%}
+          <div>
+            {% if media.media_type == 'video' or media.media_type == 'external_video'  %}
+              {% render 'pd-image', image: media.preview_image %}
+            {% else %}
+              {% render 'pd-image', image: media %}
+            {% endif %}
+          </div>
+        {%- endfor -%}
+      </div>
+    {% endif %}
+  </div>
+</div>

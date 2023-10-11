@@ -1,0 +1,33 @@
+<script src="{{ 'load-more.js' | asset_url }}" defer="defer"></script>
+
+<load-more
+  class="load-more"
+  total-pages="{{ total_pages }}"
+  current-page="{{ current_page }}"
+  products-per-page="{{ products_to_show }}"
+  all-products-count="{{ results_count }}"
+>
+  <div class="load-more__counter">
+    <span current-products-count class="load-more__current">{{ products_to_show }} </span> of
+    <span total-products>{{ results_count }}</span> {{ results_count | pluralize: 'item', 'items' }}
+  </div>
+  <div current-progress-bar-wrapper data-carousel-scrollbar class="pd-carousel-scrollbar">
+    <span current-progress-bar data-carousel-scrollbar-track class="pd-carousel-scrollbar-piece"></span>
+  </div>
+  <div class="load-more__view-more-btn-wrapper">
+    <button load-more-button class="pd-button pd-button--bold-coral load-more__view-more-btn">
+      <span class="view-more-text">View more</span>
+      <div class="loading-overlay__spinner d-none">
+        <svg
+          aria-hidden="true"
+          focusable="false"
+          class="spinner"
+          viewBox="0 0 66 66"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+        </svg>
+      </div>
+    </button>
+  </div>
+</load-more>

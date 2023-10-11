@@ -1,0 +1,78 @@
+<style>
+  .points-indicator {
+    left: {{ customer.total_spent | divided_by: 500.0 }}%
+  }
+  .points-indicator p {
+    transform: translateX({{ customer.total_spent | times: 1 | divided_by: 5 | times: -1 | plus: 40 | at_least: 0 }}%)
+  }
+  @media screen and (min-width:768px) {
+    .points-indicator p {
+      transform: translateX({{ customer.total_spent | times: 17 | divided_by: 75 | times: -1 | plus: 17 | at_least: 0 }}%)
+    }
+  }
+</style>
+{%- liquid
+  assign result = tier_threshold | times: 100 | minus: customer.total_spent
+  assign render_result = result | money_without_currency
+  assign message = '$' | append: render_result | append: ' to go'
+  if result < 0
+    assign message = blank
+  endif
+-%}
+
+<div class="feel-good-club-tier-list">
+  <div class="tier-current-status">
+    <h5 class="body-text">Your tier</h5>
+    {%- if message != blank -%}
+      <span class="body-text hide-mobile">{{ message }}</span>
+    {%- endif -%}
+  </div>
+
+  <div class="tier-current-status">
+    <h3 class="pd-heading-3 tier-current-label">{{ tier }} tier</h3>
+    {%- if message != blank -%}
+      <span class="body-text hide-desktop">{{ message }}</span>
+    {%- endif -%}
+  </div>
+
+  <div class="customer-loyalty-tiers" data-current-tier="{{ tier }}">
+    <div class="tier-tabs">
+      <div class="tier-tab{% if tier != 'little' %} tier-tab--disabled{% endif %}" data-tier="little">
+        <p class="h3">Little Tier</p>
+        <p>
+          {{ 0 | times: 100 | money_without_trailing_zeros }} - {{ 500 | times: 100 | money_without_trailing_zeros }}
+        </p>
+
+        {% if tier == 'little' %}
+          <div class="points-indicator">
+            {% render 'icon-signature.svg', type: 'location-account' %}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="tier-tab{% if tier != 'big' %} tier-tab--disabled{% endif %}" data-tier="big">
+        <p class="h3">Big Tier</p>
+        <p>
+          {{ 500 | times: 100 | money_without_trailing_zeros }} - {{ 1000 | times: 100 | money_without_trailing_zeros }}
+        </p>
+
+        {% if tier == 'big' %}
+          <div style="left: {{ customer.total_spent | divided_by: 1000.0 }}%" class="points-indicator">
+            {% render 'icon-signature.svg', type: 'location-account' %}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="tier-tab{% if tier != 'huge' %} tier-tab--disabled{% endif %}" data-tier="huge">
+        <p class="h3">Huge Tier</p>
+        <p>{{ 1000 | times: 100 | money_without_trailing_zeros }}+</p>
+
+        {% if tier == 'huge' %}
+          <div style="left: 50%" class="points-indicator">
+            {% render 'icon-signature.svg', type: 'location-account' %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

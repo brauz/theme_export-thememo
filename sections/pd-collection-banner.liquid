@@ -1,0 +1,432 @@
+<section
+  class="pd-collection-banner"
+  style="--bgColor: {{section.settings.collection_bg_color}};"
+>
+  {%- if section.settings.desktop_collection_image_src -%}
+    {{
+      section.settings.desktop_collection_image_src
+      | image_url: width: 990
+      | image_tag:
+        widths: '768, 990, 1200, 1440',
+        class: 'pd-collection-banner__block-bg-image hide-mobile',
+        loading: 'lazy'
+    }}
+  {%- endif -%}
+  {%- if section.settings.mobile_collection_image_src -%}
+    {{
+      section.settings.mobile_collection_image_src
+      | image_url: width: 768
+      | image_tag: class: 'pd-collection-banner__block-bg-image hide-desktop', loading: 'lazy'
+    }}
+  {%- endif -%}
+
+  <div class="pd-collection-banner__wrapper page-width">
+    {% assign collectionBlockHeight = 'max-content' %}
+    {%- if section.settings.collection_height and section.settings.collection_height != 0 -%}
+      {% assign collectionBlockHeight = section.settings.collection_height | append: 'px' %}
+    {%- endif -%}
+    <main style="--height: {{collectionBlockHeight}};">
+      {% for block in section.blocks %}
+        {%- if block.type == 'banner_image_block' -%}
+          {% liquid
+            assign image = block.settings.desktop_image_src
+            if block.settings.mobile_image_src
+              assign image_mobile = block.settings.mobile_image_src
+            else
+              assign image_mobile = image
+            endif
+          %}
+
+          {%- if image -%}
+            <div
+              class="pd-collection-banner__block pd-collection-banner__block-image"
+              style="
+                --horizontalAlignment:{{block.settings.image_horizontal_alignment}};
+                --verticalAlignment:{{block.settings.image_vertical_alignment}};
+              "
+            >
+              {%- if image -%}
+                {{
+                  image
+                  | image_url: width: block.settings.image_banner_width, height: block.settings.image_banner_height
+                  | image_tag: alt: block.settings.banner_image_title, class: 'hide-mobile', loading: 'lazy'
+                }}
+              {%- endif -%}
+              {%- if image_mobile -%}
+                {{
+                  image_mobile
+                  | image_url: width: block.settings.image_banner_width, height: block.settings.image_banner_height
+                  | image_tag: alt: block.settings.banner_image_title, class: 'hide-desktop', loading: 'lazy'
+                }}
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        {% elsif block.type == 'banner_text_block' %}
+          <div
+            class="pd-collection-banner__block pd-collection-banner__block-text"
+            style="
+              --horizontalAlignment:{{block.settings.text_horizontal_alignment}};
+              --verticalAlignment:{{block.settings.text_vertical_alignment}};
+            "
+          >
+            {% assign mainTitleBlock = section.blocks | where: 'type', 'banner_title' | first %}
+            {%- if mainTitleBlock -%}
+              <h1
+                class="pd-collection-banner__block-banner_title"
+                style="--textColor: {{mainTitleBlock.settings.main_title_color}};"
+              >
+                {{ mainTitleBlock.settings.main_title }}
+              </h1>
+            {%- endif -%}
+
+            {% assign mainDescriptionBlock = section.blocks | where: 'type', 'banner_description' | first %}
+            {%- if mainDescriptionBlock -%}
+              <p
+                class="pd-collection-banner__block-banner_description"
+                style="--textColor: {{mainDescriptionBlock.settings.main_description_color}};"
+              >
+                {{ mainDescriptionBlock.settings.main_description }}
+              </p>
+            {%- endif -%}
+
+            {% assign bannerCtaBlocks = section.blocks | where: 'type', 'banner_cta' %}
+            {% if bannerCtaBlocks.size > 0 %}
+              <div class="pd-ctas">
+                {% for ctaBlock in section.blocks %}
+                  {%- if ctaBlock.type == 'banner_cta' -%}
+                    <a
+                      class="btn-cta pd-button pd-collection-banner__block-banner_cta"
+                      href="{{ctaBlock.settings.cta_link}}"
+                      style="
+                        --textColor: {{ctaBlock.settings.cta_text_color}};
+                        --bgColor: {{ctaBlock.settings.cta_bg_color}};
+                        --borderColor: {{ctaBlock.settings.cta_border_color}};
+                      "
+                    >
+                      {{- ctaBlock.settings.cta_label -}}
+                    </a>
+                  {%- endif -%}
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        {%- endif -%}
+      {% endfor %}
+    </main>
+
+    {% for block in section.blocks %}
+      {%- if block.type == 'image_topping_block' -%}
+        <div
+          class="pd-collection-banner__block pd-collection-banner__block--topping"
+          style="
+            --top:{{block.settings.image_topping_top | append: '%'}};
+            --left:{{block.settings.image_topping_left | append: '%'}};
+            --topMobile:{{block.settings.image_topping_top_mobile | append: '%'}};
+            --leftMobile:{{block.settings.image_topping_left_mobile | append: '%'}};
+          "
+        >
+          {%- assign imageSize = block.settings.image_topping_width
+            | append: 'x'
+            | append: block.settings.image_topping_height
+          -%}
+          <img
+            src="{{block.settings.image_topping_src | img_url: imageSize}}"
+            alt="{{block.settings.topping_image_title}}"
+          >
+        </div>
+      {%- endif -%}
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection Banner",
+  "class": "section",
+  "settings": [
+    {
+      "id": "desktop_collection_image_src",
+      "type": "image_picker",
+      "label": "Background Desktop Image"
+    },
+    {
+      "id": "mobile_collection_image_src",
+      "type": "image_picker",
+      "label": "Background Mobile Image"
+    },
+    {
+      "type": "color",
+      "id": "collection_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "number",
+      "id": "collection_height",
+      "label": "Height"
+    }
+  ],
+  "blocks": [
+    {
+      "limit": 1,
+      "type": "banner_image_block",
+      "name": "Image Block",
+      "settings": [
+        {
+          "id": "desktop_image_src",
+          "type": "image_picker",
+          "label": "Desktop Image"
+        },
+        {
+          "id": "banner_image_title",
+          "type": "text",
+          "label": "Image Title"
+        },
+        {
+          "type": "header",
+          "content": "Alignment"
+        },
+        {
+          "type": "select",
+          "id": "image_horizontal_alignment",
+          "options": [
+            {
+              "value": "start",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "end",
+              "label": "Right"
+            }
+          ],
+          "default": "center",
+          "label": "Horizontal Alignment"
+        },
+        {
+          "type": "select",
+          "id": "image_vertical_alignment",
+          "options": [
+            {
+              "value": "start",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "end",
+              "label": "Bottom"
+            }
+          ],
+          "default": "center",
+          "label": "Vertical Alignment"
+        },
+        {
+          "type": "header",
+          "content": "Size"
+        },
+        {
+          "id": "image_banner_width",
+          "type": "number",
+          "label": "Width",
+          "default": 450
+        },
+        {
+          "id": "image_banner_height",
+          "type": "number",
+          "label": "Height"
+        }
+      ]
+    },
+    {
+      "limit": 1,
+      "type": "banner_text_block",
+      "name": "Text Block",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Alignment"
+        },
+        {
+          "type": "select",
+          "id": "text_horizontal_alignment",
+          "options": [
+            {
+              "value": "start",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "end",
+              "label": "Right"
+            }
+          ],
+          "default": "center",
+          "label": "Horizontal Alignment"
+        },
+        {
+          "type": "select",
+          "id": "text_vertical_alignment",
+          "options": [
+            {
+              "value": "start",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "end",
+              "label": "Bottom"
+            }
+          ],
+          "default": "center",
+          "label": "Vertical Alignment"
+        }
+      ]
+    },
+    {
+      "limit": 1,
+      "type": "banner_title",
+      "name": "Main title",
+      "settings": [
+        {
+          "id": "main_title",
+          "type": "text",
+          "label": "Title"
+        },
+        {
+          "type": "color",
+          "id": "main_title_color",
+          "label": "Title color",
+          "default": "#0a2657"
+        }
+      ]
+    },
+    {
+      "limit": 1,
+      "type": "banner_description",
+      "name": "Main description",
+      "settings": [
+        {
+          "id": "main_description",
+          "type": "richtext",
+          "label": "Description"
+        },
+        {
+          "type": "color",
+          "id": "main_description_color",
+          "label": "Description color",
+          "default": "#0a2657"
+        }
+      ]
+    },
+    {
+      "limit": 2,
+      "type": "banner_cta",
+      "name": "CTA",
+      "settings": [
+        {
+          "id": "cta_label",
+          "type": "text",
+          "label": "Label"
+        },
+        {
+          "id": "cta_link",
+          "type": "url",
+          "label": "Link"
+        },
+        {
+          "type": "color",
+          "id": "cta_bg_color",
+          "label": "Background color",
+          "default": "#0554ff"
+        },
+        {
+          "type": "color",
+          "id": "cta_text_color",
+          "label": "Color",
+          "default": "#fcfcfd"
+        },
+        {
+          "type": "color",
+          "id": "cta_border_color",
+          "label": "Border color",
+          "default": "#0554ff"
+        }
+      ]
+    },
+    {
+      "type": "image_topping_block",
+      "name": "Image Topping",
+      "settings": [
+        {
+          "id": "image_topping_src",
+          "type": "image_picker",
+          "label": "Image"
+        },
+        {
+          "id": "topping_image_title",
+          "type": "text",
+          "label": "Image Title"
+        },
+        {
+          "type": "header",
+          "content": "Desktop Position"
+        },
+        {
+          "id": "image_topping_top",
+          "type": "number",
+          "label": "Top",
+          "default": 0
+        },
+        {
+          "id": "image_topping_left",
+          "type": "number",
+          "label": "Left",
+          "default": 0
+        },
+        {
+          "type": "header",
+          "content": "Mobile Position"
+        },
+        {
+          "id": "image_topping_top_mobile",
+          "type": "number",
+          "label": "Top",
+          "default": 0
+        },
+        {
+          "id": "image_topping_left_mobile",
+          "type": "number",
+          "label": "Left",
+          "default": 0
+        },
+        {
+          "type": "header",
+          "content": "Size"
+        },
+        {
+          "id": "image_topping_width",
+          "type": "number",
+          "label": "Width"
+        },
+        {
+          "id": "image_topping_height",
+          "type": "number",
+          "label": "Height"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

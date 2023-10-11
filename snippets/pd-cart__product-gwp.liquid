@@ -1,0 +1,143 @@
+{% liquid
+  assign applicableProducts = settings.gwp_with_purchase_applicable_collection.products
+  assign giftProducts = settings.gwp_with_purchase_reward_collection.products
+  assign excludedProducts = settings.gwp_with_purchase_excluded_collection.products
+  assign minimumSpend = settings.gwp_with_purchase_minimum_threshold
+  assign cartTotalMoney = 0
+
+  assign anyProductsApplicableForGift = false
+  assign isThresHoldReached = true
+  assign anyGiftProductInCart = false
+  assign howManyGiftProducts = giftProducts.size
+
+  for item in cart.items
+    assign itemNotExcluded = true
+    if excludedProducts != blank
+      for p in excludedProducts
+        if p.id == item.product.id
+          assign itemNotExcluded = false
+          break
+        endif
+      endfor
+    endif
+
+    if itemNotExcluded
+      assign cartTotalMoney = cartTotalMoney | plus: item.final_line_price
+    endif
+  endfor
+
+  if applicableProducts != blank
+    for item in cart.items
+      for p in applicableProducts
+        if item.product.id == p.id
+          assign anyProductsApplicableForGift = true
+        endif
+      endfor
+    endfor
+  endif
+
+  if minimumSpend > 0
+    assign cartTotalMoney = cartTotalMoney | money
+    assign cartTotalNumber = cartTotalMoney | replace: '$', '' | replace: ',', ''
+    assign cartRemaining = minimumSpend | minus: cartTotalNumber
+    if cartRemaining > 0
+      assign isThresHoldReached = false
+    endif
+  endif
+
+  if giftProducts != blank
+    for item in cart.items
+      for p in giftProducts
+        if item.product.id == p.id
+          assign anyGiftProductInCart = true
+        endif
+      endfor
+    endfor
+  endif
+%}
+
+{% comment %}
+  anyProductsApplicableForGift {{ anyProductsApplicableForGift }} isThresHoldReached
+  {{ isThresHoldReached }} anyGiftProductInCart {{ anyGiftProductInCart }}
+
+  cartTotalMoney{{ cartTotalMoney | money }} howManyGiftProducts {{ howManyGiftProducts }}
+{% endcomment %}
+{% if anyProductsApplicableForGift
+  and isThresHoldReached
+  and anyGiftProductInCart == false
+  and howManyGiftProducts > 1
+%}
+  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+  {%- capture carousel_options -%}
+  {
+    "arrows": false,
+    "dots": true,
+    "variableWidth": true,
+    "slidesToShow": 4,
+    "slidesToScroll": 1,
+    "mobileFirst": false,
+    "infinite": false,
+    "responsive": [
+      {
+        "breakpoint": 750,
+        "settings": "unslick"
+      }
+    ]
+  }
+{%- endcapture -%}
+
+  {% liquid
+    assign number_products_showing = 10
+    assign list = productList
+    assign total_products = list.size
+  %}
+
+  <div class="pdp-accordion">
+    <details
+      class="pdp-accordion__item"
+      open
+    >
+      <summary class="product__info__heading" for="Cart-note">
+        {% comment %} {{ section.settings.complementary_section_title }} {% endcomment %}
+        Select your free gift (0/1 selected)
+        <span class="pdp-accordion__item__icon icon-toggle"></span>
+      </summary>
+      <div class="pdp-accordion__item__content">
+        {% for item in cart.items %}
+          {% render 'pd-text-panel-free-gift', product: item.product, type: 'cart-gwp-choose' %}
+        {% endfor %}
+
+        <div
+          class="pd-cart-gwp pd-cart-carousel pd-product-carousel pd-carousel-has-scrollbar"
+          data-carousel-slider-wrapper
+        >
+          <div
+            class="pd-product-carousel__slider pd-container-with-scrollbar pd-container-with-scrollbar-overflow pd-container-with-scrollbar-mobile"
+            data-carousel-slider="{{ carousel_options | escape }}"
+            data-slider="pd-product-carousel"
+          >
+            {% if list %}
+              {% for _product in list %}
+                {% render 'pd-card-gwp-product',
+                  card_product: _product,
+                  show_quick_add: true,
+                  hide_secondary_image: true,
+                  hide_vendor: false,
+                  hide_rating: true,
+                  hide_swatch: true,
+                  show_description: true
+                %}
+              {% endfor %}
+            {% endif %}
+          </div>
+          {% if total_products > number_products_showing %}
+            <div data-carousel-scrollbar class="pd-carousel-scrollbar">
+              <span data-carousel-scrollbar-track class="pd-carousel-scrollbar-piece"></span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </details>
+  </div>
+{% endif %}

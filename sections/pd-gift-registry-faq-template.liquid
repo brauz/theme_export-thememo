@@ -1,0 +1,65 @@
+<div class="page-width">
+  <div class="gift-registry-page gift-registry-page--2-columns">
+    <div class="gift-registry-page__sidebar">
+      {% render 'pd-gift-registry-sidebar' %}
+    </div>
+    <div class="gift-registry-page__content">
+      <nav class="breadcrumbs" role="navigation" aria-label="breadcrumbs">
+        <ol class="breadcrumbs__list">
+          <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link" href="/account" aria-current="page">My Account</a>
+          </li>
+          <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link" href="/account?view=gift-registry-dashboard" aria-current="page">Gift Registry</a>
+          </li>
+        </ol>
+      </nav>
+
+      <h1 class="pd-heading-3 gift-registry-page__heading-title">{{ page.title }}</h1>
+
+      {% render 'pd-gift-registry-faq' %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Gift Registry FAQ",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Sidebar"
+    },
+    {
+      "type": "text",
+      "id": "main_menu",
+      "label": "Main menu",
+      "default": "n-gift-registry-sidebar"
+    },
+    {
+      "type": "text",
+      "id": "help_menu",
+      "label": "Help menu",
+      "default": "n-gift-registry-help"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "content-block",
+      "name": "Content block",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

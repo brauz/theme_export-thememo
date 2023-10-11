@@ -1,0 +1,38 @@
+{% liquid
+  assign desktop_pos = desktop_position | split: ','
+  assign mobile_pos = mobile_position | split: ','
+
+  assign desktop_pos_top = desktop_pos[0]
+  assign desktop_pos_left = desktop_pos[1]
+
+  assign mobile_pos_top = mobile_pos[0]
+  assign mobile_pos_left = mobile_pos[1]
+%}
+
+{% liquid
+  assign sectionId = section_id
+  if sectionId == blank
+    assign sectionId = section.id
+  endif
+%}
+
+{% style %}
+  .section-{{ sectionId }} .decoration-image-wrapper {
+    position: absolute;
+    top: {{ desktop_pos_top | default: 0  }}%;
+    left: {{ desktop_pos_left | default: 0 }}%;
+    width: {{ desktop_width }}px;
+  }
+
+  @media screen and (max-width: 767px) {
+    .section-{{ sectionId }} .decoration-image-wrapper {
+      top: {{ mobile_pos_top | default: 0 }}%;
+      left: {{ mobile_pos_left | default: 0 }}%;
+      width: {{ mobile_width }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="decoration-image-wrapper {{ class_name }} {{ sectionId }}">
+  {% render 'pd-image', image: image %}
+</div>

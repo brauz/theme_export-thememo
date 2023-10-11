@@ -1,0 +1,52 @@
+{%- liquid
+  assign freeShippingThreshold = settings.cart_free_shipping_threshold
+  assign cartTotalMoney = cart.total_price | money
+  assign cartTotalNumber = cartTotalMoney | replace: '$', '' | replace: ',', ''
+  assign cartRemaining = freeShippingThreshold | minus: cartTotalNumber
+  if cartRemaining < 0
+    assign cartRemaining = 0
+  endif
+  assign fullfillPercentage = cartTotalNumber | divided_by: freeShippingThreshold | times: 100
+  if fullfillPercentage > 100
+    assign fullfillPercentage = 100
+  endif
+
+  assign anyBulkyProducts = false
+  assign tagsForBulkyItems = settings['tags_freeshippingthreshold_bulky-products'] | split: ','
+  for item in cart.items
+    for bulkyTag in tagsForBulkyItems
+      if item.product.tags contains bulkyTag
+        assign anyBulkyProducts = true
+        break
+      endif
+    endfor
+  endfor
+%}
+
+{% if settings.show_threshold_indicator
+  and freeShippingThreshold
+  and freeShippingThreshold > 0
+  and anyBulkyProducts == false
+%}
+  <div class="{{ class }}">
+    <div class="px-20">
+      <h3 class="pd-heading-free-shipping-title pd-heading-3">
+        {%- if cartRemaining > 0 -%}
+          ${{ cartRemaining }} away from free shipping
+        {%- else -%}
+          Congratulations! You get free shipping
+        {%- endif -%}
+      </h3>
+      <div
+        class="pd-shipping-threshold"
+        [data-threshold]="{{freeShippingThreshold}} {{cartTotalNumber}}"
+      >
+        <div class="pd-shipping-threshold__amount" style="--width: {{fullfillPercentage}}%;">&nbsp;</div>
+      </div>
+    </div>
+
+    {% if showDivider %}
+      <div class="divider"></div>
+    {% endif %}
+  </div>
+{% endif %}
