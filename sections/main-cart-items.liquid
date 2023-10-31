@@ -75,6 +75,15 @@
 
             <div class="divider"></div>
 
+            <img id="brauz-shopify-cart-change-listener" src="" style="display: none;" onload="window.Brauz_shopify_helper_setupFindInStoreComponentInCart()" onerror="window.Brauz_shopify_helper_setupFindInStoreComponentInCart()"></img>
+            <div
+              id="brauz-click-and-collect-config-cart-page"
+              data-sd="{{ shop.permanent_domain }}"
+              style="display: none; width: 0"
+            ></div>
+            <div id="brauz-click-and-collect-cart-page"></div>
+            <script src="https://d3aq2u4yw77ivo.cloudfront.net/find-in-store/shopify/thememo/find-in-store.shopify.thememo.prod.js" async></script>
+
             <div class="cart__ctas px-20">
               <noscript>
                 <button type="submit" class="cart__update-button button button--secondary" form="cart">
