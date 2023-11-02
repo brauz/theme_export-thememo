@@ -10,7 +10,25 @@
             </caption>
             <tbody>
               {%- for item in cart.items -%}
-                <tr class="cart-item" id="CartItem-{{ item.index | plus: 1 }}">
+                {% liquid
+                  assign isThisProductAGift = false
+                  assign gwpCampaign = null
+                  for prop in item.properties
+                    if prop.first == '_GWP'
+                      assign isThisProductAGift = true
+                      assign gwpCampaign = prop.last
+                      break
+                    endif
+                  endfor
+                %}
+
+                <tr
+                  class="cart-item"
+                  id="CartItem-{{ item.index | plus: 1 }}"
+                  {% if isThisProductAGift %}
+                    data-gwp="{{gwpCampaign}}"
+                  {% endif %}
+                >
                   <td class="cart-item__media">
                     {% if item.image %}
                       {% comment %} Leave empty space due to a:empty CSS display: none rule {% endcomment %}
@@ -96,65 +114,40 @@
                       <p class="product-option">{{ item.selling_plan_allocation.selling_plan.name }}</p>
                     {%- endif -%}
 
-                    <div>
-                      {%- liquid
-                        assign anySpendSaveProducts = false
-                        assign tagsForSpendSaveItems = section.settings['tags_discountbadge_spend-save'] | split: ','
-                        for checkTag in tagsForSpendSaveItems
-                          if item.product.tags contains checkTag
-                            assign anySpendSaveProducts = true
-                            break
+                    {% comment %}
+                      {% liquid
+                        assign gwpBlocks = section.blocks | where: 'type', 'gwp'
+                        assign isThisProductAGift = false
+                        for block in gwpBlocks
+                          assign giftProducts = block.settings.gwp_with_purchase_reward_collection.products
+                          if giftProducts != blank
+                            for p in giftProducts
+                              if item.product.id == p.id
+                                assign isThisProductAGift = true
+                                break
+                              endif
+                            endfor
                           endif
-                        endfor
-
-                        assign anyHugeDiscountProducts = false
-                        assign tagsForHugeDiscountItems = section.settings['tags_discountbadge_huge-discount'] | split: ','
-                        for checkTag in tagsForHugeDiscountItems
-                          if item.product.tags contains checkTag
-                            assign anyHugeDiscountProducts = true
-                            break
-                          endif
-                        endfor
-
-                        assign anyFreeGiftProducts = false
-                        assign tagsForFreeGiftItems = section.settings['tags_discountbadge_free-gift'] | split: ','
-                        for checkTag in tagsForFreeGiftItems
-                          if item.product.tags contains checkTag
-                            assign anyFreeGiftProducts = true
+                          if isThisProductAGift
                             break
                           endif
                         endfor
                       %}
+                    {% endcomment %}
 
-                      {%- if anySpendSaveProducts -%}
-                        <span class="pd-product-badge pd-product-badge__spend-save">Spend & save</span>
-                      {% elsif anyHugeDiscountProducts %}
-                        <span class="pd-product-badge pd-product-badge__huge-tier-discount">Huge Tier Discount</span>
-                      {% elsif anyFreeGiftProducts %}
-                        {% comment %} <span class="pd-product-badge pd-product-badge__gift-message">Gift message</span> {% endcomment %}
-                      {%- endif -%}
-                    </div>
-
-                    <div>
-                      {%- for discount in item.discounts -%}
-                        <span
-                          class="
-                            pd-product-badge
-                            {% if discount.title == "Huge tier discount" %}
-                              pd-product-badge__huge-tier-discount
-                            {% else %}
-                              pd-product-badge__spend-save
-                            {% endif %}
-                          "
-                        >
-                          {{ discount.title }}
-                        </span>
-                      {%- endfor -%}
-                    </div>
-
-                    {% if item.selling_plan_allocation %}
-                      <div class="subscription-description">
-                        <p>{{ item.selling_plan_allocation.selling_plan.name }}</p>
+                    {% if isThisProductAGift == false %}
+                      <div>
+                        {% for discount_allocation in item.line_level_discount_allocations %}
+                          {% assign badge_item_title = discount_allocation.discount_application.title %}
+                          {% assign badge_item_title_handle = badge_item_title | handleize %}
+                          <span class="pd-product-badge pd-product-badge__{{ badge_item_title_handle }}">
+                            {{- badge_item_title -}}
+                          </span>
+                        {% endfor %}
+                      </div>
+                    {% else %}
+                      <div class="pd-free-gift-badge">
+                        {{ gwpCampaign }}
                       </div>
                     {% endif %}
 
@@ -172,24 +165,16 @@
                         {% if tag == 'NOCLICKCOLLECT' %}
                           <div>
                             <span style="margin-top: 10px" class="pd-product-badge">
-                              {% if settings.noclickcollect_text != blank %}{{ settings.noclickcollect_text }}{% else %}{{ tag }}{% endif %}
+                              {% if settings.noclickcollect_text != blank -%}
+                                {{- settings.noclickcollect_text -}}
+                              {%- else -%}
+                                {{- tag -}}
+                              {%- endif %}
                             </span>
                           </div>
                         {% endif %}
                       {% endfor %}
                     {% endif %}
-
-                    {% liquid
-                      assign giftProducts = settings.gwp_with_purchase_reward_collection.products
-                      assign isThisProductAGift = false
-                      if giftProducts != blank
-                        for p in giftProducts
-                          if item.product.id == p.id
-                            assign isThisProductAGift = true
-                          endif
-                        endfor
-                      endif
-                    %}
 
                     {% if isThisProductAGift == false %}
                       <div class="cart-item__totals">
@@ -224,6 +209,41 @@
                                 {{ item.final_line_price | money }}
                               </dd>
                             </dl>
+                          {%- elsif item.product.compare_at_price != null
+                            and item.product.price < item.product.compare_at_price
+                          -%}
+                            {%- liquid
+                              assign price = item.product.price | default: 1999
+                              assign money_price = price | money
+                              if settings.currency_code_enabled
+                                assign money_price = price | money_with_currency
+                              endif
+                            -%}
+                            <div class="price__sale">
+                              <span class="visually-hidden visually-hidden--inline">
+                                {{- 'products.product.price.sale_price' | t -}}
+                              </span>
+                              <span class="price-item price-item--sale price-item--last">
+                                {{ money_price }}
+                              </span>
+                              {%- unless item.product.price_varies == false
+                                and item.product.compare_at_price_varies
+                                and item.product.compare_at_price
+                              %}
+                                <span class="visually-hidden visually-hidden--inline">
+                                  {{- 'products.product.price.regular_price' | t -}}
+                                </span>
+                                <span>
+                                  <s class="price-item price-item--regular">
+                                    {% if settings.currency_code_enabled %}
+                                      {{ item.product.compare_at_price | money_with_currency }}
+                                    {% else %}
+                                      {{ item.product.compare_at_price | money }}
+                                    {% endif %}
+                                  </s>
+                                </span>
+                              {%- endunless -%}
+                            </div>
                           {%- else -%}
                             <span class="price price--end">
                               {{ item.original_line_price | money }}
@@ -323,11 +343,6 @@
                             break
                           endif
                         endfor
-                      %}
-                      {% render 'pd-text-panel-free-gift',
-                        product: productWithThisGift,
-                        productTitle: productWithThisGift.title,
-                        type: 'cart-item'
                       %}
                       <div class="cart-item__totals">
                         <div class="cart-item__price-wrapper">
